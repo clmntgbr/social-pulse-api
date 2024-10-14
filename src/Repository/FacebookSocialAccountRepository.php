@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\FacebookSocialAccount;
+use App\Entity\SocialAccount;
 use App\Enum\SocialAccountStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,7 +41,7 @@ class FacebookSocialAccountRepository extends ServiceEntityRepository implements
         return $account;
     }
 
-    public function update(FacebookSocialAccount $entity, array $data): object
+    public function update(SocialAccount $entity, array $data): SocialAccount
     {
         foreach ($data as $key => $value) {
             $method = 'set' . ucfirst($key);
@@ -55,7 +56,7 @@ class FacebookSocialAccountRepository extends ServiceEntityRepository implements
         return $entity;
     }
 
-    public function delete(FacebookSocialAccount $entity): void
+    public function delete(SocialAccount $entity): void
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
@@ -71,8 +72,6 @@ class FacebookSocialAccountRepository extends ServiceEntityRepository implements
         $this->update($account, $updatePayload);
         return $account;
     }
-
-
 
     private function findByCriteria(array $criteria): ?FacebookSocialAccount
     {

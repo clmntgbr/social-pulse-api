@@ -17,21 +17,20 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 readonly class FacebookApi implements InterfaceApi
 {
     public function __construct(
-        private string $facebookClientId,
-        private string $facebookClientSecret,
-        private string $facebookCallbackUrl,
-        private string $facebookApiUrl,
+        private string              $facebookClientId,
+        private string              $facebookClientSecret,
+        private string              $facebookCallbackUrl,
+        private string              $facebookApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
-        private ValidatorInterface $validator,
-        private ValidatorError $validatorError
+        private ValidatorInterface  $validator,
+        private ValidatorError      $validatorError
     ) {}
 
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
     public function getAccessToken(string $code): FacebookAccessToken
@@ -54,7 +53,6 @@ readonly class FacebookApi implements InterfaceApi
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
     public function getLongAccessToken(string $token): FacebookAccessToken
@@ -77,9 +75,9 @@ readonly class FacebookApi implements InterfaceApi
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
+     * @throws ServerExceptionInterface|DecodingExceptionInterface
      */
-    public function getAccounts(FacebookAccessToken $token)
+    public function getAccounts(FacebookAccessToken $token): FacebookAccountResponse
     {
         $url = sprintf('%s/me?fields=accounts.limit(10){name,access_token,bio,emails,id,link,page_token,picture{url},website},email&access_token=%s', $this->facebookApiUrl, $token->access_token);
 

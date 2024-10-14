@@ -8,11 +8,9 @@ use App\Repository\FacebookSocialAccountRepository;
 use App\Repository\UserRepository;
 use App\Service\FacebookApi;
 use App\Service\FacebookLoginUrl;
-use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -28,7 +26,7 @@ class GetFacebookCallbackAction extends AbstractController
         private readonly FacebookSocialAccountRepository $facebookSocialAccountRepository,
         private readonly FacebookApi $facebookApi,
         private readonly FacebookLoginUrl $facebookLoginUrl,
-        private EntityManagerInterface $em
+
     ) {}
 
     /**
@@ -38,25 +36,18 @@ class GetFacebookCallbackAction extends AbstractController
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function __invoke(FacebookCallback $facebookCallback): JsonResponse
+    public function __invoke(FacebookCallback $facebookCallback): RedirectResponse
     {
         $user = $this->userRepository->findOneBy(['state' => $facebookCallback->state]);
 
         if (!$user) {
-            return new JsonResponse(
-                data: 'api.basic.error',
-                status: Response::HTTP_NOT_FOUND,
-                json: true
-            );
+            return new RedirectResponse('https://google.com?status=pasOk');
         }
 
         $socialAccount = $this->facebookSocialAccountRepository->findOneBy(['socialAccountId' => $facebookCallback->state]);
 
         if (!$socialAccount) {
-            return new JsonResponse(
-                data: 'api.basic.error',
-                status: Response::HTTP_NOT_FOUND,
-            );
+            return new RedirectResponse('https://google.com?status=pasOk');
         }
 
         $this->facebookSocialAccountRepository->delete($socialAccount);
@@ -86,10 +77,6 @@ class GetFacebookCallbackAction extends AbstractController
             );
         }
 
-        return new JsonResponse(
-            data: true,
-            status: Response::HTTP_OK,
-        );
-
+        return new RedirectResponse('https://google.com?status=ok');
     }
 }
