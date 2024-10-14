@@ -1,0 +1,19 @@
+meta {
+  name: Get Facebook Login Url
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url_api}}api/me
+  body: none
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}

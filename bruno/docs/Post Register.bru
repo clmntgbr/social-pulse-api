@@ -1,0 +1,22 @@
+meta {
+  name: Post Register
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url_api}}api/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+      "email": "clement@gmail.com",
+      "password": "clement"
+  }
+}

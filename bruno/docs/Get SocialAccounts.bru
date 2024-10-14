@@ -1,0 +1,23 @@
+meta {
+  name: Get SocialAccounts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url_api}}api/social_accounts?type=facebook
+  body: none
+  auth: bearer
+}
+
+params:query {
+  type: facebook
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}

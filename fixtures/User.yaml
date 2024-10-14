@@ -1,0 +1,9 @@
+App\Entity\User:
+  user_1:
+    email: "clement@gmail.com"
+    plain_password: "clement"
+    roles: ["ROLE_ADMIN"]
+
+  user_2:
+    email: "random@gmail.com"
+    plain_password: "random"

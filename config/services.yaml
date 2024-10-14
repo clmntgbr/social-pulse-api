@@ -1,0 +1,33 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $linkedinClientId: '%env(LINKEDIN_CLIENT_ID)%'
+            string $linkedinClientSecret: '%env(resolve:LINKEDIN_CLIENT_SECRET)%'
+            string $linkedinCallbackUrl: '%env(resolve:LINKEDIN_CALLBACK_URL)%'
+            string $linkedinApiUrl: '%env(resolve:LINKEDIN_API_URL)%'
+            string $linkedinLoginUrl: '%env(resolve:LINKEDIN_LOGIN_URL)%'
+#
+            string $twitterCLientId: '%env(resolve:TWITTER_CLIENT_ID)%'
+            string $twitterClientSecret: '%env(resolve:TWITTER_CLIENT_SECRET)%'
+            string $twitterCallbackUrl: '%env(resolve:TWITTER_CALLBACK_URL)%'
+            string $twitterApiUrl: '%env(resolve:TWITTER_API_URL)%'
+            string $twitterLoginUrl: '%env(resolve:TWITTER_LOGIN_URL)%'
+            string $twitterApiKey: '%env(resolve:TWITTER_API_KEY)%'
+            string $twitterApiSecret: '%env(resolve:TWITTER_API_SECRET)%'
+
+            string $facebookClientId: '%env(FACEBOOK_CLIENT_ID)%'
+            string $facebookClientSecret: '%env(FACEBOOK_CLIENT_SECRET)%'
+            string $facebookCallbackUrl: '%env(FACEBOOK_CALLBACK_URL)%'
+            string $facebookApiUrl: '%env(FACEBOOK_API_URL)%'
+            string $facebookLoginUrl: '%env(FACEBOOK_LOGIN_URL)%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
