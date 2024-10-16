@@ -13,9 +13,7 @@ readonly class FacebookLoginUrl implements InterfaceLoginUrl
         private FacebookSocialAccountRepository $facebookSocialAccountRepository,
         private UserRepository $userRepository,
         private string $facebookClientId,
-        private string $facebookClientSecret,
         private string $facebookCallbackUrl,
-        private string $facebookApiUrl,
         private string $facebookLoginUrl
     ) {}
 
@@ -27,7 +25,7 @@ readonly class FacebookLoginUrl implements InterfaceLoginUrl
         ]);
 
         $this->facebookSocialAccountRepository->create([
-            'refreshUuid' => Uuid::uuid4()->toString(),
+            'workspace' => $user->getActiveWorkspace(),
             'token' => Uuid::uuid4()->toString(),
             'socialAccountId' => $user->getState(),
             'scopes' => $this->getScopes(),

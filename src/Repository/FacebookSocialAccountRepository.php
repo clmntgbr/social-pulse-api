@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\FacebookSocialAccount;
 use App\Entity\SocialAccount;
-use App\Enum\SocialAccountStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,27 +17,10 @@ class FacebookSocialAccountRepository extends ServiceEntityRepository implements
         parent::__construct($registry, FacebookSocialAccount::class);
     }
 
-    public function create(array $data): FacebookSocialAccount
+    public function create(array $data): SocialAccount
     {
         $account = new FacebookSocialAccount();
-        $account
-            ->setRefreshUuid($data['refreshUuid'] ?? null)
-            ->setSocialAccountId($data['socialAccountId'] ?? null)
-            ->setIsVerified($data['isVerified'] ?? false)
-            ->setUsername($data['username'] ?? null)
-            ->setName($data['name'] ?? null)
-            ->setStatus($data['status'] ?? SocialAccountStatus::TEMPORARY->toString())
-            ->setToken($data['token'] ?? null)
-            ->setBearerToken($data['bearerToken'] ?? null)
-            ->setRefreshToken($data['refreshToken'] ?? null)
-            ->setTokenSecret($data['tokenSecret'] ?? null)
-            ->setScopes($data['scopes'] ?? [])
-            ->setEmail($data['email'] ?? null);
-
-        $this->getEntityManager()->persist($account);
-        $this->getEntityManager()->flush();
-
-        return $account;
+        return $this->update($account, $data);
     }
 
     public function update(SocialAccount $entity, array $data): SocialAccount

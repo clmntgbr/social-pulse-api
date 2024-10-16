@@ -1,0 +1,19 @@
+meta {
+  name: Get Twitter Login Url
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url_api}}api/twitter/login_url
+  body: none
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}

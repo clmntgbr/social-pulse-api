@@ -6,5 +6,5 @@ use App\Dto\AbstractAccessToken;
 
 interface InterfaceApi
 {
-    public function getAccessToken(string $code): AbstractAccessToken;
+    public function getAccessToken(string ...$params): AbstractAccessToken;
 }

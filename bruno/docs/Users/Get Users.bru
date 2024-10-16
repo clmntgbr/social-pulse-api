@@ -1,17 +1,13 @@
 meta {
-  name: Get SocialAccounts
+  name: Get Users
   type: http
   seq: 1
 }
 
 get {
-  url: {{url_api}}api/social_accounts?type=facebook
+  url: {{url_api}}api/users/53
   body: none
   auth: bearer
-}
-
-params:query {
-  type: facebook
 }
 
 headers {

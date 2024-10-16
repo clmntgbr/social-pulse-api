@@ -4,13 +4,13 @@ namespace App\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class FacebookAccessToken extends AbstractAccessToken
+class LinkedinCallback
 {
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $access_token;
+    public ?string $code;
 
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $token_type;
+    public ?string $state;
 }

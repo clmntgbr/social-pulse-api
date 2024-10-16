@@ -1,0 +1,19 @@
+meta {
+  name: Get Workspaces
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url_api}}api/workspaces
+  body: none
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}

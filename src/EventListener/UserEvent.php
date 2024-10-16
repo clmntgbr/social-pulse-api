@@ -3,6 +3,8 @@
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Repository\WorkspaceRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -12,10 +14,12 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsDoctrineListener(event: Events::prePersist, priority: 0, connection: 'default')]
 #[AsDoctrineListener(event: Events::preUpdate, priority: 0, connection: 'default')]
-readonly class UserPassword
+readonly class UserEvent
 {
     public function __construct(
-        private UserPasswordHasherInterface $userPasswordHasher
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private WorkspaceRepository $workspaceRepository,
+        private UserRepository $userRepository
     ) {}
 
     #[NoReturn]
@@ -27,6 +31,7 @@ readonly class UserPassword
         }
 
         $this->hashPassword($entity);
+        $this->createWorkspace($entity);
     }
 
     #[NoReturn]
@@ -40,7 +45,6 @@ readonly class UserPassword
         $this->hashPassword($entity);
     }
 
-    #[NoReturn]
     function hashPassword(User $user): void
     {
         if ($user->getPlainPassword()) {
@@ -48,5 +52,18 @@ readonly class UserPassword
         }
 
         $user->eraseCredentials();
+    }
+
+    function createWorkspace(User $user): User
+    {
+        $workspace = $this->workspaceRepository->create([
+            'label' => 'My Workspace',
+            'logoUrl' => 'https://avatar.vercel.sh/personal.png',
+        ]);
+
+        $user->setActiveWorkspace($workspace);
+        $user->addWorkspace($workspace);
+
+        return $user;
     }
 }

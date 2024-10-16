@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\LinkedinSocialAccount;
-use App\Enum\SocialAccountStatus;
+use App\Entity\SocialAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,26 +17,53 @@ class LinkedinSocialAccountRepository extends ServiceEntityRepository implements
         parent::__construct($registry, LinkedinSocialAccount::class);
     }
 
-    public function create(array $data): LinkedinSocialAccount
+    public function create(array $data): SocialAccount
     {
         $account = new LinkedinSocialAccount();
-        $account
-            ->setRefreshUuid($data['refreshUuid'] ?? null)
-            ->setSocialAccountId($data['socialAccountId'] ?? null)
-            ->setIsVerified($data['isVerified'] ?? false)
-            ->setUsername($data['username'] ?? null)
-            ->setName($data['name'] ?? null)
-            ->setStatus($data['status'] ?? SocialAccountStatus::TEMPORARY)
-            ->setToken($data['token'] ?? null)
-            ->setBearerToken($data['bearerToken'] ?? null)
-            ->setRefreshToken($data['refreshToken'] ?? null)
-            ->setTokenSecret($data['tokenSecret'] ?? null)
-            ->setScopes($data['scopes'] ?? [])
-            ->setEmail($data['email'] ?? null);
+        return $this->update($account, $data);
+    }
 
-        $this->getEntityManager()->persist($account);
+    public function update(SocialAccount $entity, array $data): SocialAccount
+    {
+        foreach ($data as $key => $value) {
+            $method = 'set' . ucfirst($key);
+            if (method_exists($entity, $method)) {
+                $entity->$method($value);
+            }
+        }
+
+        $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
 
+        return $entity;
+    }
+
+    public function delete(SocialAccount $entity): void
+    {
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
+    }
+
+    public function updateOrCreate(array $searchPayload, array $updatePayload): LinkedinSocialAccount
+    {
+        $account = $this->findByCriteria($searchPayload);
+        if (!$account) {
+            $account = new LinkedinSocialAccount();
+        }
+
+        $this->update($account, $updatePayload);
         return $account;
+    }
+
+    private function findByCriteria(array $criteria): ?LinkedinSocialAccount
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+        foreach ($criteria as $key => $value) {
+            $queryBuilder->andWhere("p.$key = :$key")
+                ->setParameter($key, $value);
+        }
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }

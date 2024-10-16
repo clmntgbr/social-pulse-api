@@ -10,6 +10,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\ApiResource\Controller\GetFacebookCallbackAction;
 use App\ApiResource\Controller\GetFacebookLoginUrlAction;
+use App\ApiResource\Controller\GetLinkedinCallbackAction;
+use App\ApiResource\Controller\GetLinkedinLoginUrlAction;
+use App\ApiResource\Controller\GetTwitterCallbackAction;
+use App\ApiResource\Controller\GetTwitterLoginUrlAction;
 use App\Entity\Traits\UuidTrait;
 use App\Enum\SocialAccountStatus;
 use App\Repository\SocialAccountRepository;
@@ -17,6 +21,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SocialAccountRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
@@ -28,6 +33,34 @@ use Ramsey\Uuid\Uuid;
 ])]
 #[ApiResource(
     operations: [
+        new Get(
+            uriTemplate: '/linkedin/login_url',
+            controller: GetLinkedinLoginUrlAction::class,
+            paginationEnabled: false,
+            read: false,
+            name: 'linkedin_login_url',
+        ),
+        new Get(
+            uriTemplate: '/linkedin/callback',
+            controller: GetLinkedinCallbackAction::class,
+            paginationEnabled: false,
+            read: false,
+            name: 'linkedin_callback',
+        ),
+        new Get(
+            uriTemplate: '/twitter/login_url',
+            controller: GetTwitterLoginUrlAction::class,
+            paginationEnabled: false,
+            read: false,
+            name: 'twitter_login_url',
+        ),
+        new Get(
+            uriTemplate: '/twitter/callback',
+            controller: GetTwitterCallbackAction::class,
+            paginationEnabled: false,
+            read: false,
+            name: 'twitter_callback',
+        ),
         new Get(
             uriTemplate: '/facebook/login_url',
             controller: GetFacebookLoginUrlAction::class,
@@ -46,7 +79,7 @@ use Ramsey\Uuid\Uuid;
         new Get(),
         new GetCollection(
             order: ['updatedAt' => 'ASC'],
-            normalizationContext: ['skip_null_values' => false]
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['get_social_accounts']],
         )
     ]
 )]
@@ -56,25 +89,39 @@ class SocialAccount
     use UuidTrait;
     use TimestampableEntity;
 
-    #[ORM\Column(type: Types::GUID, length: 36)]
-    private ?string $refreshUuid = null;
-
     #[ORM\Column(type: Types::STRING, unique: false)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private ?string $socialAccountId = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private ?bool $isVerified;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    private ?string $avatarUrl = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    private ?string $socialAccountTypeAvatarUrl = null;
+
     #[ORM\Column(type: Types::STRING)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private string $status;
 
     #[ORM\Column(type: Types::STRING)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    private string $socialAccountType;
+
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $token = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -90,7 +137,20 @@ class SocialAccount
     private array $scopes;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
     private ?string $email = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    private ?string $givenName = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    private ?string $familyName = null;
+
+    #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'socialAccounts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Workspace $workspace = null;
 
     public function __construct()
     {
@@ -114,17 +174,6 @@ class SocialAccount
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getRefreshUuid(): ?string
-    {
-        return $this->refreshUuid;
-    }
-
-    public function setRefreshUuid(?string $refreshUuid): static
-    {
-        $this->refreshUuid = $refreshUuid;
-        return $this;
     }
 
     public function getSocialAccountId(): ?string
@@ -256,6 +305,77 @@ class SocialAccount
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->avatarUrl;
+    }
+
+    public function setAvatarUrl(?string $avatarUrl): static
+    {
+        $this->avatarUrl = $avatarUrl;
+
+        return $this;
+    }
+    public function getGivenName(): ?string
+    {
+        return $this->givenName;
+    }
+
+    public function setGivenName(?string $givenName): static
+    {
+        $this->givenName = $givenName;
+
+        return $this;
+    }
+
+    public function getFamilyName(): ?string
+    {
+        return $this->familyName;
+    }
+
+    public function setFamilyName(?string $familyName): static
+    {
+        $this->familyName = $familyName;
+
+        return $this;
+    }
+
+    public function getSocialAccountType(): ?string
+    {
+        return $this->socialAccountType;
+    }
+
+    public function setSocialAccountType(string $socialAccountType): static
+    {
+        $this->socialAccountType = $socialAccountType;
+
+        return $this;
+    }
+
+    public function getSocialAccountTypeAvatarUrl(): ?string
+    {
+        return $this->socialAccountTypeAvatarUrl;
+    }
+
+    public function setSocialAccountTypeAvatarUrl(string $socialAccountTypeAvatarUrl): static
+    {
+        $this->socialAccountTypeAvatarUrl = $socialAccountTypeAvatarUrl;
+
+        return $this;
+    }
+
+    public function getWorkspace(): ?Workspace
+    {
+        return $this->workspace;
+    }
+
+    public function setWorkspace(?Workspace $workspace): static
+    {
+        $this->workspace = $workspace;
 
         return $this;
     }

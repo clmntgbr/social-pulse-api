@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Api\Controller\GetUser;
 use App\ApiResource\Controller\GetUserAction;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -48,26 +50,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: Types::GUID, length: 36, unique: true)]
-    #[Groups(['get_user'])]
+    #[Groups(['get_user', 'get_workspaces'])]
     private ?string $uuid;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['get_user'])]
+    #[Groups(['get_user', 'get_workspaces'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_user'])]
+    #[Groups(['get_user', 'get_workspaces'])]
     private ?string $givenName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_user'])]
+    #[Groups(['get_user', 'get_workspaces'])]
     private ?string $familyName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_user'])]
+    #[Groups(['get_user', 'get_workspaces'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -82,9 +84,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\ManyToOne(targetEntity: Workspace::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['get_user'])]
+    private ?Workspace $activeWorkspace = null;
+
+    #[ORM\ManyToMany(targetEntity: Workspace::class, mappedBy: 'users', cascade: ['persist', 'remove'])]
+    #[Groups(['get_user'])]
+    private Collection $workspaces;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
+        $this->workspaces = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -240,6 +252,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setState(?string $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Workspace>
+     */
+    public function getWorkspaces(): Collection
+    {
+        return $this->workspaces;
+    }
+
+    public function addWorkspace(Workspace $workspace): static
+    {
+        if (!$this->workspaces->contains($workspace)) {
+            $this->workspaces->add($workspace);
+            $workspace->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkspace(Workspace $workspace): static
+    {
+        if ($this->workspaces->removeElement($workspace)) {
+            $workspace->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getActiveWorkspace(): ?Workspace
+    {
+        return $this->activeWorkspace;
+    }
+
+    public function setActiveWorkspace(?Workspace $activeWorkspace): static
+    {
+        $this->activeWorkspace = $activeWorkspace;
 
         return $this;
     }

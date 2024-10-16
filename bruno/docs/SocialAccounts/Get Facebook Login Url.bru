@@ -1,13 +1,17 @@
 meta {
   name: Get Facebook Login Url
   type: http
-  seq: 6
+  seq: 1
 }
 
 get {
-  url: {{url_api}}api/me
+  url: {{url_api}}api/facebook/login_url?callback=/aaaa
   body: none
   auth: bearer
+}
+
+params:query {
+  callback: /aaaa
 }
 
 headers {

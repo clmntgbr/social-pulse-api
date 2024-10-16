@@ -4,25 +4,21 @@ namespace App\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LinkedinAccessToken extends AbstractAccessToken
+class TwitterAccessToken extends AbstractAccessToken
 {
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $access_token;
+    public ?string $oauth_token;
 
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $token_type;
-
-    #[Assert\NotBlank()]
-    #[Assert\Type('int')]
-    public ?int $expires_in;
+    public ?string $oauth_token_secret;
 
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $scope;
+    public ?string $user_id;
 
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $id_token;
+    public ?string $screen_name;
 }

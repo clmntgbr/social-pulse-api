@@ -2,7 +2,7 @@
 
 namespace App\Resolver;
 
-use App\Dto\FacebookCallback;
+use App\Dto\TwitterCallback;
 use App\Service\ValidatorError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-readonly class FacebookCallbackResolver implements ValueResolverInterface
+readonly class TwitterCallbackResolver implements ValueResolverInterface
 {
     public function __construct(
         private ValidatorInterface  $validator,
@@ -19,19 +19,20 @@ readonly class FacebookCallbackResolver implements ValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== FacebookCallback::class) {
+        if ($argument->getType() !== TwitterCallback::class) {
             return;
         }
 
-        $facebookCallback = new FacebookCallback();
-        $facebookCallback->code = $request->query->get('code');
-        $facebookCallback->state = $request->query->get('state');
+        $twitterCallback = new TwitterCallback();
+        $twitterCallback->oauth_token = $request->query->get('oauth_token');
+        $twitterCallback->oauth_verifier = $request->query->get('oauth_verifier');
+        $twitterCallback->state = $request->query->get('state');
 
-        $errors = $this->validator->validate($facebookCallback);
+        $errors = $this->validator->validate($twitterCallback);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $facebookCallback;
+        yield $twitterCallback;
     }
 }

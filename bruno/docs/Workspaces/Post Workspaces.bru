@@ -1,0 +1,26 @@
+meta {
+  name: Post Workspaces
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url_api}}api/workspaces
+  body: json
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "label": "string",
+    "logoUrl": "string"
+  }
+}

@@ -33,9 +33,9 @@ readonly class FacebookApi implements InterfaceApi
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getAccessToken(string $code): FacebookAccessToken
+    public function getAccessToken(string ...$code): FacebookAccessToken
     {
-        $url = sprintf('%s/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s', $this->facebookApiUrl, $this->facebookClientId, $this->facebookCallbackUrl, $this->facebookClientSecret, $code);
+        $url = sprintf('%s/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s', $this->facebookApiUrl, $this->facebookClientId, $this->facebookCallbackUrl, $this->facebookClientSecret, $code[0]);
 
         $response = $this->client->request('GET', $url);
 

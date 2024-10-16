@@ -8,7 +8,6 @@ use App\Repository\FacebookSocialAccountRepository;
 use App\Repository\UserRepository;
 use App\Service\FacebookApi;
 use App\Service\FacebookLoginUrl;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -56,16 +55,15 @@ class GetFacebookCallbackAction extends AbstractController
 
         foreach ($facebookAccounts->accounts as $account) {
             $longAccessToken = $this->facebookApi->getLongAccessToken($account->access_token);
-            $this->facebookSocialAccountRepository->updateOrCreate(
-                [
+            $this->facebookSocialAccountRepository->updateOrCreate([
                     'socialAccountId' => $account->id,
-                ],
-                [
-                    'refreshUuid' => Uuid::uuid4()->toString(),
+                    'workspace' => $user->getActiveWorkspace(),
+                ], [
                     'token' => $longAccessToken->access_token,
                     'avatarUrl' => $account->picture->data->url ?? null,
                     'socialAccountId' => $account->id,
                     'isVerified' => false,
+                    'workspace' => $user->getActiveWorkspace(),
                     'username' => $account->name,
                     'name' => $account->name,
                     'status' => SocialAccountStatus::ACTIF->toString(),
