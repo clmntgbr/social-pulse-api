@@ -76,7 +76,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
             name: 'facebook_callback',
         ),
         new Delete(),
-        new Get(),
+        new Get(
+            order: ['updatedAt' => 'ASC'],
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['get_social_account']],
+        ),
         new GetCollection(
             order: ['updatedAt' => 'ASC'],
             normalizationContext: ['skip_null_values' => false, 'groups' => ['get_social_accounts']],
@@ -90,35 +93,35 @@ class SocialAccount
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, unique: false)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $socialAccountId = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?bool $isVerified;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $socialAccountTypeAvatarUrl = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private string $status;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private string $socialAccountType;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -137,15 +140,15 @@ class SocialAccount
     private array $scopes;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $givenName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private ?string $familyName = null;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'socialAccounts')]

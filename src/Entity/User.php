@@ -5,8 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Api\Controller\GetUser;
 use App\ApiResource\Controller\GetUserAction;
+use App\ApiResource\Controller\PostUserActiveWorkspaceAction;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,6 +32,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['skip_null_values' => false, 'groups' => ['get_user']],
             read: false,
             name: 'me',
+        ),
+        new Post(
+            uriTemplate: '/users/workspace',
+            controller: PostUserActiveWorkspaceAction::class,
+            paginationEnabled: false,
+            read: false,
+            name: 'post_active_workspace',
         ),
         new Get(
             normalizationContext: ['groups' => ['get_user']]

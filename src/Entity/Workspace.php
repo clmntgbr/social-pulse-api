@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\Controller\GetUserAction;
+use App\ApiResource\Controller\PostUserActiveWorkspaceAction;
 use App\ApiResource\Controller\GetWorkspaceAction;
 use App\Entity\Traits\UuidTrait;
 use App\Repository\WorkspaceRepository;
@@ -29,8 +31,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/workspace',
             controller: GetWorkspaceAction::class,
             paginationEnabled: false,
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['get_workspaces']],
             read: false,
-            name: 'active_workspace',
+            name: 'get_active_workspace',
         )
     ]
 )]
