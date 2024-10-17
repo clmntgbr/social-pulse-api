@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-amqp": "*",
+        "ext-openssl": "*",
         "abraham/twitteroauth": "*",
         "api-platform/doctrine-orm": "^4.0",
         "api-platform/symfony": "^4.0",

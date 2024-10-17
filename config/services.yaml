@@ -23,6 +23,8 @@ services:
             string $facebookApiUrl: '%env(FACEBOOK_API_URL)%'
             string $facebookLoginUrl: '%env(FACEBOOK_LOGIN_URL)%'
 
+            string $encryptionKey: '%env(ENCRYPTION_KEY)%'
+
     App\:
         resource: '../src/'
         exclude:

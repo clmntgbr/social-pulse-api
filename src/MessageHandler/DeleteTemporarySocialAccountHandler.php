@@ -10,10 +10,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class DeleteTemporarySocialAccountHandler
+final readonly class DeleteTemporarySocialAccountHandler
 {
     public function __construct(
-        private LoggerInterface $logger,
+        private LoggerInterface         $logger,
         private SocialAccountRepository $socialAccountRepository
     ) {}
 

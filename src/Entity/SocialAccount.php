@@ -86,7 +86,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         )
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['type' => 'ipartial'])]
+#[ApiFilter(SearchFilter::class, properties: ['socialAccountType' => 'exact'])]
 class SocialAccount
 {
     use UuidTrait;
@@ -124,7 +124,7 @@ class SocialAccount
     #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
     private string $socialAccountType;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, length: 255)]
     private ?string $token = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]

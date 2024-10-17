@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{url_api}}api/social_accounts
+  url: {{url_api}}api/social_accounts?socialAccountType=facebook_social_account
   body: none
   auth: bearer
+}
+
+params:query {
+  socialAccountType: facebook_social_account
 }
 
 headers {
