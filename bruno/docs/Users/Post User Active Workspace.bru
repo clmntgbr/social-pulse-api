@@ -1,0 +1,25 @@
+meta {
+  name: Post User Active Workspace
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url_api}}api/users/workspace
+  body: json
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "workspaceUuid": "64f973b7-bc8a-437a-849f-7802443f1ee1"
+  }
+}

@@ -34,6 +34,7 @@ RUN set -eux; \
 	    pdo_mysql \
 		opcache \
 		zip \
+        amqp \
 	;
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser

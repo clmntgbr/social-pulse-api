@@ -1,0 +1,36 @@
+framework:
+    messenger:
+        transports:
+            high:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        messages_high:
+                            binding_keys: [ high ]
+            medium:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        messages_medium:
+                            binding_keys: [ medium ]
+            low:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        messages_low:
+                            binding_keys: [ low ]
+
+        routing:
+            App\Message\DeleteTemporarySocialAccount: low

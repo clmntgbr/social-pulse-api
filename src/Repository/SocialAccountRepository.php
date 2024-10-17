@@ -15,4 +15,10 @@ class SocialAccountRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, SocialAccount::class);
     }
+
+    public function delete(SocialAccount $entity): void
+    {
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
+    }
 }

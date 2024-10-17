@@ -49,7 +49,27 @@ services:
       - database_data:/var/lib/postgresql/data:rw
     ports:
       - "9001:5432"
+
+  rabbitmq:
+    restart: unless-stopped
+    container_name: social-pulse-api-rabbitmq
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+    ports:
+      - "9002:5672"
+      - "9003:15672"
+
 volumes:
   caddy_data:
   caddy_config:
   database_data:
+  rabbitmq_volume:

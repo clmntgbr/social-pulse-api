@@ -1,0 +1,19 @@
+meta {
+  name: Get SocialAccount
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{url_api}}api/social_accounts/0b801e34-4b58-48f6-81bc-e2073d1c2c6d
+  body: none
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}
