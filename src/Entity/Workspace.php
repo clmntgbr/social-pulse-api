@@ -6,8 +6,6 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\ApiResource\Controller\GetUserAction;
-use App\ApiResource\Controller\PostUserActiveWorkspaceAction;
 use App\ApiResource\Controller\GetWorkspaceAction;
 use App\Entity\Traits\UuidTrait;
 use App\Repository\WorkspaceRepository;

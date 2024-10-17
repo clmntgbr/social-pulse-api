@@ -3,7 +3,6 @@
 namespace App\Resolver;
 
 use App\Dto\UserActiveWorkspace;
-use App\Dto\UserRegister;
 use App\Service\ValidatorError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
