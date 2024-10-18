@@ -3,7 +3,6 @@
 namespace App\EventListener;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Repository\WorkspaceRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
@@ -18,8 +17,7 @@ readonly class UserEvent
 {
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
-        private WorkspaceRepository $workspaceRepository,
-        private UserRepository $userRepository
+        private WorkspaceRepository $workspaceRepository
     ) {}
 
     #[NoReturn]
@@ -45,7 +43,7 @@ readonly class UserEvent
         $this->hashPassword($entity);
     }
 
-    function hashPassword(User $user): void
+    private function hashPassword(User $user): void
     {
         if ($user->getPlainPassword()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
@@ -54,7 +52,7 @@ readonly class UserEvent
         $user->eraseCredentials();
     }
 
-    function createWorkspace(User $user): User
+    private function createWorkspace(User $user): void
     {
         $workspace = $this->workspaceRepository->create([
             'label' => 'My Workspace',
@@ -63,7 +61,5 @@ readonly class UserEvent
 
         $user->setActiveWorkspace($workspace);
         $user->addWorkspace($workspace);
-
-        return $user;
     }
 }

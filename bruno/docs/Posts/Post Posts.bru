@@ -1,0 +1,48 @@
+meta {
+  name: Post Posts
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url_api}}api/posts
+  body: json
+  auth: bearer
+}
+
+headers {
+  accept: application/ld+json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  [
+    {
+      "groupUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5",
+      "groupType": "master",
+      "header": "string",
+      "body": "null",
+      "pictures": [],
+      "socialAccountUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5"
+    }, 
+    {
+      "groupUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5",
+      "groupType": "slave",
+      "header": "string",
+      "body": "string",
+      "pictures": [],
+      "socialAccountUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5"
+    }, 
+    {
+      "groupUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5",
+      "groupType": "slave",
+      "header": "string",
+      "body": "string",
+      "pictures": [],
+      "socialAccountUuid": "36ad8247-33b9-4fa9-8ff3-816c2585c7d5"
+    }
+  ]
+}

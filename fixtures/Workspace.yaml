@@ -1,0 +1,4 @@
+App\Entity\Workspace:
+  workspace_1:
+    label: "Second Workspace"
+    logoUrl: "https://avatar.vercel.sh/personal.png"

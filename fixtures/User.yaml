@@ -3,6 +3,8 @@ App\Entity\User:
     email: "clement@gmail.com"
     plain_password: "clement"
     roles: ["ROLE_ADMIN"]
+#    workspaces:
+#      - '@workspace_1'
 
   user_2:
     email: "random@gmail.com"
