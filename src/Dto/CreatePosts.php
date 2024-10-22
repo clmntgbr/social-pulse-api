@@ -9,32 +9,32 @@ class CreatePosts
 {
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
-    public ?string $groupUuid;
-
-    #[Assert\NotBlank()]
-    #[Assert\Type('string')]
     public ?string $groupType;
 
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
     public ?string $socialAccountUuid;
 
+    #[Assert\NotBlank()]
+    #[Assert\Type('string')]
+    public ?string $postAt;
+
     public ?string $body;
     public ?string $header;
     public array $pictures = [];
 
     public function __construct(
-        ?string $groupUuid,
         ?string $groupType,
         ?string $header,
         ?string $body,
         ?string $socialAccountUuid,
+        ?string $postAt,
         array $pictures
     ) {
-        $this->groupUuid = $groupUuid;
         $this->groupType = $groupType;
         $this->header = $header;
         $this->body = $body;
+        $this->postAt = $postAt;
         $this->pictures = $pictures;
         $this->socialAccountUuid = $socialAccountUuid;
     }

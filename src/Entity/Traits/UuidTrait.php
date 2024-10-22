@@ -17,7 +17,7 @@ trait UuidTrait
 
     #[ORM\Column(type: Types::GUID, length: 36, unique: true)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['get_user', 'get_workspaces', 'get_social_accounts', 'get_social_account'])]
+    #[Groups(['get_user', 'get_workspaces', 'get_social_accounts', 'get_social_account', 'create_posts', 'get_posts'])]
     private ?string $uuid = null;
 
     public function getId(): ?int

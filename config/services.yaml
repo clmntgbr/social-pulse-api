@@ -24,6 +24,7 @@ services:
             string $facebookLoginUrl: '%env(FACEBOOK_LOGIN_URL)%'
 
             string $encryptionKey: '%env(ENCRYPTION_KEY)%'
+            string $frontUrl: '%env(FRONT_URL)%'
 
     App\:
         resource: '../src/'

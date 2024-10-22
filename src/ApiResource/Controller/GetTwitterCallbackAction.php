@@ -24,7 +24,8 @@ class GetTwitterCallbackAction extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly TwitterSocialAccountRepository $twitterSocialAccountRepository,
         private readonly TwitterApi $twitterApi,
-        private readonly TwitterLoginUrl $twitterLoginUrl
+        private readonly TwitterLoginUrl $twitterLoginUrl,
+        private readonly string $frontUrl
 
     ) {}
 
@@ -40,13 +41,13 @@ class GetTwitterCallbackAction extends AbstractController
         $user = $this->userRepository->findOneBy(['state' => $twitterCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse('https://google.com?status=user_not_found');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $socialAccount = $this->twitterSocialAccountRepository->findOneBy(['socialAccountId' => $twitterCallback->state]);
 
         if (!$socialAccount) {
-            return new RedirectResponse('https://google.com?status=social_account_not_found');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $this->twitterSocialAccountRepository->delete($socialAccount);
@@ -72,6 +73,6 @@ class GetTwitterCallbackAction extends AbstractController
             ]
         );
 
-        return new RedirectResponse('https://google.com?status=ok');
+        return new RedirectResponse(sprintf('%s?status=ok', $this->frontUrl));
     }
 }

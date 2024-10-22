@@ -25,6 +25,7 @@ class GetFacebookCallbackAction extends AbstractController
         private readonly FacebookSocialAccountRepository $facebookSocialAccountRepository,
         private readonly FacebookApi $facebookApi,
         private readonly FacebookLoginUrl $facebookLoginUrl,
+        private readonly string $frontUrl
 
     ) {}
 
@@ -40,13 +41,13 @@ class GetFacebookCallbackAction extends AbstractController
         $user = $this->userRepository->findOneBy(['state' => $facebookCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse('https://google.com?status=pasOk');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $socialAccount = $this->facebookSocialAccountRepository->findOneBy(['socialAccountId' => $facebookCallback->state]);
 
         if (!$socialAccount) {
-            return new RedirectResponse('https://google.com?status=pasOk');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $this->facebookSocialAccountRepository->delete($socialAccount);
@@ -75,6 +76,6 @@ class GetFacebookCallbackAction extends AbstractController
             );
         }
 
-        return new RedirectResponse('https://google.com?status=ok');
+        return new RedirectResponse(sprintf('%s?status=ok', $this->frontUrl));
     }
 }

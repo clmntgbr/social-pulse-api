@@ -25,7 +25,7 @@ class GetLinkedinCallbackAction extends AbstractController
         private readonly LinkedinSocialAccountRepository $linkedinSocialAccountRepository,
         private readonly LinkedinApi $linkedinApi,
         private readonly LinkedinLoginUrl $linkedinLoginUrl,
-
+        private readonly string $frontUrl
     ) {}
 
     /**
@@ -40,13 +40,13 @@ class GetLinkedinCallbackAction extends AbstractController
         $user = $this->userRepository->findOneBy(['state' => $linkedinCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse('https://google.com?status=user_not_found');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $socialAccount = $this->linkedinSocialAccountRepository->findOneBy(['socialAccountId' => $linkedinCallback->state]);
 
         if (!$socialAccount) {
-            return new RedirectResponse('https://google.com?status=social_account_not_found');
+            return new RedirectResponse(sprintf('%s?status=pasOk', $this->frontUrl));
         }
 
         $this->linkedinSocialAccountRepository->delete($socialAccount);
@@ -72,6 +72,6 @@ class GetLinkedinCallbackAction extends AbstractController
             ]
         );
 
-        return new RedirectResponse('https://google.com?status=ok');
+        return new RedirectResponse(sprintf('%s?status=ok', $this->frontUrl));
     }
 }

@@ -93,27 +93,27 @@ class SocialAccount
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, unique: false)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'create_posts', 'get_posts'])]
     private ?string $socialAccountId = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?bool $isVerified;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'create_posts', 'get_posts'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'create_posts', 'get_posts'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?string $socialAccountTypeAvatarUrl = null;
 
     #[ORM\Column(type: Types::STRING)]
@@ -121,34 +121,34 @@ class SocialAccount
     private string $status;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'create_posts', 'get_posts'])]
     private string $socialAccountType;
 
-    #[ORM\Column(type: Types::TEXT, length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $token = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bearerToken = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $refreshToken = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $tokenSecret = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $scopes;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?string $givenName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces'])]
+    #[Groups(['get_social_accounts', 'get_social_account', 'get_workspaces', 'get_posts'])]
     private ?string $familyName = null;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'socialAccounts')]

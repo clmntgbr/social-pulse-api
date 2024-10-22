@@ -16,28 +16,36 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    //    /**
-    //     * @return Post[] Returns an array of Post objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function create(array $data): Post
+    {
+        $account = new Post();
+        return $this->update($account, $data);
+    }
 
-    //    public function findOneBySomeField($value): ?Post
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function update(Post $entity, array $data): Post
+    {
+        foreach ($data as $key => $value) {
+            $method = 'set' . ucfirst($key);
+            if (method_exists($entity, $method)) {
+                $entity->$method($value);
+            }
+        }
+
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+
+        return $entity;
+    }
+
+    public function findByGroupUuid(string $groupUuid)
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+        $queryBuilder
+            ->andWhere("p.groupUuid = :groupUuid")
+            ->setParameter('groupUuid', $groupUuid)
+            ->orderBy('p.id', 'ASC');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }
