@@ -1,0 +1,6 @@
+App\Entity\Organization:
+  organization_{1..20}:
+    label: <sentence(1)>
+    logoUrl: 'https://avatar.vercel.sh/personal.png'
+    admin: '@user_*'
+    users: ['@user_*', '@user_*', '@user_*', '@user_*', '@user_*']

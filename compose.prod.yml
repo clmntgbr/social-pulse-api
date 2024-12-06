@@ -1,0 +1,40 @@
+# Production environment override
+services:
+  php:
+    image: ${IMAGES_PREFIX:-}app-php
+    container_name: social-analyze-api-php
+    restart: unless-stopped
+    environment:
+      APP_SECRET: ${APP_SECRET}
+      SERVER_NAME: ${SERVER_NAME}, php:80
+      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?serverVersion=${POSTGRES_VERSION}&charset=${POSTGRES_CHARSET}
+      MERCURE_URL: ${CADDY_MERCURE_URL}
+      MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL}/.well-known/mercure}
+      MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET}
+      SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+      STABILITY: ${STABILITY}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      # HTTP
+      - target: 80
+        published: ${HTTP_PORT}
+        protocol: tcp
+      # HTTPS
+      - target: 443
+        published: ${HTTPS_PORT}
+        protocol: tcp
+      # HTTP/3
+      - target: 443
+        published: ${HTTP3_PORT}
+        protocol: udp
+    build:
+      context: .
+      target: frankenphp_prod
+
+volumes:
+  caddy_data:
+  caddy_config:
