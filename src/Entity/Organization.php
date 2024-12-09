@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\PostOrganizationsAction;
 use App\Entity\SocialNetwork\SocialNetwork;
 use App\Entity\Traits\UuidTrait;
 use App\Repository\OrganizationRepository;
@@ -25,6 +27,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/organizations',
             normalizationContext: ['skip_null_values' => false, 'groups' => ['organizations:get', 'default']],
         ),
+        new Post(
+            uriTemplate: '/organizations',
+            controller: PostOrganizationsAction::class,
+        ),
     ]
 )]
 class Organization
@@ -33,7 +39,7 @@ class Organization
 
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["organization:get", "organizations:get"])]
-    private ?string $label = null;
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["organization:get", "organizations:get"])]
@@ -59,14 +65,14 @@ class Organization
         $this->users = new ArrayCollection();
     }
 
-    public function getLabel(): ?string
+    public function getName(): ?string
     {
-        return $this->label;
+        return $this->name;
     }
 
-    public function setLabel(string $label): static
+    public function setName(string $name): static
     {
-        $this->label = $label;
+        $this->name = $name;
 
         return $this;
     }

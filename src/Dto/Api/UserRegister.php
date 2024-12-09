@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace App\Dto\Api;
 
 use App\Validator\Constraints\UniqueEmail;
 use Symfony\Component\Validator\Constraints as Assert;

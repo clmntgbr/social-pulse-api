@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use App\ApiResource\PatchUserActiveOrganizationAction;
 use App\Entity\Traits\UuidTrait;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,6 +26,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/me',
             normalizationContext: ['groups' => ['user:get']],
         ),
+        new Patch(
+            uriTemplate: '/users/active_organisation/{uuid}',
+            controller: PatchUserActiveOrganizationAction::class,
+        )
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -49,6 +55,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['user:get', "organizations:get"])]
     private ?string $avatarUrl = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $socialNetworksState = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $socialNetworksCallbackPath = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -266,8 +278,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isOneOfMine(string $organizationUuid): bool
+    {
+        return $this->organizations->exists(function ($key, $organization) use ($organizationUuid) {
+            return $organization->getUuid() === $organizationUuid;
+        });
+    }
+
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function getSocialNetworksState(): ?string
+    {
+        return $this->socialNetworksState;
+    }
+
+    public function setSocialNetworksState(?string $socialNetworksState): User
+    {
+        $this->socialNetworksState = $socialNetworksState;
+        return $this;
+    }
+
+    public function getSocialNetworksCallbackPath(): ?string
+    {
+        return $this->socialNetworksCallbackPath;
+    }
+
+    public function setSocialNetworksCallbackPath(?string $socialNetworksCallbackPath): User
+    {
+        $this->socialNetworksCallbackPath = $socialNetworksCallbackPath;
+        return $this;
     }
 }

@@ -3,7 +3,10 @@
 namespace App\Entity\SocialNetwork;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\ApiResource\GetSocialNetworksCallbackAction;
+use App\ApiResource\GetSocialNetworksConnectAction;
 use App\Entity\Organization;
 use App\Entity\Traits\UuidTrait;
 use App\Repository\SocialNetwork\SocialNetworkRepository;
@@ -16,6 +19,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(),
+        new Get(
+            uriTemplate: '/social_networks/{platform}/connect',
+            controller: GetSocialNetworksConnectAction::class,
+        ),
+        new Get(
+            uriTemplate: '/social_networks/{platform}/callback',
+            controller: GetSocialNetworksCallbackAction::class,
+        )
     ],
     order: ['createdAt' => 'DESC']
 )]
@@ -40,6 +51,14 @@ class SocialNetwork
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["organizations:get"])]
     private ?string $socialNetworkType;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["organizations:get"])]
+    private ?string $avatarUrl;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["organizations:get"])]
+    private ?string $username;
 
     #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'socialNetworks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -82,6 +101,30 @@ class SocialNetwork
     public function setSocialNetworkType(string $socialNetworkType): static
     {
         $this->socialNetworkType = $socialNetworkType;
+
+        return $this;
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->avatarUrl;
+    }
+
+    public function setAvatarUrl(string $avatarUrl): static
+    {
+        $this->avatarUrl = $avatarUrl;
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }

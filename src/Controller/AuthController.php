@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\UserRegister;
+use App\Dto\Api\UserRegister;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

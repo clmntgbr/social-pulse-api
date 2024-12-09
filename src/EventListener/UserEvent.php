@@ -67,7 +67,7 @@ readonly class UserEvent
     private function createOrganization(User $user): void
     {
         $workspace = $this->organizationRepository->create([
-            'label' => sprintf("%s's Organization", $user->getName()),
+            'name' => sprintf("%s's Organization", $user->getName()),
             'logoUrl' => 'https://avatar.vercel.sh/personal.png',
             'admin' => $user,
         ]);

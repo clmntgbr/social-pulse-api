@@ -12,7 +12,10 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/app/
-RUN chown -R www-data:www-data /srv/app
+
+RUN adduser -u 1002 -D appuser
+RUN chown -R 1002:1002 /srv/app
+
 COPY ["composer.json", "composer.lock", "./"]
 
 RUN mkdir -p var/cache var/log; \
@@ -65,10 +68,13 @@ RUN ls -al /usr/local/lib/php/extensions/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_HOME=/tmp
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN find /tmp -type d -exec chmod -v 1777 {} +
+RUN chown -R 1002:1002 /srv/app
 
-COPY . .
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+USER 1002
+
+COPY --chown=1002:1002 . .
 
 RUN chmod 777 /srv/app/public/*
 
