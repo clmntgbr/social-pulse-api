@@ -12,4 +12,15 @@ class LinkedinSocialNetworkRepository extends AbstractRepository
     {
         parent::__construct($registry, LinkedinSocialNetwork::class);
     }
+
+    public function updateOrCreate(array $searchPayload, array $updatePayload): LinkedinSocialNetwork
+    {
+        $account = $this->findOneByCriteria($searchPayload);
+        if (!$account) {
+            $account = new LinkedinSocialNetwork();
+        }
+
+        $this->update($account, $updatePayload);
+        return $account;
+    }
 }

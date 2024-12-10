@@ -6,15 +6,15 @@ use App\Dto\Api\GetSocialNetworksCallback;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-readonly class TwitterSocialNetworkService implements SocialNetworkServiceInterface
+readonly class DefaultSocialNetworkService implements SocialNetworkServiceInterface
 {
     public function __construct(
         private string $frontUrl
     ) {}
 
-    public function getConnectUrl(User $user, string $callbackPath): string
+    public function getConnectUrl(User $user, string $callbackPath): ?string
     {
-        return 'https://graph.facebook.com/oauth/access_token';
+       return null;
     }
 
     public function create(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse

@@ -18,7 +18,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: SocialNetworkRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['social-networks:get', 'default']],
+        ),
         new Get(
             uriTemplate: '/social_networks/{platform}/connect',
             controller: GetSocialNetworksConnectAction::class,
@@ -45,20 +47,54 @@ class SocialNetwork
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, unique: false)]
-    #[Groups(["organizations:get"])]
     private ?string $socialNetworkId = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["organizations:get"])]
+    #[Groups(["social-networks:get"])]
     private ?string $socialNetworkType;
 
-    #[ORM\Column(type: Types::STRING)]
-    #[Groups(["organizations:get"])]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(["social-networks:get"])]
+    private int $followers = 0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(["social-networks:get"])]
+    private int $followings = 0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(["social-networks:get"])]
+    private int $shares = 0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(["social-networks:get"])]
+    private int $comments = 0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(["social-networks:get"])]
+    private int $likes = 0;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(["social-networks:get"])]
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["social-networks:get"])]
     private ?string $avatarUrl;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["organizations:get"])]
+    #[Groups(["social-networks:get"])]
     private ?string $username;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["social-networks:get"])]
+    private ?string $name;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["social-networks:get"])]
+    private ?string $email;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $token;
 
     #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'socialNetworks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -81,18 +117,6 @@ class SocialNetwork
         return $this;
     }
 
-    public function getOrganization(): ?Organization
-    {
-        return $this->organization;
-    }
-
-    public function setOrganization(?Organization $organization): static
-    {
-        $this->organization = $organization;
-
-        return $this;
-    }
-
     public function getSocialNetworkType(): ?string
     {
         return $this->socialNetworkType;
@@ -101,6 +125,78 @@ class SocialNetwork
     public function setSocialNetworkType(string $socialNetworkType): static
     {
         $this->socialNetworkType = $socialNetworkType;
+
+        return $this;
+    }
+
+    public function getFollowers(): ?int
+    {
+        return $this->followers;
+    }
+
+    public function setFollowers(int $followers): static
+    {
+        $this->followers = $followers;
+
+        return $this;
+    }
+
+    public function getFollowings(): ?int
+    {
+        return $this->followings;
+    }
+
+    public function setFollowings(int $followings): static
+    {
+        $this->followings = $followings;
+
+        return $this;
+    }
+
+    public function getShares(): ?int
+    {
+        return $this->shares;
+    }
+
+    public function setShares(int $shares): static
+    {
+        $this->shares = $shares;
+
+        return $this;
+    }
+
+    public function getComments(): ?int
+    {
+        return $this->comments;
+    }
+
+    public function setComments(int $comments): static
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function getLikes(): ?int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(int $likes): static
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
@@ -125,6 +221,66 @@ class SocialNetwork
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): static
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getOrganization(): ?Organization
+    {
+        return $this->organization;
+    }
+
+    public function setOrganization(?Organization $organization): static
+    {
+        $this->organization = $organization;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

@@ -1,34 +1,34 @@
-App\Entity\SocialNetwork\LinkedinSocialNetwork:
-  linkedin_{1..20}:
-    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
-    organization: '@organization_*'
-    username: '<username()>'
-    avatarUrl: 'https://avatar.vercel.sh/personal.png'
-
-App\Entity\SocialNetwork\InstagramSocialNetwork:
-  instagram_{1..20}:
-    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
-    organization: '@organization_*'
-    username: '<username()>'
-    avatarUrl: 'https://avatar.vercel.sh/personal.png'
-
-App\Entity\SocialNetwork\YoutubeSocialNetwork:
-  youtube_{1..20}:
-    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
-    organization: '@organization_*'
-    username: '<username()>'
-    avatarUrl: 'https://avatar.vercel.sh/personal.png'
-
-App\Entity\SocialNetwork\FacebookSocialNetwork:
-  facebook_{1..20}:
-    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
-    organization: '@organization_*'
-    username: '<username()>'
-    avatarUrl: 'https://avatar.vercel.sh/personal.png'
-
-App\Entity\SocialNetwork\TwitterSocialNetwork:
-  twitter_{1..20}:
-    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
-    organization: '@organization_*'
-    username: '<username()>'
-    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+#App\Entity\SocialNetwork\LinkedinSocialNetwork:
+#  linkedin_{1..20}:
+#    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+#    organization: '@organization_*'
+#    username: '<username()>'
+#    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+#
+#App\Entity\SocialNetwork\InstagramSocialNetwork:
+#  instagram_{1..20}:
+#    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+#    organization: '@organization_*'
+#    username: '<username()>'
+#    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+#
+#App\Entity\SocialNetwork\YoutubeSocialNetwork:
+#  youtube_{1..20}:
+#    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+#    organization: '@organization_*'
+#    username: '<username()>'
+#    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+#
+#App\Entity\SocialNetwork\FacebookSocialNetwork:
+#  facebook_{1..20}:
+#    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+#    organization: '@organization_*'
+#    username: '<username()>'
+#    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+#
+#App\Entity\SocialNetwork\TwitterSocialNetwork:
+#  twitter_{1..20}:
+#    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+#    organization: '@organization_*'
+#    username: '<username()>'
+#    avatarUrl: 'https://avatar.vercel.sh/personal.png'

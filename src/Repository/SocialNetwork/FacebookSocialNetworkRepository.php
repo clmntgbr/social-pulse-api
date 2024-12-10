@@ -12,4 +12,15 @@ class FacebookSocialNetworkRepository extends AbstractRepository
     {
         parent::__construct($registry, FacebookSocialNetwork::class);
     }
+
+    public function updateOrCreate(array $searchPayload, array $updatePayload): FacebookSocialNetwork
+    {
+        $account = $this->findOneByCriteria($searchPayload);
+        if (!$account) {
+            $account = new FacebookSocialNetwork();
+        }
+
+        $this->update($account, $updatePayload);
+        return $account;
+    }
 }

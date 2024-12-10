@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new GetCollection(
             uriTemplate: '/organizations',
-            normalizationContext: ['skip_null_values' => false, 'groups' => ['organizations:get', 'default']],
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['organizations:get', 'default', 'social-networks:get']],
         ),
         new Post(
             uriTemplate: '/organizations',
@@ -46,7 +46,7 @@ class Organization
     private ?string $logoUrl = null;
 
     #[ORM\OneToMany(targetEntity: SocialNetwork::class, mappedBy: 'organization', cascade: ['remove'])]
-    #[Groups(["organizations:get"])]
+    #[Groups(['social-networks:get'])]
     private Collection $socialNetworks;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'organizations')]

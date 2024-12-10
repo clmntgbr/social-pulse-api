@@ -2,18 +2,97 @@
 
 namespace App\Service\SocialNetworks\Connect;
 
+use App\Dto\AccessToken\LinkedinAccessToken;
 use App\Dto\Api\GetSocialNetworksCallback;
+use App\Dto\SocialNetworksAccount\LinkedinAccount;
 use App\Entity\User;
+use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
+use App\Repository\UserRepository;
+use App\Service\LinkedinApi;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class LinkedinSocialNetworkService implements SocialNetworkServiceInterface
+readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInterface
 {
+    public function __construct(
+        private LinkedinApi $linkedinApi,
+        private UserRepository $userRepository,
+        private LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
+        private string $linkedinLoginUrl,
+        private string $linkedinClientId,
+        private string $linkedinCallbackUrl,
+        private string $frontUrl
+    ) {}
+
     public function getConnectUrl(User $user, string $callbackPath): string
     {
-        return 'https://graph.facebook.com/oauth/access_token';
+        /** @var User $user */
+        $user = $this->userRepository->update($user, [
+            'socialNetworksState' => Uuid::uuid4()->toString(),
+            'socialNetworksCallbackPath' => $callbackPath
+        ]);
+
+        return sprintf('%s/oauth/v2/authorization?response_type=code&client_id=%s&redirect_uri=%s&state=%s&scope=%s',
+            $this->linkedinLoginUrl,
+            $this->linkedinClientId,
+            sprintf($this->linkedinCallbackUrl, 'linkedin'),
+            $user->getSocialNetworksState(),
+            $this->getScopes()
+        );
     }
 
-    public function create(GetSocialNetworksCallback $getSocialNetworksCallback): void
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    public function create(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse
     {
+        /** @var ?User $user */
+        $user = $this->userRepository->findOneByCriteria(['socialNetworksState' => $getSocialNetworksCallback->state]);
 
+        if (!$user) {
+            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+        }
+
+        $accessToken = $this->linkedinApi->getAccessToken($getSocialNetworksCallback->code);
+
+        if (!$accessToken instanceof  LinkedinAccessToken) {
+            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+        }
+
+        $account = $this->linkedinApi->getAccounts($accessToken);
+
+        if (!$account instanceof  LinkedinAccount) {
+            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+        }
+
+        $this->linkedinSocialNetworkRepository->updateOrCreate([
+            'socialNetworkId' => $account->sub,
+            'organization' => $user->getActiveOrganization(),
+        ], [
+            'socialNetworkId' => $account->sub,
+            'avatarUrl' => $account->picture,
+            'username' => $account->name,
+            'name' => sprintf('%s %s', $account->givenName, $account->familyName),
+            'organization' => $user->getActiveOrganization(),
+            'token' => $accessToken->accessToken,
+            'isVerified' => $account->emailVerified,
+            'country' => $account->locale['country'] ?? null,
+            'language' => $account->locale['language'] ?? null,
+            'email' => $account->email,
+        ]);
+
+        return new RedirectResponse(sprintf('%s%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
+    }
+
+    public function getScopes(): string
+    {
+        return 'profile,email,openid,w_member_social';
     }
 }

@@ -23,7 +23,6 @@ final readonly class OrganizationExtension implements QueryCollectionExtensionIn
      */
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-//        dd('applyToCollection');
         $this->addWhereToCollection($queryBuilder, $resourceClass);
     }
 
@@ -32,7 +31,6 @@ final readonly class OrganizationExtension implements QueryCollectionExtensionIn
      */
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, Operation $operation = null, array $context = []): void
     {
-//        dd('applyToItem');
         $this->addWhereToItem($queryBuilder, $resourceClass);
     }
 

@@ -65,20 +65,30 @@ readonly class FacebookApi implements InterfaceApi
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getLongAccessToken(string $token): FacebookAccessToken
+    public function getLongAccessToken(string $token): ?FacebookAccessToken
     {
-        $url = sprintf('%s/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&redirect_uri=%s&client_secret=%s&fb_exchange_token=%s', $this->facebookApiUrl, $this->facebookClientId, $this->facebookCallbackUrl, $this->facebookClientSecret, $token);
+        $url = sprintf('%s/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&redirect_uri=%s&client_secret=%s&fb_exchange_token=%s',
+            $this->facebookApiUrl,
+            $this->facebookClientId,
+            $this->facebookCallbackUrl,
+            $this->facebookClientSecret,
+            $token
+        );
 
-        $response = $this->client->request('GET', $url);
+        try {
+            $response = $this->client->request('GET', $url);
 
-        $facebookAccessToken = $this->serializer->deserialize($response->getContent(), FacebookAccessToken::class, 'json');
+            $facebookAccessToken = $this->serializer->deserialize($response->getContent(), FacebookAccessToken::class, 'json');
 
-        $errors = $this->validator->validate($facebookAccessToken);
-        if (count($errors) > 0) {
-            throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            $errors = $this->validator->validate($facebookAccessToken);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $facebookAccessToken;
+        } catch (\Exception $exception) {
+            return null;
         }
-
-        return $facebookAccessToken;
     }
 
     /**
