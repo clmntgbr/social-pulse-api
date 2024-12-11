@@ -26,9 +26,11 @@ readonly class GetSocialNetworksCallbackResolver implements ValueResolverInterfa
         $dto = new GetSocialNetworksCallback();
         $dto->code = $request->query->get('code', null);
         $dto->state = $request->query->get('state', null);
+        $dto->oauthToken = $request->query->get('oauth_token', null);
+        $dto->oauthVerifier = $request->query->get('oauth_verifier', null);
         $dto->socialNetworkType = $request->attributes->get('platform', null);
 
-        $errors = $this->validator->validate($dto);
+        $errors = $this->validator->validate($dto, null, [$dto->socialNetworkType]);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }

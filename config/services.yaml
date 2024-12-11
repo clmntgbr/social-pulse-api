@@ -7,18 +7,22 @@ services:
         bind:
             string $backUrl: '%env(resolve:BACK_URL)%'
             string $frontUrl: '%env(resolve:FRONT_URL)%'
+            string $callbackUrl: '%env(resolve:CALLBACK_URL)%'
 
             string $facebookClientId: '%env(resolve:FACEBOOK_CLIENT_ID)%'
             string $facebookClientSecret: '%env(resolve:FACEBOOK_CLIENT_SECRET)%'
-            string $facebookCallbackUrl: '%env(resolve:FACEBOOK_CALLBACK_URL)%'
             string $facebookApiUrl: '%env(resolve:FACEBOOK_API_URL)%'
             string $facebookLoginUrl: '%env(resolve:FACEBOOK_LOGIN_URL)%'
 
             string $linkedinClientId: '%env(resolve:LINKEDIN_CLIENT_ID)%'
             string $linkedinClientSecret: '%env(resolve:LINKEDIN_CLIENT_SECRET)%'
-            string $linkedinCallbackUrl: '%env(resolve:LINKEDIN_CALLBACK_URL)%'
             string $linkedinApiUrl: '%env(resolve:LINKEDIN_API_URL)%'
             string $linkedinLoginUrl: '%env(resolve:LINKEDIN_LOGIN_URL)%'
+            #
+            string $twitterApiUrl: '%env(resolve:TWITTER_API_URL)%'
+            string $twitterApiXUrl: '%env(resolve:TWITTER_API_X_URL)%'
+            string $twitterApiKey: '%env(resolve:TWITTER_API_KEY)%'
+            string $twitterApiSecret: '%env(resolve:TWITTER_API_SECRET)%'
 
     App\:
         resource: '../src/'

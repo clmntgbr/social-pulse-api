@@ -7,8 +7,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class GetSocialNetworksCallback
 {
     #[Assert\Type('string')]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(groups: ['linkedin', 'facebook'])]
     public ?string $code = null;
+
+    #[Assert\Type('string')]
+    #[Assert\NotBlank(groups: ['twitter'])]
+    public ?string $oauthToken = null;
+
+    #[Assert\Type('string')]
+    #[Assert\NotBlank(groups: ['twitter'])]
+    public ?string $oauthVerifier = null;
 
     #[Assert\Type('string')]
     #[Assert\NotBlank()]

@@ -12,4 +12,15 @@ class TwitterSocialNetworkRepository extends AbstractRepository
     {
         parent::__construct($registry, TwitterSocialNetwork::class);
     }
+
+    public function updateOrCreate(array $searchPayload, array $updatePayload): TwitterSocialNetwork
+    {
+        $account = $this->findOneByCriteria($searchPayload);
+        if (!$account) {
+            $account = new TwitterSocialNetwork();
+        }
+
+        $this->update($account, $updatePayload);
+        return $account;
+    }
 }

@@ -19,7 +19,7 @@ readonly class FacebookApi implements InterfaceApi
     public function __construct(
         private string              $facebookClientId,
         private string              $facebookClientSecret,
-        private string              $facebookCallbackUrl,
+        private string              $callbackUrl,
         private string              $facebookApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
@@ -33,14 +33,14 @@ readonly class FacebookApi implements InterfaceApi
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getAccessToken(string ...$code): ?FacebookAccessToken
+    public function getAccessToken(string ...$params): ?FacebookAccessToken
     {
         $url = sprintf('%s/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s',
             $this->facebookApiUrl,
             $this->facebookClientId,
-            sprintf($this->facebookCallbackUrl, 'facebook'),
+            sprintf($this->callbackUrl, 'facebook'),
             $this->facebookClientSecret,
-            $code[0]
+            $params[0]
         );
 
         try {
@@ -70,7 +70,7 @@ readonly class FacebookApi implements InterfaceApi
         $url = sprintf('%s/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&redirect_uri=%s&client_secret=%s&fb_exchange_token=%s',
             $this->facebookApiUrl,
             $this->facebookClientId,
-            $this->facebookCallbackUrl,
+            sprintf($this->callbackUrl, 'facebook'),
             $this->facebookClientSecret,
             $token
         );

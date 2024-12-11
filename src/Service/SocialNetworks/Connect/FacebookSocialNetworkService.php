@@ -71,35 +71,35 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
-        $accounts = $this->facebookApi->getAccounts($accessToken);
+        $facebookAccounts = $this->facebookApi->getAccounts($accessToken);
 
-        if (!$accounts instanceof FacebookAccount) {
+        if (!$facebookAccounts instanceof FacebookAccount) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
-        /** @var FacebookData $account */
-        foreach ($accounts->accounts as $account) {
-            $longAccessToken = $this->facebookApi->getLongAccessToken($account->accessToken);
+        /** @var FacebookData $facebookAccount */
+        foreach ($facebookAccounts->accounts as $facebookAccount) {
+            $longAccessToken = $this->facebookApi->getLongAccessToken($facebookAccount->accessToken);
 
             if (!$longAccessToken instanceof FacebookAccessToken) {
                 continue;
             }
 
             $this->socialNetworkRepository->updateOrCreate([
-                'socialNetworkId' => $account->id,
+                'socialNetworkId' => $facebookAccount->id,
                 'organization' => $user->getActiveOrganization(),
             ], [
-                'socialNetworkId' => $account->id,
-                'avatarUrl' => $account->picture,
-                'username' => $account->name,
-                'name' => $account->name,
+                'socialNetworkId' => $facebookAccount->id,
+                'avatarUrl' => $facebookAccount->picture,
+                'username' => $facebookAccount->name,
+                'name' => $facebookAccount->name,
                 'organization' => $user->getActiveOrganization(),
                 'token' => $longAccessToken->accessToken,
-                'followers' => $account->followersCount,
-                'followings' => $account->fanCount,
-                'website' => $account->website,
-                'link' => $account->link,
-                'email' => $accounts->email,
+                'followers' => $facebookAccount->followersCount,
+                'followings' => $facebookAccount->fanCount,
+                'website' => $facebookAccount->website,
+                'link' => $facebookAccount->link,
+                'email' => $facebookAccounts->email,
             ]);
         }
 

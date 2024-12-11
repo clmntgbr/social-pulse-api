@@ -66,26 +66,26 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
-        $account = $this->linkedinApi->getAccounts($accessToken);
+        $linkedinAccount = $this->linkedinApi->getAccounts($accessToken);
 
-        if (!$account instanceof  LinkedinAccount) {
+        if (!$linkedinAccount instanceof  LinkedinAccount) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
         $this->linkedinSocialNetworkRepository->updateOrCreate([
-            'socialNetworkId' => $account->sub,
+            'socialNetworkId' => $linkedinAccount->sub,
             'organization' => $user->getActiveOrganization(),
         ], [
-            'socialNetworkId' => $account->sub,
-            'avatarUrl' => $account->picture,
-            'username' => $account->name,
-            'name' => sprintf('%s %s', $account->givenName, $account->familyName),
+            'socialNetworkId' => $linkedinAccount->sub,
+            'avatarUrl' => $linkedinAccount->picture,
+            'username' => $linkedinAccount->name,
+            'name' => sprintf('%s %s', $linkedinAccount->givenName, $linkedinAccount->familyName),
             'organization' => $user->getActiveOrganization(),
             'token' => $accessToken->accessToken,
-            'isVerified' => $account->emailVerified,
-            'country' => $account->locale['country'] ?? null,
-            'language' => $account->locale['language'] ?? null,
-            'email' => $account->email,
+            'isVerified' => $linkedinAccount->emailVerified,
+            'country' => $linkedinAccount->locale['country'] ?? null,
+            'language' => $linkedinAccount->locale['language'] ?? null,
+            'email' => $linkedinAccount->email,
         ]);
 
         return new RedirectResponse(sprintf('%s%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));

@@ -5,6 +5,7 @@ namespace App\Service\SocialNetworks\Connect;
 use App\Dto\Api\GetSocialNetworksCallback;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 readonly class DefaultSocialNetworkService implements SocialNetworkServiceInterface
 {
@@ -14,7 +15,7 @@ readonly class DefaultSocialNetworkService implements SocialNetworkServiceInterf
 
     public function getConnectUrl(User $user, string $callbackPath): ?string
     {
-       return null;
+        throw new BadRequestHttpException('An error appeared');
     }
 
     public function create(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse

@@ -18,7 +18,7 @@ readonly class LinkedinApi implements InterfaceApi
     public function __construct(
         private string              $linkedinClientId,
         private string              $linkedinClientSecret,
-        private string              $linkedinCallbackUrl,
+        private string              $callbackUrl,
         private string              $linkedinApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
@@ -32,7 +32,7 @@ readonly class LinkedinApi implements InterfaceApi
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getAccessToken(string ...$code): ?LinkedinAccessToken
+    public function getAccessToken(string ...$params): ?LinkedinAccessToken
     {
         $url = sprintf('%s/oauth/v2/accessToken', $this->linkedinApiUrl);
 
@@ -40,8 +40,8 @@ readonly class LinkedinApi implements InterfaceApi
             $response = $this->client->request('POST', $url, [
                 'query' => [
                     'grant_type' => 'authorization_code',
-                    'code' => $code[0],
-                    'redirect_uri' => sprintf($this->linkedinCallbackUrl, 'linkedin'),
+                    'code' => $params[0],
+                    'redirect_uri' => sprintf($this->callbackUrl, 'linkedin'),
                     'client_id' => $this->linkedinClientId,
                     'client_secret' => $this->linkedinClientSecret,
                 ]

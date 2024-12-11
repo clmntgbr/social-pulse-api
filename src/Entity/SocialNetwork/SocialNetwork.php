@@ -77,7 +77,7 @@ class SocialNetwork
     #[Groups(["social-networks:get"])]
     private bool $isVerified = false;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["social-networks:get"])]
     private ?string $avatarUrl;
 
@@ -89,7 +89,7 @@ class SocialNetwork
     #[Groups(["social-networks:get"])]
     private ?string $name;
 
-    #[ORM\Column(type: Types::STRING)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(["social-networks:get"])]
     private ?string $email;
 
