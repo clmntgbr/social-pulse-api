@@ -2,11 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\SocialNetwork\SocialNetwork;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    public function delete(self $entity): void
+    public function delete(SocialNetwork $entity): void
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();

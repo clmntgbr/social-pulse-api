@@ -107,6 +107,8 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $validate = Uuid::uuid4()->toString();
+
         $this->twitterSocialNetworkRepository->updateOrCreate([
             'socialNetworkId' => $twitterAccount->id,
             'organization' => $user->getActiveOrganization(),
@@ -123,8 +125,13 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             'followers' => $twitterAccount->publicMetrics->followersCount,
             'followings' => $twitterAccount->publicMetrics->followingsCount,
             'likes' => $twitterAccount->publicMetrics->likesCount,
+            'validate' => $validate,
         ]);
 
-        return new RedirectResponse(sprintf('%s%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
+        return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',
+            $this->frontUrl,
+            $user->getSocialNetworksCallbackPath(),
+            $validate
+        ));
     }
 }

@@ -2,13 +2,18 @@
 
 namespace App\Entity\SocialNetwork;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\ApiResource\GetSocialNetworksCallbackAction;
 use App\ApiResource\GetSocialNetworksConnectAction;
+use App\ApiResource\PostSocialNetworksValidateAction;
 use App\Entity\Organization;
 use App\Entity\Traits\UuidTrait;
+use App\Enum\SocialNetworkStatus;
 use App\Repository\SocialNetwork\SocialNetworkRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,10 +33,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(
             uriTemplate: '/social_networks/{platform}/callback',
             controller: GetSocialNetworksCallbackAction::class,
+        ),
+        new Post(
+            uriTemplate: '/social_networks/validate/{validate}',
+            controller: PostSocialNetworksValidateAction::class,
         )
     ],
-    order: ['createdAt' => 'DESC']
+    order: ['createdAt' => 'DESC', 'name' => 'ASC'],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'status' => 'exact'])]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap([
@@ -96,12 +106,21 @@ class SocialNetwork
     #[ORM\Column(type: Types::TEXT)]
     private ?string $token;
 
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["social-networks:get"])]
+    private ?string $status;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(["social-networks:get"])]
+    private ?string $validate;
+
     #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'socialNetworks')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Organization $organization = null;
 
     public function __construct()
     {
+        $this->status = SocialNetworkStatus::TEMPORARY->toString();
         $this->initializeUuid();
     }
 
@@ -281,6 +300,30 @@ class SocialNetwork
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getValidate(): ?string
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?string $validate): static
+    {
+        $this->validate = $validate;
 
         return $this;
     }

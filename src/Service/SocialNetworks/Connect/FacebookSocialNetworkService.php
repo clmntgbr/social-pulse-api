@@ -77,14 +77,18 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $validate = Uuid::uuid4()->toString();
+
         /** @var FacebookData $facebookAccount */
         foreach ($facebookAccounts->accounts as $facebookAccount) {
             $longAccessToken = $this->facebookApi->getLongAccessToken($facebookAccount->accessToken);
 
             if (!$longAccessToken instanceof FacebookAccessToken) {
+                dump('continue');
                 continue;
             }
 
+//            dump($facebookAccount->name);
             $this->socialNetworkRepository->updateOrCreate([
                 'socialNetworkId' => $facebookAccount->id,
                 'organization' => $user->getActiveOrganization(),
@@ -100,10 +104,17 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
                 'website' => $facebookAccount->website,
                 'link' => $facebookAccount->link,
                 'email' => $facebookAccounts->email,
+                'validate' => $validate,
             ]);
         }
 
-        return new RedirectResponse(sprintf('%s%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
+//        dd($facebookAccounts);
+
+        return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',
+            $this->frontUrl,
+            $user->getSocialNetworksCallbackPath(),
+            $validate
+        ));
     }
 
     public function getScopes(): string

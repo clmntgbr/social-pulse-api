@@ -72,6 +72,8 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $validate = Uuid::uuid4()->toString();
+
         $this->linkedinSocialNetworkRepository->updateOrCreate([
             'socialNetworkId' => $linkedinAccount->sub,
             'organization' => $user->getActiveOrganization(),
@@ -86,9 +88,14 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
             'country' => $linkedinAccount->locale['country'] ?? null,
             'language' => $linkedinAccount->locale['language'] ?? null,
             'email' => $linkedinAccount->email,
+            'validate' => $validate,
         ]);
 
-        return new RedirectResponse(sprintf('%s%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
+        return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',
+            $this->frontUrl,
+            $user->getSocialNetworksCallbackPath(),
+            $validate
+        ));
     }
 
     public function getScopes(): string

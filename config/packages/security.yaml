@@ -50,6 +50,7 @@ security:
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/token, roles: PUBLIC_ACCESS }
         - { path: ^/api/social_networks/.+/callback, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/social_networks/confirm, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api, roles: ROLE_USER }
 
 when@test:
