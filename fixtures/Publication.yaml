@@ -1,0 +1,44 @@
+App\Entity\Publication\LinkedinPublication:
+  publications_{1..20}:
+    socialNetwork: '@social_networks_*'
+    publicationId: '<uuid()>'
+    threadUuid: '<uuid()>'
+    content: '<paragraph()>'
+    status: '<randomElement(["posted", "programmed", "failed", "draft"])>'
+    publishedAt: '<dateTimeBetween("-1 years", "now")>'
+
+App\Entity\Publication\InstagramPublication:
+  publications_{21..40}:
+    publicationId: '<uuid()>'
+    socialNetwork: '@social_networks_*'
+    threadUuid: '<uuid()>'
+    content: '<paragraph()>'
+    status: '<randomElement(["posted", "programmed", "failed", "draft"])>'
+    publishedAt: '<dateTimeBetween("-1 years", "now")>'
+
+App\Entity\Publication\YoutubePublication:
+  publications_{41..60}:
+    socialNetwork: '@social_networks_*'
+    publicationId: '<uuid()>'
+    threadUuid: '<uuid()>'
+    content: '<paragraph()>'
+    status: '<randomElement(["posted", "programmed", "failed", "draft"])>'
+    publishedAt: '<dateTimeBetween("-1 years", "now")>'
+
+App\Entity\Publication\FacebookPublication:
+  publications_{61..80}:
+    socialNetwork: '@social_networks_*'
+    publicationId: '<uuid()>'
+    threadUuid: '<uuid()>'
+    content: '<paragraph()>'
+    status: '<randomElement(["posted", "programmed", "failed", "draft"])>'
+    publishedAt: '<dateTimeBetween("-1 years", "now")>'
+
+App\Entity\Publication\TwitterPublication:
+  publications_{81..100}:
+    socialNetwork: '@social_networks_*'
+    publicationId: '<uuid()>'
+    threadUuid: '<uuid()>'
+    content: '<paragraph()>'
+    status: '<randomElement(["posted", "programmed", "failed", "draft"])>'
+    publishedAt: '<dateTimeBetween("-1 years", "now")>'

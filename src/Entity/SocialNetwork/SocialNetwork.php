@@ -12,9 +12,12 @@ use App\ApiResource\GetSocialNetworksCallbackAction;
 use App\ApiResource\GetSocialNetworksConnectAction;
 use App\ApiResource\PostSocialNetworksValidateAction;
 use App\Entity\Organization;
+use App\Entity\Publication\Publication;
 use App\Entity\Traits\UuidTrait;
 use App\Enum\SocialNetworkStatus;
 use App\Repository\SocialNetwork\SocialNetworkRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -118,10 +121,26 @@ class SocialNetwork
     #[ORM\JoinColumn(nullable: false)]
     private ?Organization $organization = null;
 
+    #[ORM\OneToMany(targetEntity: Publication::class, mappedBy: 'socialNetwork', cascade: ['remove'])]
+    private Collection $publications;
+
     public function __construct()
     {
-        $this->status = SocialNetworkStatus::TEMPORARY->toString();
         $this->initializeUuid();
+        $this->status = SocialNetworkStatus::TEMPORARY->toString();
+        $this->publications = new ArrayCollection();
+    }
+
+    #[Groups(['default'])]
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    #[Groups(['default'])]
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
     }
 
     public function getSocialNetworkId(): ?string
@@ -324,6 +343,36 @@ class SocialNetwork
     public function setValidate(?string $validate): static
     {
         $this->validate = $validate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Publication>
+     */
+    public function getPublications(): Collection
+    {
+        return $this->publications;
+    }
+
+    public function addPublication(Publication $publication): static
+    {
+        if (!$this->publications->contains($publication)) {
+            $this->publications->add($publication);
+            $publication->setSocialNetwork($this);
+        }
+
+        return $this;
+    }
+
+    public function removePublication(Publication $publication): static
+    {
+        if ($this->publications->removeElement($publication)) {
+            // set the owning side to null (unless already changed)
+            if ($publication->getSocialNetwork() === $this) {
+                $publication->setSocialNetwork(null);
+            }
+        }
 
         return $this;
     }
