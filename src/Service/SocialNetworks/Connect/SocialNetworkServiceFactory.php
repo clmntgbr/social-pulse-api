@@ -6,6 +6,7 @@ use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
+use App\Repository\SocialNetwork\TypeRepository;
 use App\Repository\UserRepository;
 use App\Service\FacebookApi;
 use App\Service\LinkedinApi;
@@ -21,6 +22,7 @@ readonly class SocialNetworkServiceFactory
         private LinkedinApi                     $linkedinApi,
         private TwitterApi                      $twitterApi,
         private UserRepository                  $userRepository,
+        private TypeRepository                  $typeRepository,
         private FacebookSocialNetworkRepository $socialNetworkRepository,
         private LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
         private TwitterSocialNetworkRepository  $twitterSocialNetworkRepository,
@@ -45,6 +47,7 @@ readonly class SocialNetworkServiceFactory
                 $this->linkedinApi,
                 $this->userRepository,
                 $this->linkedinSocialNetworkRepository,
+                $this->typeRepository,
                 $this->linkedinLoginUrl,
                 $this->linkedinClientId,
                 $this->callbackUrl,
@@ -54,6 +57,7 @@ readonly class SocialNetworkServiceFactory
                 $this->facebookApi,
                 $this->userRepository,
                 $this->socialNetworkRepository,
+                $this->typeRepository,
                 $this->facebookLoginUrl,
                 $this->facebookClientId,
                 $this->callbackUrl,
@@ -63,6 +67,7 @@ readonly class SocialNetworkServiceFactory
                 $this->twitterApi,
                 $this->userRepository,
                 $this->twitterSocialNetworkRepository,
+                $this->typeRepository,
                 $this->serializer,
                 $this->validator,
                 $this->validatorError,

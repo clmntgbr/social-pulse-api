@@ -3,7 +3,6 @@
 namespace App\Entity\SocialNetwork;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +17,6 @@ class FacebookSocialNetwork extends SocialNetwork
     public function __construct()
     {
         parent::__construct();
-        $this->setSocialNetworkType(SocialNetworkType::FACEBOOK->toString());
     }
 
     #[ORM\Column(type: Types::STRING)]

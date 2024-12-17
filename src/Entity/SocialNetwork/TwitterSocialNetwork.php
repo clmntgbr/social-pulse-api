@@ -3,7 +3,6 @@
 namespace App\Entity\SocialNetwork;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +22,6 @@ class TwitterSocialNetwork extends SocialNetwork
     public function __construct()
     {
         parent::__construct();
-        $this->setSocialNetworkType(SocialNetworkType::TWITTER->toString());
     }
 
     public function getBearerToken(): ?string

@@ -17,10 +17,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            normalizationContext: ['skip_null_values' => false, 'groups' => ['publications:get', 'social-networks:get', 'default']],
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['publications:get', 'social-networks:get', 'social-networks-type:get', 'default']],
         ),
     ],
-    order: ['createdAt' => 'DESC']
+    order: ['publishedAt' => 'ASC']
 )]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]

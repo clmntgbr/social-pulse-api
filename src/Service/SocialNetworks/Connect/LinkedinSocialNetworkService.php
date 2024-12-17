@@ -6,7 +6,9 @@ use App\Dto\AccessToken\LinkedinAccessToken;
 use App\Dto\Api\GetSocialNetworksCallback;
 use App\Dto\SocialNetworksAccount\LinkedinAccount;
 use App\Entity\User;
+use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
+use App\Repository\SocialNetwork\TypeRepository;
 use App\Repository\UserRepository;
 use App\Service\LinkedinApi;
 use Ramsey\Uuid\Uuid;
@@ -22,6 +24,7 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
         private LinkedinApi $linkedinApi,
         private UserRepository $userRepository,
         private LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
+        private TypeRepository $typeRepository,
         private string $linkedinLoginUrl,
         private string $linkedinClientId,
         private string $linkedinCallbackUrl,
@@ -72,6 +75,7 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::LINKEDIN->toString()]);
         $validate = Uuid::uuid4()->toString();
 
         $this->linkedinSocialNetworkRepository->updateOrCreate([
@@ -89,6 +93,7 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
             'language' => $linkedinAccount->locale['language'] ?? null,
             'email' => $linkedinAccount->email,
             'validate' => $validate,
+            'socialNetworkType' => $socialNetworkType,
         ]);
 
         return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',

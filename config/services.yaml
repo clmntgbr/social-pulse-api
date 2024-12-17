@@ -20,7 +20,6 @@ services:
             string $linkedinLoginUrl: '%env(resolve:LINKEDIN_LOGIN_URL)%'
             #
             string $twitterApiUrl: '%env(resolve:TWITTER_API_URL)%'
-            string $twitterApiXUrl: '%env(resolve:TWITTER_API_X_URL)%'
             string $twitterApiKey: '%env(resolve:TWITTER_API_KEY)%'
             string $twitterApiSecret: '%env(resolve:TWITTER_API_SECRET)%'
 

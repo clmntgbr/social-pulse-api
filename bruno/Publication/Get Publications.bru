@@ -7,7 +7,7 @@ meta {
 get {
   url: {{api_url}}api/publications
   body: none
-  auth: none
+  auth: bearer
 }
 
 headers {
@@ -24,4 +24,8 @@ headers {
   sec-ch-ua: "Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"
   sec-ch-ua-mobile: ?0
   sec-ch-ua-platform: "Linux"
+}
+
+auth:bearer {
+  token: {{token}}
 }

@@ -22,7 +22,7 @@ readonly class TwitterApi implements InterfaceApi
         private string              $twitterApiKey,
         private string              $twitterApiSecret,
         private string              $callbackUrl,
-        private string              $twitterApiXUrl,
+        private string              $twitterApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
         private ValidatorInterface  $validator,
@@ -38,7 +38,7 @@ readonly class TwitterApi implements InterfaceApi
     public function getAccessToken(string ...$params): ?TwitterAccessToken
     {
         $url = sprintf('%s/oauth/access_token?oauth_token=%s&oauth_verifier=%s',
-            $this->twitterApiXUrl,
+            $this->twitterApiUrl,
             $params[0],
             $params[1]
         );
@@ -63,7 +63,7 @@ readonly class TwitterApi implements InterfaceApi
     public function getBearerToken(): ?TwitterBearerToken
     {
         $url = sprintf('%s/oauth2/token?grant_type=client_credentials',
-            $this->twitterApiXUrl
+            $this->twitterApiUrl
         );
 
         try {

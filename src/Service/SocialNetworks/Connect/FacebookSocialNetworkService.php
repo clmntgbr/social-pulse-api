@@ -7,7 +7,9 @@ use App\Dto\Api\GetSocialNetworksCallback;
 use App\Dto\SocialNetworksAccount\FacebookAccount;
 use App\Dto\SocialNetworksAccount\FacebookData;
 use App\Entity\User;
+use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
+use App\Repository\SocialNetwork\TypeRepository;
 use App\Repository\UserRepository;
 use App\Service\FacebookApi;
 use Ramsey\Uuid\Uuid;
@@ -24,6 +26,7 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
         private FacebookApi $facebookApi,
         private UserRepository $userRepository,
         private FacebookSocialNetworkRepository $socialNetworkRepository,
+        private TypeRepository $typeRepository,
         private string $facebookLoginUrl,
         private string $facebookClientId,
         private string $facebookCallbackUrl,
@@ -77,6 +80,7 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::FACEBOOK->toString()]);
         $validate = Uuid::uuid4()->toString();
 
         /** @var FacebookData $facebookAccount */
@@ -84,11 +88,9 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
             $longAccessToken = $this->facebookApi->getLongAccessToken($facebookAccount->accessToken);
 
             if (!$longAccessToken instanceof FacebookAccessToken) {
-                dump('continue');
                 continue;
             }
 
-//            dump($facebookAccount->name);
             $this->socialNetworkRepository->updateOrCreate([
                 'socialNetworkId' => $facebookAccount->id,
                 'organization' => $user->getActiveOrganization(),
@@ -105,10 +107,9 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
                 'link' => $facebookAccount->link,
                 'email' => $facebookAccounts->email,
                 'validate' => $validate,
+                'socialNetworkType' => $socialNetworkType,
             ]);
         }
-
-//        dd($facebookAccounts);
 
         return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',
             $this->frontUrl,

@@ -10,7 +10,9 @@ use App\Dto\Api\GetSocialNetworksCallback;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
 use App\Dto\TwitterOAuthToken;
 use App\Entity\User;
+use App\Enum\SocialNetworkType;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
+use App\Repository\SocialNetwork\TypeRepository;
 use App\Repository\UserRepository;
 use App\Service\TwitterApi;
 use App\Service\ValidatorError;
@@ -27,18 +29,19 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class TwitterSocialNetworkService implements SocialNetworkServiceInterface
 {
     public function __construct(
-        private readonly TwitterApi          $twitterApi,
-        private readonly UserRepository      $userRepository,
+        private readonly TwitterApi                     $twitterApi,
+        private readonly UserRepository                 $userRepository,
         private readonly TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
-        private readonly SerializerInterface $serializer,
-        private readonly ValidatorInterface  $validator,
-        private readonly ValidatorError      $validatorError,
-        private readonly string              $twitterApiUrl,
-        private readonly string              $twitterApiKey,
-        private readonly string              $twitterApiSecret,
-        private readonly string              $callbackUrl,
-        private readonly string              $frontUrl,
-        private ?TwitterOAuth                $twitterOAuth = null
+        private readonly TypeRepository                 $typeRepository,
+        private readonly SerializerInterface            $serializer,
+        private readonly ValidatorInterface             $validator,
+        private readonly ValidatorError                 $validatorError,
+        private readonly string                         $twitterApiUrl,
+        private readonly string                         $twitterApiKey,
+        private readonly string                         $twitterApiSecret,
+        private readonly string                         $callbackUrl,
+        private readonly string                         $frontUrl,
+        private ?TwitterOAuth                           $twitterOAuth = null
     ) {
         $this->twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret);
     }
@@ -107,6 +110,7 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
+        $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::TWITTER->toString()]);
         $validate = Uuid::uuid4()->toString();
 
         $this->twitterSocialNetworkRepository->updateOrCreate([
@@ -126,6 +130,7 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             'followings' => $twitterAccount->publicMetrics->followingsCount,
             'likes' => $twitterAccount->publicMetrics->likesCount,
             'validate' => $validate,
+            'socialNetworkType' => $socialNetworkType,
         ]);
 
         return new RedirectResponse(sprintf('%s/%s/social-networks/validate/%s',

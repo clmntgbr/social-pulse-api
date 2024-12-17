@@ -7,6 +7,7 @@ api_platform:
         jsonproblem: [ 'application/problem+json' ]
         jsonld: [ 'application/ld+json' ]
     defaults:
+        pagination_enabled: false
         normalization_context:
             skip_null_values: false
         stateless: true

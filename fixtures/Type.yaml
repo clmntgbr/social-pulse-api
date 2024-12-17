@@ -1,0 +1,21 @@
+App\Entity\SocialNetwork\Type:
+  type_linkedin:
+    name: 'linkedin'
+    color: '#0e76a8'
+    uuid: 'e6c76b8c-8662-41e5-8692-4a9fcde848e4'
+  type_instagram:
+    name: 'instagram'
+    color: '#e1306c'
+    uuid: 'b08b19cc-70e2-43d5-9848-38e64b2246d6'
+  type_facebook:
+    name: 'facebook'
+    color: '#1877f2'
+    uuid: 'ee5df5d1-fcec-465e-8b7a-6bf8cfc2b03e'
+  type_twitter:
+    name: 'twitter'
+    color: '#1da1f2'
+    uuid: 'cdc48308-24af-4227-aebe-663935a69fd1'
+  type_youtube:
+    name: 'youtube'
+    color: '#ff0000'
+    uuid: '8f407e1c-6dd6-47b6-a1ff-7ba50a02ef95'

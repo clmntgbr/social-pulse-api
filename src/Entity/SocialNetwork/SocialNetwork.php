@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\GetSocialNetworksCallbackAction;
 use App\ApiResource\GetSocialNetworksConnectAction;
+use App\ApiResource\GetSocialNetworksTypeAction;
 use App\ApiResource\PostSocialNetworksValidateAction;
 use App\Entity\Organization;
 use App\Entity\Publication\Publication;
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            normalizationContext: ['skip_null_values' => false, 'groups' => ['social-networks:get', 'default']],
+            normalizationContext: ['skip_null_values' => false, 'groups' => ['social-networks:get', 'social-networks-type:get', 'default']],
         ),
         new Get(
             uriTemplate: '/social_networks/{platform}/connect',
@@ -62,9 +63,10 @@ class SocialNetwork
     #[ORM\Column(type: Types::STRING, unique: false)]
     private ?string $socialNetworkId = null;
 
-    #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
-    private ?string $socialNetworkType;
+    #[ORM\ManyToOne(targetEntity: Type::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['social-networks-type:get'])]
+    private ?Type $socialNetworkType;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(["social-networks:get"])]
@@ -151,18 +153,6 @@ class SocialNetwork
     public function setSocialNetworkId(string $socialNetworkId): static
     {
         $this->socialNetworkId = $socialNetworkId;
-
-        return $this;
-    }
-
-    public function getSocialNetworkType(): ?string
-    {
-        return $this->socialNetworkType;
-    }
-
-    public function setSocialNetworkType(string $socialNetworkType): static
-    {
-        $this->socialNetworkType = $socialNetworkType;
 
         return $this;
     }
@@ -373,6 +363,18 @@ class SocialNetwork
                 $publication->setSocialNetwork(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSocialNetworkType(): ?Type
+    {
+        return $this->socialNetworkType;
+    }
+
+    public function setSocialNetworkType(?Type $socialNetworkType): static
+    {
+        $this->socialNetworkType = $socialNetworkType;
 
         return $this;
     }
