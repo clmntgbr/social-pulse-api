@@ -12,4 +12,14 @@ class LinkedinPublicationRepository extends AbstractRepository
     {
         parent::__construct($registry, LinkedinPublication::class);
     }
+
+    public function create(array $data): LinkedinPublication
+    {
+        $entity = new LinkedinPublication();
+
+        /** @var LinkedinPublication $entity */
+        $entity = $this->update($entity, $data);
+
+        return $entity;
+    }
 }

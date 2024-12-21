@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Operation;
 use App\Entity\Publication\Publication;
 use App\Entity\User;
 use App\Enum\PublicationStatus;
+use App\Enum\PublicationThreadType;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -45,8 +46,10 @@ final readonly class PublicationExtension implements QueryCollectionExtensionInt
         $queryBuilder->join(sprintf('%s.socialNetwork', $rootAlias), 's');
         $queryBuilder->andWhere('s.organization = :organization');
         $queryBuilder->andWhere(sprintf('%s.status IN (:status)', $rootAlias));
+        $queryBuilder->andWhere(sprintf('%s.threadType = :threadType', $rootAlias));
+        $queryBuilder->setParameter('threadType', PublicationThreadType::PRIMARY);
         $queryBuilder->setParameter('organization', $user->getActiveOrganization());
-        $queryBuilder->setParameter('status', [PublicationStatus::PROGRAMMED->toString(), PublicationStatus::POSTED->toString(), PublicationStatus::FAILED->toString()]);
+        $queryBuilder->setParameter('status', [PublicationStatus::PROGRAMMED->toString(), PublicationStatus::POSTED->toString(), PublicationStatus::FAILED->toString(), PublicationStatus::DRAFT->toString()]);
     }
 
     /**

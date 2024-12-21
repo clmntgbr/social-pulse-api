@@ -4,13 +4,18 @@ namespace App\Entity\Publication;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\GetSocialNetworksConnectAction;
+use App\ApiResource\PostPublicationsAction;
 use App\Entity\SocialNetwork\SocialNetwork;
 use App\Entity\Traits\UuidTrait;
 use App\Enum\PublicationStatus;
+use App\Enum\PublicationThreadType;
 use App\Repository\Publication\PublicationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PublicationRepository::class)]
@@ -19,6 +24,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new GetCollection(
             normalizationContext: ['skip_null_values' => false, 'groups' => ['publications:get', 'social-networks:get', 'social-networks-type:get', 'default']],
         ),
+        new Post(
+            uriTemplate: '/publications',
+            controller: PostPublicationsAction::class,
+        )
     ],
     order: ['publishedAt' => 'ASC']
 )]
@@ -37,7 +46,7 @@ class Publication
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(["publication:get"])]
+    #[Groups(["publications:get", "publication:get"])]
     private ?string $publicationId = null;
 
     #[ORM\Column(type: Types::STRING)]
@@ -46,11 +55,19 @@ class Publication
 
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["publications:get", "publication:get"])]
+    private ?string $threadType;
+
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["publications:get", "publication:get"])]
     private ?string $publicationType;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["publications:get", "publication:get"])]
     private ?string $content;
+
+    #[ORM\Column(type: Types::JSON)]
+    #[Groups(["publications:get", "publication:get"])]
+    private array $pictures = [];
 
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["publications:get", "publication:get"])]
@@ -68,6 +85,8 @@ class Publication
     public function __construct()
     {
         $this->status = PublicationStatus::DRAFT->toString();
+        $this->threadType = PublicationThreadType::PRIMARY->toString();
+        $this->threadUuid = Uuid::uuid4()->toString();
         $this->initializeUuid();
     }
 
@@ -163,6 +182,30 @@ class Publication
     public function setPublishedAt(?\DateTimeInterface $publishedAt): static
     {
         $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    public function getThreadType(): ?string
+    {
+        return $this->threadType;
+    }
+
+    public function setThreadType(string $threadType): static
+    {
+        $this->threadType = $threadType;
+
+        return $this;
+    }
+
+    public function getPictures(): array
+    {
+        return $this->pictures;
+    }
+
+    public function setPictures(array $pictures): static
+    {
+        $this->pictures = $pictures;
 
         return $this;
     }
