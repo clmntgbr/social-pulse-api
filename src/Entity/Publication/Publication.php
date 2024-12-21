@@ -3,8 +3,10 @@
 namespace App\Entity\Publication;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\GetPublicationAction;
 use App\ApiResource\GetSocialNetworksConnectAction;
 use App\ApiResource\PostPublicationsAction;
 use App\Entity\SocialNetwork\SocialNetwork;
@@ -23,6 +25,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new GetCollection(
             normalizationContext: ['skip_null_values' => false, 'groups' => ['publications:get', 'social-networks:get', 'social-networks-type:get', 'default']],
+        ),
+        new Get(
+            uriTemplate: '/publications/{uuid}',
+            controller: GetPublicationAction::class,
         ),
         new Post(
             uriTemplate: '/publications',
@@ -46,15 +52,15 @@ class Publication
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(["publication:get"])]
     private ?string $publicationId = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publication:get"])]
+    #[Groups(["publications:get", "publication:get"])]
     private ?string $threadUuid;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(["publication:get"])]
     private ?string $threadType;
 
     #[ORM\Column(type: Types::STRING)]
@@ -66,7 +72,7 @@ class Publication
     private ?string $content;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(["publication:get"])]
     private array $pictures = [];
 
     #[ORM\Column(type: Types::STRING)]

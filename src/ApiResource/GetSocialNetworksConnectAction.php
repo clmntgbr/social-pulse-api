@@ -20,7 +20,7 @@ class GetSocialNetworksConnectAction extends AbstractController
         private readonly SerializerInterface $serializer
     ) {}
 
-    public function __invoke(GetSocialNetworksConnect $getSocialNetworksConnect, #[CurrentUser] User $user): JsonResponse
+    public function __invoke(GetSocialNetworksConnect $getSocialNetworksConnect, #[CurrentUser] ?User $user): JsonResponse
     {
         $service = $this->socialNetworkServiceFactory->getService($getSocialNetworksConnect->socialNetworkType);
         $url = $service->getConnectUrl($user, $getSocialNetworksConnect->callbackPath);

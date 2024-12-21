@@ -24,7 +24,7 @@ class PostOrganizationsAction extends AbstractController
         private readonly SerializerInterface $serializer
     ) {}
 
-    public function __invoke(PostOrganizations $postOrganizations, #[CurrentUser] User $user): JsonResponse
+    public function __invoke(PostOrganizations $postOrganizations, #[CurrentUser] ?User $user): JsonResponse
     {
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups(['organization:get', 'default'])

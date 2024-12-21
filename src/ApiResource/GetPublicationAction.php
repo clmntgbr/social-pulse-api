@@ -2,6 +2,7 @@
 
 namespace App\ApiResource;
 
+use App\Dto\Api\GetPublication;
 use App\Dto\Api\PostOrganizations;
 use App\Dto\Api\PostPublications;
 use App\Entity\User;
@@ -21,29 +22,31 @@ use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuild
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsController]
-class PostPublicationsAction extends AbstractController
+class GetPublicationAction extends AbstractController
 {
     public function __construct(
-        private readonly PublicationServiceFactory $publicationServiceFactory,
         private readonly PublicationRepository $publicationRepository,
         private readonly SerializerInterface $serializer
     ) {}
 
-    /**
-     * @throws \Exception
-     */
-    public function __invoke(PostPublications $postPublications, Request $request, #[CurrentUser] ?User $user): JsonResponse
+    function __invoke(GetPublication $getPublication, Request $request, #[CurrentUser] ?User $user): JsonResponse
     {
+        $publications = $this->publicationRepository->findPublicationByThreadUuid($getPublication->uuid);
+
+        if (count($publications) <= 0) {
+            return new JsonResponse([
+                'message' => 'You dont have access to this publication.'],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
         $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups(['publications:get', 'social-networks:get', 'social-networks-type:get', 'default'])
+            ->withGroups(['publications:get', 'publication:get', 'social-networks:get', 'social-networks-type:get', 'default'])
             ->toArray();
 
-        $service = $this->publicationServiceFactory->getService($postPublications->publicationType);
-        $service->create($postPublications);
-
         return new JsonResponse(
-            data: $this->serializer->serialize($this->publicationRepository->findAll(), 'json', $context),
-            status: Response::HTTP_CREATED,
+            data: $this->serializer->serialize($publications, 'json', $context),
+            status: Response::HTTP_OK,
             json: true
         );
     }

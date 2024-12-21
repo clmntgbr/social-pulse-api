@@ -5,31 +5,72 @@ namespace App\Repository\Publication;
 use App\Entity\Publication\Publication;
 use App\Entity\User;
 use App\Enum\PublicationStatus;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Enum\PublicationThreadType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class PublicationRepository extends ServiceEntityRepository
 {
     public function __construct(
-        ManagerRegistry $registry
+        ManagerRegistry $registry,
+        private Security $security
     ) {
         parent::__construct($registry, Publication::class);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function findAllWithFilters(User $user): array
+    public function findAll(): array
     {
-        $qb = $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('p');
+
+        $qb = $this->filters($qb);
+        $qb = $this->filterThreadType($qb);
+        $qb = $this->filterStatus($qb);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findPublicationByThreadUuid(string $uuid): array
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb = $this->filters($qb);
+        $qb = $this->filterStatus($qb);
+
+        $qb
+            ->andWhere('p.threadUuid = :uuid')
+            ->andWhere('p.threadType IN (:threadType)')
+            ->setParameter('threadType', [PublicationThreadType::PRIMARY, PublicationThreadType::SECONDARY])
+            ->setParameter('uuid', $uuid)
+            ->orderBy('p.id', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function filters(QueryBuilder $builder): QueryBuilder
+    {
+        $builder
             ->join('p.socialNetwork', 's')
             ->andWhere('s.organization = :organization')
-            ->andWhere('p.status IN (:status)')
+            ->setParameter('organization', $this->security->getUser()->getActiveOrganization());
+
+        return $builder;
+    }
+
+    private function filterThreadType(QueryBuilder $builder): QueryBuilder
+    {
+        $builder
             ->andWhere('p.threadType = :threadType')
-            ->setParameter('threadType', PublicationThreadType::PRIMARY)
-            ->setParameter('organization', $user->getActiveOrganization())
+            ->setParameter('threadType', PublicationThreadType::PRIMARY);
+
+        return $builder;
+    }
+
+    private function filterStatus(QueryBuilder $builder): QueryBuilder
+    {
+        $builder
+            ->andWhere('p.status IN (:status)')
             ->setParameter('status', [
                 PublicationStatus::PROGRAMMED->toString(),
                 PublicationStatus::POSTED->toString(),
@@ -37,6 +78,6 @@ class PublicationRepository extends ServiceEntityRepository
                 PublicationStatus::DRAFT->toString()
             ]);
 
-        return $qb->getQuery()->getResult();
+        return $builder;
     }
 }

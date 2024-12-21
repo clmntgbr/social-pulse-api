@@ -23,7 +23,7 @@ class PatchUserActiveOrganizationAction extends AbstractController
         private readonly SerializerInterface $serializer
     ) {}
 
-    public function __invoke(PatchUserActiveOrganization $patchUserActiveOrganization, #[CurrentUser] User $user): JsonResponse
+    public function __invoke(PatchUserActiveOrganization $patchUserActiveOrganization, #[CurrentUser] ?User $user): JsonResponse
     {
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups(['user:get'])

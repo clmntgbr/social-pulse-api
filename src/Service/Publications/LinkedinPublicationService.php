@@ -29,6 +29,7 @@ readonly class LinkedinPublicationService implements PublicationServiceInterface
             throw new \Exception('This social network does not exist');
         }
 
+        $threadUuid = Uuid::uuid4()->toString();
         foreach ($postPublications->publications as $publication) {
             $uuid = Uuid::uuid4()->toString();
 
@@ -40,6 +41,8 @@ readonly class LinkedinPublicationService implements PublicationServiceInterface
             $this->publicationRepository->create([
                 'content' => $publication->content,
                 'uuid' => $uuid,
+                'threadUuid' => $threadUuid,
+                'threadType' => $publication->threadType,
                 'pictures' => $pictures,
                 'socialNetwork' => $socialNetwork,
                 'status' => $publication->status,
