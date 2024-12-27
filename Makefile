@@ -35,7 +35,7 @@ stop:
 restart: stop start
 
 ## Init project
-init: install update fabric
+init: install update fabric jwt db
 
 cache:
 	$(PHP) rm -r var/cache
@@ -62,3 +62,12 @@ update:
 
 fabric: 
 	$(PHP) bin/console messenger:setup-transports
+
+jwt: 
+	$(PHP) bin/console lexik:jwt:generate-keypair --skip-if-exists
+
+db: 
+	$(PHP) doctrine:database:drop -f
+	$(PHP) bin/console doctrine:database:create
+	$(PHP) bin/console doctrine:schema:update -f
+	$(PHP) bin/console hautelook:fixtures:load -n
