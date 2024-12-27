@@ -1,6 +1,6 @@
 services:
   php:
-    container_name: social-pulse-api-php
+    container_name: ${PROJECT_NAME}-php
     build:
       context: .
       dockerfile: ./.deployment/docker/containers/php/Dockerfile
@@ -22,7 +22,7 @@ services:
     command: --define opcache.validate_timestamps=On
 
   nginx:
-    container_name: social-pulse-api-nginx
+    container_name: ${PROJECT_NAME}-nginx
     depends_on:
       - php
     networks:
@@ -37,7 +37,7 @@ services:
       - "9000:8080"
 
   database:
-    container_name: social-pulse-api-db
+    container_name: ${PROJECT_NAME}-db
     image: mariadb:10.4.19
     env_file:
       - .env
@@ -50,7 +50,7 @@ services:
 
   rabbitmq:
     restart: unless-stopped
-    container_name: social-pulse-api-rabbitmq
+    container_name: ${PROJECT_NAME}-rabbitmq
     image: rabbitmq:3-management
     networks:
       - service
