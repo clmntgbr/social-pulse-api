@@ -5,6 +5,7 @@ namespace App\Repository\Publication;
 use App\Entity\Publication\Publication;
 use App\Entity\User;
 use App\Enum\PublicationStatus;
+use App\Repository\AbstractRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Enum\PublicationThreadType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -12,7 +13,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class PublicationRepository extends ServiceEntityRepository
+class PublicationRepository extends AbstractRepository
 {
     public function __construct(
         ManagerRegistry $registry,
@@ -72,7 +73,7 @@ class PublicationRepository extends ServiceEntityRepository
         $builder
             ->andWhere('p.status IN (:status)')
             ->setParameter('status', [
-                PublicationStatus::PROGRAMMED->toString(),
+                PublicationStatus::SCHEDULED->toString(),
                 PublicationStatus::POSTED->toString(),
                 PublicationStatus::FAILED->toString(),
                 PublicationStatus::DRAFT->toString()

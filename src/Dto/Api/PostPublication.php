@@ -20,7 +20,7 @@ class PostPublication
     #[Assert\Type('string')]
     public ?string $content;
 
-    #[Assert\Choice(choices: ['programmed', 'draft'],)]
+    #[Assert\Choice(choices: ['scheduled', 'draft'],)]
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
     public ?string $status;

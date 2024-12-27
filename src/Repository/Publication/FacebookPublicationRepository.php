@@ -12,4 +12,14 @@ class FacebookPublicationRepository extends AbstractRepository
     {
         parent::__construct($registry, FacebookPublication::class);
     }
+
+    public function create(array $data): FacebookPublication
+    {
+        $entity = new FacebookPublication();
+
+        /** @var FacebookPublication $entity */
+        $entity = $this->update($entity, $data);
+
+        return $entity;
+    }
 }

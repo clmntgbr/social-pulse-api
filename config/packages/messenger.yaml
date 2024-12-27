@@ -32,3 +32,4 @@ framework:
                         low:
                             binding_keys: [ low ]
         routing:
+            App\Message\PublishScheduledPublicationsMessage: high
