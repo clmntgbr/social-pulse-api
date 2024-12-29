@@ -3,13 +3,12 @@
 namespace App\Serializer;
 
 use ApiPlatform\State\SerializerContextBuilderInterface;
-use App\Entity\Workspace;
 use App\Service\ContextService;
 use Symfony\Component\HttpFoundation\Request;
 
 class GroupsContextBuilder implements SerializerContextBuilderInterface
 {
-    private array $allowedEntity = [Workspace::class];
+    private array $allowedEntity = [];
 
     public function __construct(
         private readonly SerializerContextBuilderInterface $decorated,

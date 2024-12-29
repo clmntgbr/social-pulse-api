@@ -58,7 +58,7 @@ readonly class PublicationService
 
             if ($publication->publishedAt <= new \DateTime()) {
                 $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($uuid), [
-                    new AmqpStamp('high', AMQP_NOPARAM, []),
+                    new AmqpStamp('high', 0, []),
                 ]);
             }
         }
