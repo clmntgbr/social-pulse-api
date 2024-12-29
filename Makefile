@@ -35,7 +35,11 @@ stop:
 restart: stop start
 
 ## Init project
-init: install update fabric jwt db
+init: install update npm fabric jwt db
+
+npm: 
+	$(PHP) npm install
+	$(PHP) npm run build
 
 cache:
 	$(PHP) rm -r var/cache
@@ -67,7 +71,7 @@ jwt:
 	$(PHP) bin/console lexik:jwt:generate-keypair --skip-if-exists
 
 db: 
-	$(PHP) doctrine:database:drop -f
-	$(PHP) bin/console doctrine:database:create
-	$(PHP) bin/console doctrine:schema:update -f
-	$(PHP) bin/console hautelook:fixtures:load -n
+	$(PHP) php bin/console doctrine:database:drop -f
+	$(PHP) php bin/console doctrine:database:create
+	$(PHP) php bin/console doctrine:schema:update -f
+	$(PHP) php bin/console hautelook:fixtures:load -n
