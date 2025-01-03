@@ -1,22 +1,14 @@
-.idea
-.vscode
 
 ###> symfony/framework-bundle ###
 /.env.local
+/.env
 /.env.local.php
 /.env.*.local
-/.env
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-.php-cs-fixer.cache
-
-###> phpstan/phpstan ###
-phpstan.neon
-###< phpstan/phpstan ###
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
@@ -28,3 +20,12 @@ phpstan.neon
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+.idea
+.vscode
+
+.php-cs-fixer.cache
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
