@@ -3,9 +3,6 @@ set -e
 
 if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
-	if [ ! -f composer.json ]; then
-	fi
-
 	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
 		composer install --prefer-dist --no-progress --no-interaction
 	fi
@@ -38,6 +35,10 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
 		php bin/console doctrine:schema:update -f
 		php bin/console lexik:jwt:generate-keypair --skip-if-exists
+
+		if [ -z "$(php bin/console doctrine:query:sql 'SELECT 1 FROM user LIMIT 1' 2>/dev/null | grep -i '1')" ]; then
+			php bin/console hautelook:fixtures:load --no-interaction
+		fi
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
