@@ -36,8 +36,8 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		php bin/console doctrine:schema:update -f
 		php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
-		if [ -z "$(php bin/console doctrine:query:sql 'SELECT 1 FROM user LIMIT 1' 2>/dev/null | grep -i '1')" ]; then
-			php bin/console hautelook:fixtures:load --no-interaction
+		if [ -z "$(php bin/console doctrine:query:sql 'SELECT 1 FROM users LIMIT 1' 2>/dev/null | grep -i '1')" ]; then
+    	php bin/console hautelook:fixtures:load --no-interaction
 		fi
 	fi
 

@@ -3,6 +3,8 @@ services:
         container_name: ${PROJECT_NAME}-php
         image: ${IMAGES_PREFIX:-}app-php
         restart: unless-stopped
+        networks:
+            - api_network
         depends_on:
             - database
             - rabbitmq
@@ -26,22 +28,27 @@ services:
             - target: 443
               published: ${HTTP3_PORT:-443}
               protocol: udp
-
+            
     database:
+        image: postgres:latest
         container_name: ${PROJECT_NAME}-db
-        image: mariadb:10.4.19
+        networks:
+            - api_network
         env_file:
             - .env
         volumes:
-            - database_data:/var/lib/mysql
+            - database_data:/var/lib/postgresql/data
         ports:
-            - "9001:3306"
+            - "9001:5432"
+        restart: unless-stopped
 
     rabbitmq:
         container_name: ${PROJECT_NAME}-rabbitmq
         restart: unless-stopped
         image: rabbitmq:3-management
         hostname: rabbitmq
+        networks:
+            - api_network
         environment:
             RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
             RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
@@ -50,13 +57,18 @@ services:
             RABBITMQ_PASS: ${RABBITMQ_PASS}
             RABBITMQ_VHOST: ${RABBITMQ_VHOST}
         volumes:
-            - rabbitmq_volume:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+            - rabbitmq_data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
         ports:
             - "9002:5672"
             - "9003:15672"
+
+networks:
+  api_network:
+    name: api_network
+    driver: bridge
 
 volumes:
     caddy_data:
     caddy_config:
     database_data:
-    rabbitmq_volume:
+    rabbitmq_data:
