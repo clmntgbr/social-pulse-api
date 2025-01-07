@@ -1,18 +1,28 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $backUrl: '%env(resolve:BACK_URL)%'
+            string $frontUrl: '%env(resolve:FRONT_URL)%'
+            string $callbackUrl: '%env(resolve:CALLBACK_URL)%'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+            string $facebookClientId: '%env(resolve:FACEBOOK_CLIENT_ID)%'
+            string $facebookClientSecret: '%env(resolve:FACEBOOK_CLIENT_SECRET)%'
+            string $facebookApiUrl: '%env(resolve:FACEBOOK_API_URL)%'
+            string $facebookLoginUrl: '%env(resolve:FACEBOOK_LOGIN_URL)%'
+
+            string $linkedinClientId: '%env(resolve:LINKEDIN_CLIENT_ID)%'
+            string $linkedinClientSecret: '%env(resolve:LINKEDIN_CLIENT_SECRET)%'
+            string $linkedinApiUrl: '%env(resolve:LINKEDIN_API_URL)%'
+            string $linkedinLoginUrl: '%env(resolve:LINKEDIN_LOGIN_URL)%'
+            #
+            string $twitterApiUrl: '%env(resolve:TWITTER_API_URL)%'
+            string $twitterApiKey: '%env(resolve:TWITTER_API_KEY)%'
+            string $twitterApiSecret: '%env(resolve:TWITTER_API_SECRET)%'
+
     App\:
         resource: '../src/'
         exclude:
@@ -20,5 +30,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Serializer\GroupsContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\GroupsContextBuilder.inner' ]
+        autoconfigure: false
+

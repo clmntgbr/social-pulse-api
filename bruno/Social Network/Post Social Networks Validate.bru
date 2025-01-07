@@ -1,0 +1,34 @@
+meta {
+  name: Post Social Networks Validate
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:9000/api/social_networks/validate/e2abf229-d99c-4690-8b5d-2da3e2c788ff
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json, text/plain, */*
+  Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MzM5MjA0MDUsImV4cCI6MTczNDUyNTIwNSwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImNsZW1lbnRAZ21haWwuY29tIn0.nPqPU9yoWzZTqlPVSUU1-GcB1KVJeSiiqSFxp1NaUWlEgRYcMIXSF5B0s_mHKhRj3cyT_xiFodwJ-3BdY7AxXQcoznfrFE7ZtPQQrJD0SQfuWZuA6RPb3RZ6VOb0_vHPI6j1JPKN9FHlUIQpmSkcnxm6wlpyOb7M2gE6ljv6oZWpDTvw9s4_GQzirqzyma97pmGxGIKBKrXELReCHHuNCOgvc5qWLkVVe302RuOT1w7yiAXL6laBG-wDUYL9k-61DbJwWGyNVuUB3KC_fC8LwX0mlkB8SpZwTvTRaeCfjh9dgDOeST3gHOqddfHmDF1jKeou5cT5COqSu0IPRUcX7g
+  Connection: keep-alive
+  Content-Type: application/json
+  Origin: http://localhost:3000
+  Referer: http://localhost:3000/
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-site
+  User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36
+  sec-ch-ua: "Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"
+  sec-ch-ua-mobile: ?0
+  sec-ch-ua-platform: "Linux"
+}
+
+body:json {
+  [
+      "3609c688-8b59-46e1-9731-c8e25f67c541"
+  ]
+}

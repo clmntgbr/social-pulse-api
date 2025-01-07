@@ -1,0 +1,89 @@
+#App\Entity\Publication\LinkedinPublication:
+#  publications_{1..50}:
+#    socialNetwork: '@social_networks_linkedin_*'
+#    publicationId: '<uuid()>'
+#    threadUuid: '<uuid()>'
+#    content: '<paragraph()>'
+#    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+#    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+#
+#App\Entity\Publication\InstagramPublication:
+#  publications_{51..100}:
+#    publicationId: '<uuid()>'
+#    socialNetwork: '@social_networks_instagram_*'
+#    threadUuid: '<uuid()>'
+#    content: '<paragraph()>'
+#    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+#    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+#
+#App\Entity\Publication\YoutubePublication:
+#  publications_{101..150}:
+#    socialNetwork: '@social_networks_youtube_*'
+#    publicationId: '<uuid()>'
+#    threadUuid: '<uuid()>'
+#    content: '<paragraph()>'
+#    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+#    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+#
+#App\Entity\Publication\FacebookPublication:
+#  publications_{151..200}:
+#    socialNetwork: '@social_networks_facebook_*'
+#    publicationId: '<uuid()>'
+#    threadUuid: '<uuid()>'
+#    content: '<paragraph()>'
+#    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+#    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+#
+#App\Entity\Publication\TwitterPublication:
+#  publications_{201..250}:
+#    socialNetwork: '@social_networks_twitter_*'
+#    publicationId: '<uuid()>'
+#    threadUuid: '<uuid()>'
+#    content: '<paragraph()>'
+#    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+#    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+##
+###App\Entity\Publication\LinkedinPublication:
+###  publications_{1..500}:
+###    socialNetwork: '@social_networks_linkedin_*'
+###    publicationId: '<uuid()>'
+###    threadUuid: '<uuid()>'
+###    content: '<paragraph()>'
+###    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+###    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+###
+###App\Entity\Publication\InstagramPublication:
+###  publications_{501..1000}:
+###    publicationId: '<uuid()>'
+###    socialNetwork: '@social_networks_instagram_*'
+###    threadUuid: '<uuid()>'
+###    content: '<paragraph()>'
+###    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+###    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+###
+###App\Entity\Publication\YoutubePublication:
+###  publications_{1001..1500}:
+###    socialNetwork: '@social_networks_youtube_*'
+###    publicationId: '<uuid()>'
+###    threadUuid: '<uuid()>'
+###    content: '<paragraph()>'
+###    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+###    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+###
+###App\Entity\Publication\FacebookPublication:
+###  publications_{1501..2000}:
+###    socialNetwork: '@social_networks_facebook_*'
+###    publicationId: '<uuid()>'
+###    threadUuid: '<uuid()>'
+###    content: '<paragraph()>'
+###    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+###    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'
+###
+###App\Entity\Publication\TwitterPublication:
+###  publications_{2001..2500}:
+###    socialNetwork: '@social_networks_twitter_*'
+###    publicationId: '<uuid()>'
+###    threadUuid: '<uuid()>'
+###    content: '<paragraph()>'
+###    status: '<randomElement(["posted", "scheduled", "failed", "draft"])>'
+###    publishedAt: '<dateTimeBetween("first day of this month", "last day of this month")>'

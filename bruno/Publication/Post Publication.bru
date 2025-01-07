@@ -1,0 +1,77 @@
+meta {
+  name: Post Publication
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_url}}api/publications
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json, text/plain, */*
+  Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MzQ2MjI2NDIsImV4cCI6MTczNTIyNzQ0Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImNsZW1lbnRAZ21haWwuY29tIn0.PagZmuiVa-zY5xVWEq5hNRGdz39enOOE2cA2r2uqWMe7KbTpFVdgLjoWECvneFivYQ1NKkO9eMxb0ZZK3ieoqLeN_4izwWuQCcnGeJCXTCdN9CERR-uMuUQRcxsZzgu6hg-d0fYcIYnn79rW19JoSr8eY5-LGnb-ZKIr4bEzoXEAf8E4TlXHRUFYa2JKwugE50WP5-dtwKhBm3Csbd5lKdYDAjm1aoaS6dkuhC_Pzipx7-oEvkN_w-eaZatRMzqh7U72rornj21qzPVFL9Z4jqLJgqu7hw7SNsdXf7o9V06axk_xeuY17bXVOs4trXzmZwvFuOQKGyqg9Fy3gRKMXA
+  Connection: keep-alive
+  Content-Type: application/json
+  Origin: http://localhost:3000
+  Referer: http://localhost:3000/
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-site
+  User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+  sec-ch-ua: "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+  sec-ch-ua-mobile: ?0
+  sec-ch-ua-platform: "Linux"
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  [
+      {
+          "uuid": "c29716e6-32b0-41e5-bf84-a896a947b83c",
+          "id": 1,
+          "publicationType": "twitter",
+          "publicationId": null,
+          "threadUuid": null,
+          "characters": 2,
+          "threadType": "primary",
+          "publishedAt": "2025-01-05T13:13:31.027Z",
+          "content": "zzzz",
+          "status": "scheduled",
+          "pictures": [],
+          "socialNetwork": {
+              "createdAt": "2025-01-05T13:13:16+00:00",
+              "updatedAt": "2025-01-05T13:13:16+00:00",
+              "socialNetworkType": {
+                  "name": "twitter",
+                  "color": "#1da1f2",
+                  "uuid": "cdc48308-24af-4227-aebe-663935a69fd1"
+              },
+              "followers": 0,
+              "followings": 0,
+              "shares": 0,
+              "comments": 0,
+              "likes": 0,
+              "maxCharacter": 280,
+              "isVerified": false,
+              "avatarUrl": "https://avatar.vercel.sh/personal.png",
+              "username": "ihomenick",
+              "name": "aritchie",
+              "email": null,
+              "status": "active",
+              "validate": null,
+              "uuid": "1c1a01a1-d830-470b-a2e0-4c5a08383a24"
+          }
+      }
+  ]
+}
+
+body:multipart-form {
+  pictures[]: @file(/home/clement/Downloads/1734629769975.jpeg|/home/clement/Downloads/1732654984107.jpeg|/home/clement/Downloads/1732206934509.jpeg)
+}

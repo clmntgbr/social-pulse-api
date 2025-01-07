@@ -1,7 +1,7 @@
 framework:
     messenger:
         transports:
-            default:
+            high:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 options:
                     exchange:
@@ -9,6 +9,27 @@ framework:
                         type: direct
                     auto_setup: true
                     queues:
-                        default:
-                            binding_keys: [default]
+                        high:
+                            binding_keys: [high]
+            medium:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        medium:
+                            binding_keys: [medium]
+            low:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        low:
+                            binding_keys: [low]
         routing:
+            App\Message\PublishScheduledPublicationsMessage: high

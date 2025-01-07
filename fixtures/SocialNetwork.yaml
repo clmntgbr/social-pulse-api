@@ -1,0 +1,54 @@
+App\Entity\SocialNetwork\LinkedinSocialNetwork:
+  social_networks_linkedin_{1..20}:
+    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+    organization: '@organization_*'
+    username: '<username()>'
+    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+    name: '<username()>'
+    token: '<uuid()>'
+    status: 'active'
+    socialNetworkType: '@type_linkedin'
+
+App\Entity\SocialNetwork\InstagramSocialNetwork:
+  social_networks_instagram_{21..40}:
+    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+    organization: '@organization_*'
+    username: '<username()>'
+    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+    name: '<username()>'
+    token: '<uuid()>'
+    status: 'active'
+    socialNetworkType: '@type_instagram'
+
+App\Entity\SocialNetwork\YoutubeSocialNetwork:
+  social_networks_youtube_{41..60}:
+    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+    organization: '@organization_*'
+    username: '<username()>'
+    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+    name: '<username()>'
+    token: '<uuid()>'
+    status: 'active'
+    socialNetworkType: '@type_youtube'
+
+App\Entity\SocialNetwork\FacebookSocialNetwork:
+  social_networks_facebook_{61..80}:
+    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+    organization: '@organization_*'
+    username: '<username()>'
+    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+    name: '<username()>'
+    token: '<uuid()>'
+    status: 'active'
+    socialNetworkType: '@type_facebook'
+
+App\Entity\SocialNetwork\TwitterSocialNetwork:
+  social_networks_twitter_{81..100}:
+    socialNetworkId: '<numberBetween(100000000000000, 999999999999999)>'
+    organization: '@organization_*'
+    username: '<username()>'
+    avatarUrl: 'https://avatar.vercel.sh/personal.png'
+    name: '<username()>'
+    token: '<uuid()>'
+    status: 'active'
+    socialNetworkType: '@type_twitter'

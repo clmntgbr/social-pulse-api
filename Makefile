@@ -33,7 +33,7 @@ stop:
 restart: stop start
 
 ## Init project
-init: install update npm fabric db
+init: install update npm fabric jwt db
 
 npm: 
 	$(PHP) npm install
@@ -60,6 +60,9 @@ update:
 
 fabric: 
 	$(PHP) php bin/console messenger:setup-transports
+
+jwt: 
+	$(PHP) php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
 db: 
 	$(PHP) php bin/console doctrine:database:drop -f

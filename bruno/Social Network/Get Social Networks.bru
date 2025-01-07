@@ -1,0 +1,15 @@
+meta {
+  name: Get Social Networks
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{api_url}}api/social_networks
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
