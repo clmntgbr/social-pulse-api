@@ -31,8 +31,7 @@ RUN set -eux; \
     pdo_pgsql \
 		gd \
     sockets \
-		amqp \
-	;
+		amqp;
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
