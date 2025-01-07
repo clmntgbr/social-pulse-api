@@ -55,6 +55,7 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
         ]);
 
         try {
+
             $authLink = $this->twitterOAuth->oauth("oauth/request_token", [
                 "oauth_callback" => sprintf('%s?state=%s', sprintf($this->callbackUrl, 'twitter'), $user->getSocialNetworksState())
             ]);
