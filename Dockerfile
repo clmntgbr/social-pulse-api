@@ -11,13 +11,13 @@ WORKDIR /app
 VOLUME /app/var/
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	acl \
-	file \
-	gettext \
-	git \
-	nodejs=20.* \
-	npm=10.* \
-	&& rm -rf /var/lib/apt/lists/*
+    acl=2.3.* \
+    file=1:5.44-* \
+    gettext=0.21-* \
+    git=1:2.39.* \
+    nodejs=20.* \
+    npm=10.* \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
 	install-php-extensions \
