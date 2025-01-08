@@ -12,8 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TypeRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Type::class);
+        parent::__construct($managerRegistry, Type::class);
     }
 }

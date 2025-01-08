@@ -16,9 +16,9 @@ final class PublishScheduledPublicationsMessageHandler
     ) {
     }
 
-    public function __invoke(PublishScheduledPublicationsMessage $message): void
+    public function __invoke(PublishScheduledPublicationsMessage $publishScheduledPublicationsMessage): void
     {
-        $publication = $this->publicationRepository->findOneBy(['uuid' => $message->getUuid()]);
+        $publication = $this->publicationRepository->findOneBy(['uuid' => $publishScheduledPublicationsMessage->getUuid()]);
 
         if (!$publication instanceof Publication) {
             return;

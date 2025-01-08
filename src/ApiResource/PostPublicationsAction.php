@@ -34,8 +34,8 @@ class PostPublicationsAction extends AbstractController
             ->withGroups(['publications:get', 'social-networks:get', 'social-networks-type:get', 'default'])
             ->toArray();
 
-        $service = $this->publicationServiceFactory->getService($postPublications->publicationType);
-        $service->create($postPublications);
+        $publicationService = $this->publicationServiceFactory->getService($postPublications->publicationType);
+        $publicationService->create($postPublications);
 
         return new JsonResponse(
             data: $this->serializer->serialize($this->publicationRepository->findAll(), 'json', $context),

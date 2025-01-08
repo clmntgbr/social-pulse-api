@@ -18,24 +18,24 @@ readonly class GetSocialNetworksCallbackResolver implements ValueResolverInterfa
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (GetSocialNetworksCallback::class !== $argument->getType()) {
+        if (GetSocialNetworksCallback::class !== $argumentMetadata->getType()) {
             return;
         }
 
-        $dto = new GetSocialNetworksCallback();
-        $dto->code = $request->query->get('code', null);
-        $dto->state = $request->query->get('state', null);
-        $dto->oauthToken = $request->query->get('oauth_token', null);
-        $dto->oauthVerifier = $request->query->get('oauth_verifier', null);
-        $dto->socialNetworkType = $request->attributes->get('platform', null);
+        $getSocialNetworksCallback = new GetSocialNetworksCallback();
+        $getSocialNetworksCallback->code = $request->query->get('code', null);
+        $getSocialNetworksCallback->state = $request->query->get('state', null);
+        $getSocialNetworksCallback->oauthToken = $request->query->get('oauth_token', null);
+        $getSocialNetworksCallback->oauthVerifier = $request->query->get('oauth_verifier', null);
+        $getSocialNetworksCallback->socialNetworkType = $request->attributes->get('platform', null);
 
-        $errors = $this->validator->validate($dto, null, [$dto->socialNetworkType]);
+        $errors = $this->validator->validate($getSocialNetworksCallback, null, [$getSocialNetworksCallback->socialNetworkType]);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $dto;
+        yield $getSocialNetworksCallback;
     }
 }

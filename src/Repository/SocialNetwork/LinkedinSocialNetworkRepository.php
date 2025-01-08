@@ -8,15 +8,15 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class LinkedinSocialNetworkRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, LinkedinSocialNetwork::class);
+        parent::__construct($managerRegistry, LinkedinSocialNetwork::class);
     }
 
     public function updateOrCreate(array $searchPayload, array $updatePayload): LinkedinSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if (!$account) {
+        if ($account === null) {
             $account = new LinkedinSocialNetwork();
         }
 

@@ -10,20 +10,20 @@ use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 readonly class TwitterPublicationService implements PublicationServiceInterface
 {
     public function __construct(
-        private readonly TwitterPublicationRepository $publicationRepository,
-        private readonly TwitterSocialNetworkRepository $socialNetworkRepository,
-        private readonly PublicationService $service,
+        private readonly TwitterPublicationRepository $twitterPublicationRepository,
+        private readonly TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
+        private readonly PublicationService $publicationService,
     ) {
     }
 
     public function create(PostPublications $postPublications): void
     {
-        $socialNetwork = $this->socialNetworkRepository->findOneByCriteria(['uuid' => $postPublications->socialNetworkUuid]);
+        $socialNetwork = $this->twitterSocialNetworkRepository->findOneByCriteria(['uuid' => $postPublications->socialNetworkUuid]);
 
         if (!$socialNetwork instanceof TwitterSocialNetwork) {
             throw new \Exception('This social network does not exist');
         }
 
-        $this->service->publish($postPublications, $socialNetwork, $this->publicationRepository);
+        $this->publicationService->publish($postPublications, $socialNetwork, $this->twitterPublicationRepository);
     }
 }

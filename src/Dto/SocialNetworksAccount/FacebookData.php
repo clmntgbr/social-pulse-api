@@ -17,6 +17,7 @@ class FacebookData extends AbstractAccount
     public string $accessToken;
 
     public int $followersCount = 0;
+
     public int $fanCount = 0;
 
     #[Assert\Type('string')]
@@ -28,6 +29,7 @@ class FacebookData extends AbstractAccount
     public string $link;
 
     public ?string $website;
+
     public ?string $picture;
 
     #[Assert\Type('string')]

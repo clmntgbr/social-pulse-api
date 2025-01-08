@@ -8,8 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class InstagramPublicationRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, InstagramPublication::class);
+        parent::__construct($managerRegistry, InstagramPublication::class);
     }
 }

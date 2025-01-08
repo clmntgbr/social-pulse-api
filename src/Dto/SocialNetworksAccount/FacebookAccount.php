@@ -22,19 +22,19 @@ class FacebookAccount extends AbstractAccount
     public function setAccounts(?array $accounts): self
     {
         $datas = $accounts['data'] ?? [];
-        $this->accounts = array_map(function ($datas) {
-            $account = new FacebookData();
-            $account->accessToken = $datas['access_token'];
-            $account->name = $datas['name'];
-            $account->id = $datas['id'];
-            $account->pageToken = $datas['page_token'];
-            $account->website = $datas['website'] ?? null;
-            $account->picture = $datas['picture']['data']['url'] ?? null;
-            $account->link = $datas['link'];
-            $account->followersCount = $datas['followers_count'];
-            $account->fanCount = $datas['fan_count'];
+        $this->accounts = array_map(function ($datas): FacebookData {
+            $facebookData = new FacebookData();
+            $facebookData->accessToken = $datas['access_token'];
+            $facebookData->name = $datas['name'];
+            $facebookData->id = $datas['id'];
+            $facebookData->pageToken = $datas['page_token'];
+            $facebookData->website = $datas['website'] ?? null;
+            $facebookData->picture = $datas['picture']['data']['url'] ?? null;
+            $facebookData->link = $datas['link'];
+            $facebookData->followersCount = $datas['followers_count'];
+            $facebookData->fanCount = $datas['fan_count'];
 
-            return $account;
+            return $facebookData;
         }, $datas ?? []);
 
         return $this;

@@ -23,8 +23,8 @@ class GetSocialNetworksConnectAction extends AbstractController
 
     public function __invoke(GetSocialNetworksConnect $getSocialNetworksConnect, #[CurrentUser] ?User $user): JsonResponse
     {
-        $service = $this->socialNetworkServiceFactory->getService($getSocialNetworksConnect->socialNetworkType);
-        $url = $service->getConnectUrl($user, $getSocialNetworksConnect->callbackPath);
+        $socialNetworkService = $this->socialNetworkServiceFactory->getService($getSocialNetworksConnect->socialNetworkType);
+        $url = $socialNetworkService->getConnectUrl($user, $getSocialNetworksConnect->callbackPath);
 
         return new JsonResponse(
             data: $this->serializer->serialize(['url' => $url], 'json'),

@@ -28,7 +28,7 @@ readonly class PublicationService
     /**
      * @throws ExceptionInterface
      */
-    public function publish(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $publicationRepository): void
+    public function publish(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $repositoryRepository): void
     {
         $threadUuid = Uuid::uuid4()->toString();
 
@@ -41,7 +41,7 @@ readonly class PublicationService
             }
 
             /* @var FacebookPublicationRepository | LinkedinPublicationRepository | TwitterPublicationRepository | InstagramPublicationRepository | YoutubePublicationRepository $publicationRepository */
-            $publicationRepository->create([
+            $repositoryRepository->create([
                 'content' => $publication->content,
                 'uuid' => $uuid,
                 'threadUuid' => $threadUuid,

@@ -15,7 +15,7 @@ class AppController extends AbstractController
     }
 
     #[Route('/debug', name: 'debug', methods: ['GET'])]
-    public function debug()
+    public function debug(): void
     {
         phpinfo();
     }

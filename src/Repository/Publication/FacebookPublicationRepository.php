@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class FacebookPublicationRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, FacebookPublication::class);
+        parent::__construct($managerRegistry, FacebookPublication::class);
     }
 
     public function create(array $data): FacebookPublication

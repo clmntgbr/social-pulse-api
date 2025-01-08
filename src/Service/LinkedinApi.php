@@ -20,7 +20,7 @@ readonly class LinkedinApi implements InterfaceApi
         private string $linkedinClientSecret,
         private string $callbackUrl,
         private string $linkedinApiUrl,
-        private HttpClientInterface $client,
+        private HttpClientInterface $httpClient,
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         private ValidatorError $validatorError,
@@ -38,7 +38,7 @@ readonly class LinkedinApi implements InterfaceApi
         $url = sprintf('%s/oauth/v2/accessToken', $this->linkedinApiUrl);
 
         try {
-            $response = $this->client->request('POST', $url, [
+            $response = $this->httpClient->request('POST', $url, [
                 'query' => [
                     'grant_type' => 'authorization_code',
                     'code' => $params[0],
@@ -56,7 +56,7 @@ readonly class LinkedinApi implements InterfaceApi
             }
 
             return $linkedinAccessToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -67,16 +67,16 @@ readonly class LinkedinApi implements InterfaceApi
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function getAccounts(LinkedinAccessToken $token): ?LinkedinAccount
+    public function getAccounts(LinkedinAccessToken $linkedinAccessToken): ?LinkedinAccount
     {
         $url = sprintf('%s/v2/userinfo',
             $this->linkedinApiUrl
         );
 
         try {
-            $response = $this->client->request('GET', $url, [
+            $response = $this->httpClient->request('GET', $url, [
                 'headers' => [
-                    'Authorization' => sprintf('Bearer %s', $token->accessToken),
+                    'Authorization' => sprintf('Bearer %s', $linkedinAccessToken->accessToken),
                     'Connection' => 'Keep-Alive',
                     'ContentType' => 'application / json',
                 ],

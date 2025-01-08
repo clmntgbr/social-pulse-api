@@ -23,7 +23,7 @@ readonly class SocialNetworkServiceFactory
         private TwitterApi $twitterApi,
         private UserRepository $userRepository,
         private TypeRepository $typeRepository,
-        private FacebookSocialNetworkRepository $socialNetworkRepository,
+        private FacebookSocialNetworkRepository $facebookSocialNetworkRepository,
         private LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
         private TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
         private SerializerInterface $serializer,
@@ -57,7 +57,7 @@ readonly class SocialNetworkServiceFactory
             SocialNetworkType::FACEBOOK->toString() => new FacebookSocialNetworkService(
                 $this->facebookApi,
                 $this->userRepository,
-                $this->socialNetworkRepository,
+                $this->facebookSocialNetworkRepository,
                 $this->typeRepository,
                 $this->facebookLoginUrl,
                 $this->facebookClientId,

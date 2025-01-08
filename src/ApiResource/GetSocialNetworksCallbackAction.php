@@ -18,8 +18,8 @@ class GetSocialNetworksCallbackAction extends AbstractController
 
     public function __invoke(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse
     {
-        $service = $this->socialNetworkServiceFactory->getService($getSocialNetworksCallback->socialNetworkType);
+        $socialNetworkService = $this->socialNetworkServiceFactory->getService($getSocialNetworksCallback->socialNetworkType);
 
-        return $service->create($getSocialNetworksCallback);
+        return $socialNetworkService->create($getSocialNetworksCallback);
     }
 }

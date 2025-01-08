@@ -71,7 +71,7 @@ final readonly class OrganizationExtension implements QueryCollectionExtensionIn
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder
-            ->andWhere("$rootAlias.uuid = :uuid")
+            ->andWhere($rootAlias . '.uuid = :uuid')
             ->setParameter('uuid', $user->getActiveOrganization()->getUuid());
     }
 }

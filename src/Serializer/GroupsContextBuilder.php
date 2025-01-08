@@ -11,14 +11,14 @@ class GroupsContextBuilder implements SerializerContextBuilderInterface
     private array $allowedEntity = [];
 
     public function __construct(
-        private readonly SerializerContextBuilderInterface $decorated,
+        private readonly SerializerContextBuilderInterface $serializerContextBuilder,
         private readonly ContextService $contextService,
     ) {
     }
 
     public function createFromRequest(Request $request, bool $normalization, ?array $extractedAttributes = null): array
     {
-        $context = $this->decorated->createFromRequest($request, $normalization, $extractedAttributes);
+        $context = $this->serializerContextBuilder->createFromRequest($request, $normalization, $extractedAttributes);
         $resourceClass = $context['resource_class'] ?? null;
 
         if (!in_array($resourceClass, $this->allowedEntity, true)) {

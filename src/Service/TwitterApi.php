@@ -23,7 +23,7 @@ readonly class TwitterApi implements InterfaceApi
         private string $twitterApiSecret,
         private string $callbackUrl,
         private string $twitterApiUrl,
-        private HttpClientInterface $client,
+        private HttpClientInterface $httpClient,
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         private ValidatorError $validatorError,
@@ -45,7 +45,7 @@ readonly class TwitterApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('POST', $url);
+            $response = $this->httpClient->request('POST', $url);
             parse_str($response->getContent(), $decoded);
 
             $twitterAccessToken = $this->serializer->deserialize(json_encode($decoded), TwitterAccessToken::class, 'json');
@@ -56,7 +56,7 @@ readonly class TwitterApi implements InterfaceApi
             }
 
             return $twitterAccessToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -68,7 +68,7 @@ readonly class TwitterApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('POST', $url, [
+            $response = $this->httpClient->request('POST', $url, [
                 'headers' => [
                     'Authorization' => sprintf('Basic %s', base64_encode(sprintf('%s:%s', $this->twitterApiKey, $this->twitterApiSecret))),
                 ],
@@ -82,7 +82,7 @@ readonly class TwitterApi implements InterfaceApi
             }
 
             return $twitterBearerToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -94,13 +94,13 @@ readonly class TwitterApi implements InterfaceApi
      * @throws ServerExceptionInterface
      * @throws TwitterOAuthException
      */
-    public function getAccounts(TwitterAccessToken $token): ?TwitterAccount
+    public function getAccounts(TwitterAccessToken $twitterAccessToken): ?TwitterAccount
     {
         try {
-            $client = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $token->oauthToken, $token->oauthTokenSecret);
-            $client->setApiVersion('2');
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $twitterAccessToken->oauthToken, $twitterAccessToken->oauthTokenSecret);
+            $twitterOAuth->setApiVersion('2');
 
-            $response = $client->get('users/me', [
+            $response = $twitterOAuth->get('users/me', [
                 'expansions' => ['pinned_tweet_id'],
                 'user.fields' => $this->getScopes(),
             ]);

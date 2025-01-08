@@ -18,20 +18,20 @@ readonly class PatchUserActiveOrganizationResolver implements ValueResolverInter
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (PatchUserActiveOrganization::class !== $argument->getType()) {
+        if (PatchUserActiveOrganization::class !== $argumentMetadata->getType()) {
             return;
         }
 
-        $dto = new PatchUserActiveOrganization();
-        $dto->organizationUuid = $request->attributes->get('uuid', null);
+        $patchUserActiveOrganization = new PatchUserActiveOrganization();
+        $patchUserActiveOrganization->organizationUuid = $request->attributes->get('uuid', null);
 
-        $errors = $this->validator->validate($dto);
+        $errors = $this->validator->validate($patchUserActiveOrganization);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $dto;
+        yield $patchUserActiveOrganization;
     }
 }

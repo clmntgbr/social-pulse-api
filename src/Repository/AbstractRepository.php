@@ -7,9 +7,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    public function delete(SocialNetwork $entity): void
+    public function delete(SocialNetwork $socialNetwork): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->remove($socialNetwork);
         $this->getEntityManager()->flush();
     }
 
@@ -19,7 +19,7 @@ abstract class AbstractRepository extends ServiceEntityRepository
             $queryBuilder = $this->createQueryBuilder('p');
 
             foreach ($criteria as $key => $value) {
-                $queryBuilder->andWhere("p.$key = :$key")
+                $queryBuilder->andWhere(sprintf('p.%s = :%s', $key, $key))
                     ->setParameter($key, $value);
             }
 
