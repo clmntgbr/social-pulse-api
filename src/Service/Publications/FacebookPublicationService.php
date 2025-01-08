@@ -13,8 +13,9 @@ readonly class FacebookPublicationService implements PublicationServiceInterface
     public function __construct(
         private readonly FacebookPublicationRepository $publicationRepository,
         private readonly FacebookSocialNetworkRepository $socialNetworkRepository,
-        private readonly PublicationService $service
-    ) {}
+        private readonly PublicationService $service,
+    ) {
+    }
 
     /**
      * @throws ExceptionInterface

@@ -15,13 +15,14 @@ readonly class UserRegisterResolver implements ValueResolverInterface
 {
     public function __construct(
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== UserRegister::class) {
+        if (UserRegister::class !== $argument->getType()) {
             return;
         }
 

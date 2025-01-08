@@ -16,8 +16,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class PostSocialNetworksValidateAction extends AbstractController
 {
     public function __construct(
-        private readonly SocialNetworkRepository $socialNetworkRepository
-    ) {}
+        private readonly SocialNetworkRepository $socialNetworkRepository,
+    ) {
+    }
 
     public function __invoke(PostSocialNetworksValidate $postSocialNetworksValidate, #[CurrentUser] ?User $user): JsonResponse
     {

@@ -12,8 +12,9 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 final class PublishScheduledPublicationsMessageHandler
 {
     public function __construct(
-        private readonly PublicationRepository $publicationRepository
-    ) {}
+        private readonly PublicationRepository $publicationRepository,
+    ) {
+    }
 
     public function __invoke(PublishScheduledPublicationsMessage $message): void
     {

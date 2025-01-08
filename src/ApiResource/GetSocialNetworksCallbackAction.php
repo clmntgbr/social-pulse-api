@@ -12,12 +12,14 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 class GetSocialNetworksCallbackAction extends AbstractController
 {
     public function __construct(
-        private readonly SocialNetworkServiceFactory $socialNetworkServiceFactory
-    ) {}
+        private readonly SocialNetworkServiceFactory $socialNetworkServiceFactory,
+    ) {
+    }
 
     public function __invoke(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse
     {
         $service = $this->socialNetworkServiceFactory->getService($getSocialNetworksCallback->socialNetworkType);
+
         return $service->create($getSocialNetworksCallback);
     }
 }

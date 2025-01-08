@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-
 use App\Dto\AccessToken\AbstractAccessToken;
 
 interface InterfaceApi

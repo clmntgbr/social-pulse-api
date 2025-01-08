@@ -15,7 +15,7 @@ class TwitterSocialNetwork extends SocialNetwork
 {
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $tokenSecret = null;
-    
+
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $bearerToken = null;
 

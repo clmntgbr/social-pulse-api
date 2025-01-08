@@ -21,11 +21,11 @@ class Type
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks-type:get"])]
+    #[Groups(['social-networks-type:get'])]
     private ?string $name;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks-type:get"])]
+    #[Groups(['social-networks-type:get'])]
     private ?string $color;
 
     public function __construct()

@@ -15,19 +15,19 @@ readonly class PostOrganizationsResolver implements ValueResolverInterface
 {
     public function __construct(
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== PostOrganizations::class) {
+        if (PostOrganizations::class !== $argument->getType()) {
             return;
         }
 
         $content = $request->getContent();
         $userRegister = $this->serializer->deserialize($content, PostOrganizations::class, 'json');
-
 
         $errors = $this->validator->validate($userRegister);
         if (count($errors) > 0) {

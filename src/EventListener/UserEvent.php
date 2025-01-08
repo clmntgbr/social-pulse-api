@@ -19,8 +19,9 @@ readonly class UserEvent
 {
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
-        private OrganizationRepository $organizationRepository
-    ) {}
+        private OrganizationRepository $organizationRepository,
+    ) {
+    }
 
     #[NoReturn]
     public function prePersist(PrePersistEventArgs $event): void

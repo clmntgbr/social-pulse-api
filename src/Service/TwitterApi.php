@@ -19,15 +19,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 readonly class TwitterApi implements InterfaceApi
 {
     public function __construct(
-        private string              $twitterApiKey,
-        private string              $twitterApiSecret,
-        private string              $callbackUrl,
-        private string              $twitterApiUrl,
+        private string $twitterApiKey,
+        private string $twitterApiSecret,
+        private string $callbackUrl,
+        private string $twitterApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError      $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     /**
      * @throws TransportExceptionInterface
@@ -70,7 +71,7 @@ readonly class TwitterApi implements InterfaceApi
             $response = $this->client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => sprintf('Basic %s', base64_encode(sprintf('%s:%s', $this->twitterApiKey, $this->twitterApiSecret))),
-                ]
+                ],
             ]);
 
             $twitterBearerToken = $this->serializer->deserialize($response->getContent(), TwitterBearerToken::class, 'json');

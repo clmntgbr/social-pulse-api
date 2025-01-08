@@ -9,16 +9,6 @@ use App\Repository\Publication\TwitterPublicationRepository;
 use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
-use App\Repository\SocialNetwork\TypeRepository;
-use App\Repository\UserRepository;
-use App\Service\FacebookApi;
-use App\Service\ImageService;
-use App\Service\LinkedinApi;
-use App\Service\TwitterApi;
-use App\Service\ValidatorError;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 readonly class PublicationServiceFactory
 {
@@ -29,8 +19,9 @@ readonly class PublicationServiceFactory
         private readonly FacebookSocialNetworkRepository $facebookSocialNetworkRepository,
         private readonly TwitterPublicationRepository $twitterPublicationRepository,
         private readonly TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
-        private readonly PublicationService $publicationService
-    ){}
+        private readonly PublicationService $publicationService,
+    ) {
+    }
 
     public function getService(string $type): PublicationServiceInterface
     {

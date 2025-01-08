@@ -3,7 +3,6 @@
 namespace App\Resolver;
 
 use App\Dto\Api\GetPublication;
-use App\Dto\Api\GetSocialNetworksCallback;
 use App\Service\ValidatorError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -14,13 +13,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 readonly class GetPublicationResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== GetPublication::class) {
+        if (GetPublication::class !== $argument->getType()) {
             return;
         }
 

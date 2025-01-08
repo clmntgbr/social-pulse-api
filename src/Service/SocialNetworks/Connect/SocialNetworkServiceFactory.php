@@ -18,27 +18,28 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 readonly class SocialNetworkServiceFactory
 {
     public function __construct(
-        private FacebookApi                     $facebookApi,
-        private LinkedinApi                     $linkedinApi,
-        private TwitterApi                      $twitterApi,
-        private UserRepository                  $userRepository,
-        private TypeRepository                  $typeRepository,
+        private FacebookApi $facebookApi,
+        private LinkedinApi $linkedinApi,
+        private TwitterApi $twitterApi,
+        private UserRepository $userRepository,
+        private TypeRepository $typeRepository,
         private FacebookSocialNetworkRepository $socialNetworkRepository,
         private LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
-        private TwitterSocialNetworkRepository  $twitterSocialNetworkRepository,
-        private SerializerInterface             $serializer,
-        private ValidatorInterface              $validator,
-        private ValidatorError                  $validatorError,
-        private string                          $facebookLoginUrl,
-        private string                          $facebookClientId,
-        private string                          $callbackUrl,
-        private string                          $linkedinLoginUrl,
-        private string                          $linkedinClientId,
-        private string                          $twitterApiUrl,
-        private string                          $twitterApiKey,
-        private string                          $twitterApiSecret,
-        private string                          $frontUrl
-    ) {}
+        private TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
+        private SerializerInterface $serializer,
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+        private string $facebookLoginUrl,
+        private string $facebookClientId,
+        private string $callbackUrl,
+        private string $linkedinLoginUrl,
+        private string $linkedinClientId,
+        private string $twitterApiUrl,
+        private string $twitterApiKey,
+        private string $twitterApiSecret,
+        private string $frontUrl,
+    ) {
+    }
 
     public function getService(string $type): SocialNetworkServiceInterface
     {

@@ -17,8 +17,9 @@ class GetSocialNetworksConnectAction extends AbstractController
 {
     public function __construct(
         private readonly SocialNetworkServiceFactory $socialNetworkServiceFactory,
-        private readonly SerializerInterface $serializer
-    ) {}
+        private readonly SerializerInterface $serializer,
+    ) {
+    }
 
     public function __invoke(GetSocialNetworksConnect $getSocialNetworksConnect, #[CurrentUser] ?User $user): JsonResponse
     {

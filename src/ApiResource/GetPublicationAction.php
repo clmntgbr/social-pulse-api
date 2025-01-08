@@ -3,15 +3,8 @@
 namespace App\ApiResource;
 
 use App\Dto\Api\GetPublication;
-use App\Dto\Api\PostOrganizations;
-use App\Dto\Api\PostPublications;
 use App\Entity\User;
-use App\Repository\OrganizationRepository;
 use App\Repository\Publication\PublicationRepository;
-use App\Service\ImageService;
-use App\Service\Publications\PublicationServiceFactory;
-use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,10 +19,11 @@ class GetPublicationAction extends AbstractController
 {
     public function __construct(
         private readonly PublicationRepository $publicationRepository,
-        private readonly SerializerInterface $serializer
-    ) {}
+        private readonly SerializerInterface $serializer,
+    ) {
+    }
 
-    function __invoke(GetPublication $getPublication, Request $request, #[CurrentUser] ?User $user): JsonResponse
+    public function __invoke(GetPublication $getPublication, Request $request, #[CurrentUser] ?User $user): JsonResponse
     {
         $publications = $this->publicationRepository->findPublicationByThreadUuid($getPublication->uuid);
 

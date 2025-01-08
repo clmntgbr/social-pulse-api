@@ -21,6 +21,7 @@ class FacebookSocialNetworkRepository extends AbstractRepository
         }
 
         $this->update($account, $updatePayload);
+
         return $account;
     }
 }

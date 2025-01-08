@@ -16,15 +16,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 readonly class LinkedinApi implements InterfaceApi
 {
     public function __construct(
-        private string              $linkedinClientId,
-        private string              $linkedinClientSecret,
-        private string              $callbackUrl,
-        private string              $linkedinApiUrl,
+        private string $linkedinClientId,
+        private string $linkedinClientSecret,
+        private string $callbackUrl,
+        private string $linkedinApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError      $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     /**
      * @throws TransportExceptionInterface
@@ -44,7 +45,7 @@ readonly class LinkedinApi implements InterfaceApi
                     'redirect_uri' => sprintf($this->callbackUrl, 'linkedin'),
                     'client_id' => $this->linkedinClientId,
                     'client_secret' => $this->linkedinClientSecret,
-                ]
+                ],
             ]);
 
             $linkedinAccessToken = $this->serializer->deserialize($response->getContent(), LinkedinAccessToken::class, 'json');
@@ -55,7 +56,6 @@ readonly class LinkedinApi implements InterfaceApi
             }
 
             return $linkedinAccessToken;
-
         } catch (ClientExceptionInterface $exception) {
             return null;
         }
@@ -79,7 +79,7 @@ readonly class LinkedinApi implements InterfaceApi
                     'Authorization' => sprintf('Bearer %s', $token->accessToken),
                     'Connection' => 'Keep-Alive',
                     'ContentType' => 'application / json',
-                ]
+                ],
             ]);
 
             $linkedinAccount = $this->serializer->deserialize($response->getContent(), LinkedinAccount::class, 'json');

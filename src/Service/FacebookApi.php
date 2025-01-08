@@ -17,15 +17,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 readonly class FacebookApi implements InterfaceApi
 {
     public function __construct(
-        private string              $facebookClientId,
-        private string              $facebookClientSecret,
-        private string              $callbackUrl,
-        private string              $facebookApiUrl,
+        private string $facebookClientId,
+        private string $facebookClientSecret,
+        private string $callbackUrl,
+        private string $facebookApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError      $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     /**
      * @throws TransportExceptionInterface

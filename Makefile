@@ -7,9 +7,11 @@ DOCKER_COMPOSE = docker compose -p $(PROJECT_NAME)
 
 CONTAINER_PHP := $(shell docker container ls -f "name=$(PROJECT_NAME)-php" -q)
 CONTAINER_DB := $(shell docker container ls -f "name=$(PROJECT_NAME)-database" -q)
+CONTAINER_FIXER := $(shell docker container ls -f "name=$(PROJECT_NAME)-php-cs-fixer" -q)
 
 PHP := docker exec -ti $(CONTAINER_PHP)
 DATABASE := docker exec -ti $(CONTAINER_DB)
+FIXER := docker exec -ti $(CONTAINER_FIXER)
 
 ## Kill all containers
 kill:
@@ -72,3 +74,6 @@ db:
 
 fixtures:
 	$(PHP) php bin/console hautelook:fixtures:load -n
+
+php-cs-fixer:
+	$(FIXER) ./php-cs-fixer fix src --rules=@Symfony --verbose --diff

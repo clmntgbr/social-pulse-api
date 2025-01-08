@@ -21,11 +21,11 @@ class FacebookSocialNetwork extends SocialNetwork
     }
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $website;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $link;
 
     public function getWebsite(): ?string

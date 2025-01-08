@@ -7,7 +7,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\GetPublicationAction;
-use App\ApiResource\GetSocialNetworksConnectAction;
 use App\ApiResource\PostPublicationsAction;
 use App\Entity\SocialNetwork\SocialNetwork;
 use App\Entity\Traits\UuidTrait;
@@ -33,7 +32,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Post(
             uriTemplate: '/publications',
             controller: PostPublicationsAction::class,
-        )
+        ),
     ],
     order: ['publishedAt' => 'ASC']
 )]
@@ -52,40 +51,40 @@ class Publication
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(["publication:get"])]
+    #[Groups(['publication:get'])]
     private ?string $publicationId = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?string $threadUuid;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?string $threadType;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?string $publicationType;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?string $content;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(["publication:get"])]
+    #[Groups(['publication:get'])]
     private array $pictures = [];
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private string $status;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?\DateTime $publishedAt = null;
 
     #[ORM\ManyToOne(targetEntity: SocialNetwork::class, inversedBy: 'publications')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["publications:get", "publication:get"])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?SocialNetwork $socialNetwork = null;
 
     public function __construct()

@@ -12,8 +12,9 @@ class GroupsContextBuilder implements SerializerContextBuilderInterface
 
     public function __construct(
         private readonly SerializerContextBuilderInterface $decorated,
-        private readonly ContextService $contextService
-    ){}
+        private readonly ContextService $contextService,
+    ) {
+    }
 
     public function createFromRequest(Request $request, bool $normalization, ?array $extractedAttributes = null): array
     {
@@ -32,6 +33,7 @@ class GroupsContextBuilder implements SerializerContextBuilderInterface
         }
 
         $context['groups'] = $groups;
+
         return $context;
     }
 }

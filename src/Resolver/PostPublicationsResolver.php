@@ -15,13 +15,14 @@ readonly class PostPublicationsResolver implements ValueResolverInterface
 {
     public function __construct(
         private SerializerInterface $serializer,
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== PostPublications::class) {
+        if (PostPublications::class !== $argument->getType()) {
             return;
         }
 
@@ -29,13 +30,13 @@ readonly class PostPublicationsResolver implements ValueResolverInterface
 
         /** @var PostPublication[] $postPublication */
         $postPublication = $this->serializer->deserialize($content, 'App\Dto\Api\PostPublication[]', 'json');
-        
-        usort($postPublication, function($a, $b) {
+
+        usort($postPublication, function ($a, $b) {
             return $a->id - $b->id;
         });
 
         $postPublications = new PostPublications($postPublication);
-        
+
         if (count($postPublication) > 0) {
             $postPublications->publicationType = $postPublication[0]->publicationType;
             $postPublications->socialNetworkUuid = $postPublication[0]->socialNetworkUuid;

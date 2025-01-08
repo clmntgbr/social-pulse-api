@@ -30,9 +30,8 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
         private string $facebookLoginUrl,
         private string $facebookClientId,
         private string $facebookCallbackUrl,
-        private string $frontUrl
-    )
-    {
+        private string $frontUrl,
+    ) {
     }
 
     public function getConnectUrl(User $user, string $callbackPath): string
@@ -40,7 +39,7 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
         /** @var User $user */
         $user = $this->userRepository->update($user, [
             'socialNetworksState' => Uuid::uuid4()->toString(),
-            'socialNetworksCallbackPath' => $callbackPath
+            'socialNetworksCallbackPath' => $callbackPath,
         ]);
 
         return sprintf('%s/dialog/oauth?client_id=%s&redirect_uri=%s&scope=%s&state=%s',

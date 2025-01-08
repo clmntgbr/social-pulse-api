@@ -39,6 +39,7 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
         }
 
         $this->update($account, $updatePayload);
+
         return $account;
     }
 

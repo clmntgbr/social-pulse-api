@@ -22,7 +22,8 @@ readonly class PublicationService
     public function __construct(
         private ImageService $imageService,
         private MessageBusInterface $messageBus,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws ExceptionInterface
@@ -39,7 +40,7 @@ readonly class PublicationService
                 $pictures[] = $this->imageService->saveBase64File('publications', $uuid, $picture);
             }
 
-            /** @var FacebookPublicationRepository | LinkedinPublicationRepository | TwitterPublicationRepository | InstagramPublicationRepository | YoutubePublicationRepository $publicationRepository */
+            /* @var FacebookPublicationRepository | LinkedinPublicationRepository | TwitterPublicationRepository | InstagramPublicationRepository | YoutubePublicationRepository $publicationRepository */
             $publicationRepository->create([
                 'content' => $publication->content,
                 'uuid' => $uuid,

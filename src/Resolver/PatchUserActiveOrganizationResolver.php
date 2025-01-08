@@ -13,13 +13,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 readonly class PatchUserActiveOrganizationResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== PatchUserActiveOrganization::class) {
+        if (PatchUserActiveOrganization::class !== $argument->getType()) {
             return;
         }
 

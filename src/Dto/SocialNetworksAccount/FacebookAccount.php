@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class FacebookAccount extends AbstractAccount
 {
-    #[SerializedName("accounts")]
+    #[SerializedName('accounts')]
     #[Assert\Valid]
     public array $accounts;
 
@@ -22,7 +22,7 @@ class FacebookAccount extends AbstractAccount
     public function setAccounts(?array $accounts): self
     {
         $datas = $accounts['data'] ?? [];
-        $this->accounts = array_map(function($datas) {
+        $this->accounts = array_map(function ($datas) {
             $account = new FacebookData();
             $account->accessToken = $datas['access_token'];
             $account->name = $datas['name'];
@@ -33,6 +33,7 @@ class FacebookAccount extends AbstractAccount
             $account->link = $datas['link'];
             $account->followersCount = $datas['followers_count'];
             $account->fanCount = $datas['fan_count'];
+
             return $account;
         }, $datas ?? []);
 

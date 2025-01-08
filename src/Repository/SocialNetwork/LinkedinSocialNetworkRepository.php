@@ -21,6 +21,7 @@ class LinkedinSocialNetworkRepository extends AbstractRepository
         }
 
         $this->update($account, $updatePayload);
+
         return $account;
     }
 }

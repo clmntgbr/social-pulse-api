@@ -29,19 +29,19 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class TwitterSocialNetworkService implements SocialNetworkServiceInterface
 {
     public function __construct(
-        private readonly TwitterApi                     $twitterApi,
-        private readonly UserRepository                 $userRepository,
+        private readonly TwitterApi $twitterApi,
+        private readonly UserRepository $userRepository,
         private readonly TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
-        private readonly TypeRepository                 $typeRepository,
-        private readonly SerializerInterface            $serializer,
-        private readonly ValidatorInterface             $validator,
-        private readonly ValidatorError                 $validatorError,
-        private readonly string                         $twitterApiUrl,
-        private readonly string                         $twitterApiKey,
-        private readonly string                         $twitterApiSecret,
-        private readonly string                         $callbackUrl,
-        private readonly string                         $frontUrl,
-        private ?TwitterOAuth                           $twitterOAuth = null
+        private readonly TypeRepository $typeRepository,
+        private readonly SerializerInterface $serializer,
+        private readonly ValidatorInterface $validator,
+        private readonly ValidatorError $validatorError,
+        private readonly string $twitterApiUrl,
+        private readonly string $twitterApiKey,
+        private readonly string $twitterApiSecret,
+        private readonly string $callbackUrl,
+        private readonly string $frontUrl,
+        private ?TwitterOAuth $twitterOAuth = null,
     ) {
         $this->twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret);
     }
@@ -51,13 +51,12 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
         /** @var User $user */
         $user = $this->userRepository->update($user, [
             'socialNetworksState' => Uuid::uuid4()->toString(),
-            'socialNetworksCallbackPath' => $callbackPath
+            'socialNetworksCallbackPath' => $callbackPath,
         ]);
 
         try {
-
-            $authLink = $this->twitterOAuth->oauth("oauth/request_token", [
-                "oauth_callback" => sprintf('%s?state=%s', sprintf($this->callbackUrl, 'twitter'), $user->getSocialNetworksState())
+            $authLink = $this->twitterOAuth->oauth('oauth/request_token', [
+                'oauth_callback' => sprintf('%s?state=%s', sprintf($this->callbackUrl, 'twitter'), $user->getSocialNetworksState()),
             ]);
 
             /** @var TwitterOAuthToken $twitterOAuthToken */
@@ -95,19 +94,19 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
 
         $accessToken = $this->twitterApi->getAccessToken($getSocialNetworksCallback->oauthToken, $getSocialNetworksCallback->oauthVerifier);
 
-        if (!$accessToken instanceof  TwitterAccessToken) {
+        if (!$accessToken instanceof TwitterAccessToken) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
         $bearerToken = $this->twitterApi->getBearerToken();
 
-        if (!$bearerToken instanceof  TwitterBearerToken) {
+        if (!$bearerToken instanceof TwitterBearerToken) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
         $twitterAccount = $this->twitterApi->getAccounts($accessToken);
 
-        if (!$twitterAccount instanceof  TwitterAccount) {
+        if (!$twitterAccount instanceof TwitterAccount) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 

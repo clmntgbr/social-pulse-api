@@ -10,7 +10,6 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\GetSocialNetworksCallbackAction;
 use App\ApiResource\GetSocialNetworksConnectAction;
-use App\ApiResource\GetSocialNetworksTypeAction;
 use App\ApiResource\PostSocialNetworksValidateAction;
 use App\Entity\Organization;
 use App\Entity\Publication\Publication;
@@ -41,7 +40,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Post(
             uriTemplate: '/social_networks/validate/{validate}',
             controller: PostSocialNetworksValidateAction::class,
-        )
+        ),
     ],
     order: ['createdAt' => 'DESC', 'name' => 'ASC'],
 )]
@@ -69,58 +68,58 @@ class SocialNetwork
     private ?Type $socialNetworkType;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private int $followers = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private int $followings = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private int $shares = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private int $comments = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private int $likes = 0;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?int $maxCharacter = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private bool $isVerified = false;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $avatarUrl;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $username;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $name;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $email;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $token;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $status;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $validate;
 
     #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'socialNetworks')]

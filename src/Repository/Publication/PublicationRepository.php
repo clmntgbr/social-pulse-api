@@ -3,21 +3,18 @@
 namespace App\Repository\Publication;
 
 use App\Entity\Publication\Publication;
-use App\Entity\User;
 use App\Enum\PublicationStatus;
-use App\Repository\AbstractRepository;
-use Symfony\Bundle\SecurityBundle\Security;
 use App\Enum\PublicationThreadType;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\AbstractRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class PublicationRepository extends AbstractRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        private Security $security
+        private Security $security,
     ) {
         parent::__construct($registry, Publication::class);
     }
@@ -76,7 +73,7 @@ class PublicationRepository extends AbstractRepository
                 PublicationStatus::SCHEDULED->toString(),
                 PublicationStatus::POSTED->toString(),
                 PublicationStatus::FAILED->toString(),
-                PublicationStatus::DRAFT->toString()
+                PublicationStatus::DRAFT->toString(),
             ]);
 
         return $builder;

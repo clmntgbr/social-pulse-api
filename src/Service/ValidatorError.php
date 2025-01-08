@@ -20,8 +20,9 @@ class ValidatorError
     {
         $errorMessages = [];
         foreach ($violationList as $error) {
-            $errorMessages[] = ucfirst($error->getPropertyPath()) . ': ' . $error->getMessage();
+            $errorMessages[] = ucfirst($error->getPropertyPath()).': '.$error->getMessage();
         }
+
         return $errorMessages;
     }
 }

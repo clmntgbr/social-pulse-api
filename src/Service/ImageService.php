@@ -7,8 +7,9 @@ use Ramsey\Uuid\Uuid;
 readonly class ImageService
 {
     public function __construct(
-        private string $backUrl = ''
-    ) {}
+        private string $backUrl = '',
+    ) {
+    }
 
     public function download(string $url, string $path, string $type): ?string
     {
@@ -19,20 +20,20 @@ readonly class ImageService
         // Set a timeout to prevent hanging
         $context = stream_context_create([
             'http' => [
-                'timeout' => 30
-            ]
+                'timeout' => 30,
+            ],
         ]);
 
         // Attempt to download the image
         $imageContent = file_get_contents($url, false, $context);
 
-        if ($imageContent === false) {
+        if (false === $imageContent) {
             return null;
         }
 
         $path = sprintf('%s/%s.png', $path, Uuid::uuid4()->toString());
 
-        if (file_put_contents(sprintf('public/%s/%s', $type, $path), $imageContent) === false) {
+        if (false === file_put_contents(sprintf('public/%s/%s', $type, $path), $imageContent)) {
             return null;
         }
 

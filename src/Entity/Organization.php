@@ -38,11 +38,11 @@ class Organization
     use UuidTrait;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["organization:get", "organizations:get"])]
+    #[Groups(['organization:get', 'organizations:get'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["organization:get", "organizations:get"])]
+    #[Groups(['organization:get', 'organizations:get'])]
     private ?string $logoUrl = null;
 
     #[ORM\OneToMany(targetEntity: SocialNetwork::class, mappedBy: 'organization', cascade: ['remove'])]
@@ -50,12 +50,12 @@ class Organization
     private Collection $socialNetworks;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'organizations')]
-    #[Groups(["organizations:get"])]
+    #[Groups(['organizations:get'])]
     private Collection $users;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["organizations:get"])]
+    #[Groups(['organizations:get'])]
     private User $admin;
 
     public function __construct()

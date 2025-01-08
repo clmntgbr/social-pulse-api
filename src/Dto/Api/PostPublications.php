@@ -2,7 +2,6 @@
 
 namespace App\Dto\Api;
 
-use App\Enum\SocialNetworkType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PostPublications
@@ -17,7 +16,7 @@ class PostPublications
 
     #[Assert\Count(min: 1)]
     #[Assert\Valid()]
-    /** @var PostPublication[] $publications */
+    /** @var PostPublication[] */
     public array $publications = [];
 
     public function __construct($publications)

@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Patch(
             uriTemplate: '/users/active_organisation/{uuid}',
             controller: PatchUserActiveOrganizationAction::class,
-        )
+        ),
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -38,22 +38,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use UuidTrait;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:get', "organizations:get"])]
+    #[Groups(['user:get', 'organizations:get'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['user:get', "organizations:get"])]
+    #[Groups(['user:get', 'organizations:get'])]
     private ?string $givenName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['user:get', "organizations:get"])]
+    #[Groups(['user:get', 'organizations:get'])]
     private ?string $familyName = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['user:get', "organizations:get"])]
+    #[Groups(['user:get', 'organizations:get'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -158,7 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-         $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getUuid(): ?string
@@ -190,7 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->familyName;
     }
 
-    #[Groups(['user:get', "organizations:get"])]
+    #[Groups(['user:get', 'organizations:get'])]
     public function getName(): ?string
     {
         return sprintf('%s %s', $this->givenName, $this->familyName);
@@ -298,6 +298,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSocialNetworksState(?string $socialNetworksState): User
     {
         $this->socialNetworksState = $socialNetworksState;
+
         return $this;
     }
 
@@ -309,6 +310,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSocialNetworksCallbackPath(?string $socialNetworksCallbackPath): User
     {
         $this->socialNetworksCallbackPath = $socialNetworksCallbackPath;
+
         return $this;
     }
 }

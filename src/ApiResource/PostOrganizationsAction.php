@@ -21,8 +21,9 @@ class PostOrganizationsAction extends AbstractController
     public function __construct(
         private readonly ImageService $imageService,
         private readonly OrganizationRepository $organizationRepository,
-        private readonly SerializerInterface $serializer
-    ) {}
+        private readonly SerializerInterface $serializer,
+    ) {
+    }
 
     public function __invoke(PostOrganizations $postOrganizations, #[CurrentUser] ?User $user): JsonResponse
     {

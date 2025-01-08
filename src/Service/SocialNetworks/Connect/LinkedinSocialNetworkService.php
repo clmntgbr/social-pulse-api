@@ -28,15 +28,16 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
         private string $linkedinLoginUrl,
         private string $linkedinClientId,
         private string $linkedinCallbackUrl,
-        private string $frontUrl
-    ) {}
+        private string $frontUrl,
+    ) {
+    }
 
     public function getConnectUrl(User $user, string $callbackPath): string
     {
         /** @var User $user */
         $user = $this->userRepository->update($user, [
             'socialNetworksState' => Uuid::uuid4()->toString(),
-            'socialNetworksCallbackPath' => $callbackPath
+            'socialNetworksCallbackPath' => $callbackPath,
         ]);
 
         return sprintf('%s/oauth/v2/authorization?response_type=code&client_id=%s&redirect_uri=%s&state=%s&scope=%s',
@@ -65,13 +66,13 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
 
         $accessToken = $this->linkedinApi->getAccessToken($getSocialNetworksCallback->code);
 
-        if (!$accessToken instanceof  LinkedinAccessToken) {
+        if (!$accessToken instanceof LinkedinAccessToken) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 
         $linkedinAccount = $this->linkedinApi->getAccounts($accessToken);
 
-        if (!$linkedinAccount instanceof  LinkedinAccount) {
+        if (!$linkedinAccount instanceof LinkedinAccount) {
             return new RedirectResponse(sprintf('%s', $this->frontUrl));
         }
 

@@ -13,13 +13,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 readonly class GetSocialNetworksConnectResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface  $validator,
-        private ValidatorError $validatorError
-    ) {}
+        private ValidatorInterface $validator,
+        private ValidatorError $validatorError,
+    ) {
+    }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        if ($argument->getType() !== GetSocialNetworksConnect::class) {
+        if (GetSocialNetworksConnect::class !== $argument->getType()) {
             return;
         }
 

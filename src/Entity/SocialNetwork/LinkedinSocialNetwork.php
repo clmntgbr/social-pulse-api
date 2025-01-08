@@ -21,11 +21,11 @@ class LinkedinSocialNetwork extends SocialNetwork
     }
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $country;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups(["social-networks:get"])]
+    #[Groups(['social-networks:get'])]
     private ?string $language;
 
     public function getCountry(): ?string

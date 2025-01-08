@@ -10,8 +10,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 readonly class DefaultSocialNetworkService implements SocialNetworkServiceInterface
 {
     public function __construct(
-        private string $frontUrl
-    ) {}
+        private string $frontUrl,
+    ) {
+    }
 
     public function getConnectUrl(User $user, string $callbackPath): ?string
     {

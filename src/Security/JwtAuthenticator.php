@@ -20,10 +20,11 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class JwtAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
-        private readonly UserRepository              $userRepository,
+        private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private string                               $publicJwt
-    ) {}
+        private string $publicJwt,
+    ) {
+    }
 
     public function supports(Request $request): ?bool
     {
@@ -57,12 +58,12 @@ class JwtAuthenticator extends AbstractAuthenticator
             $user = $this->getUser($payload);
 
             return new SelfValidatingPassport(
-                new UserBadge($payload['user_primary_email_address'], function() use ($user) {
+                new UserBadge($payload['user_primary_email_address'], function () use ($user) {
                     return $user;
                 })
             );
         } catch (\Exception $e) {
-            throw new CustomUserMessageAuthenticationException('Invalid token: ' . $e->getMessage());
+            throw new CustomUserMessageAuthenticationException('Invalid token: '.$e->getMessage());
         }
     }
 
@@ -75,12 +76,12 @@ class JwtAuthenticator extends AbstractAuthenticator
     {
         $user = $this->userRepository->updateOrCreate(
             [
-            'email' => $payload['user_primary_email_address']
+                'email' => $payload['user_primary_email_address'],
             ],
             [
                 'email' => $payload['user_primary_email_address'],
                 'password' => Uuid::uuid4()->toString(),
-                'avatarUrl' => $payload['user_image_url'] ?? null
+                'avatarUrl' => $payload['user_image_url'] ?? null,
             ],
         );
 
@@ -117,8 +118,9 @@ class JwtAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
-            'message' => $exception->getMessage()
+            'message' => $exception->getMessage(),
         ];
+
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
@@ -137,7 +139,7 @@ class JwtAuthenticator extends AbstractAuthenticator
     {
         $parts = explode('.', $token);
 
-        if (count($parts) !== 3) {
+        if (3 !== count($parts)) {
             throw new CustomUserMessageAuthenticationException('Invalid token format');
         }
 
@@ -157,6 +159,7 @@ class JwtAuthenticator extends AbstractAuthenticator
             $padding = 4 - $remainder;
             $input .= str_repeat('=', $padding);
         }
+
         return base64_decode(strtr($input, '-_', '+/'));
     }
 }

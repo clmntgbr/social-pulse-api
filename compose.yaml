@@ -62,6 +62,16 @@ services:
             - "9002:5672"
             - "9003:15672"
 
+    php-cs-fixer:
+        container_name: ${PROJECT_NAME}-php-cs-fixer
+        image: php:8.3-cli-alpine
+        volumes:
+        - ./src:/app/src
+        working_dir: /app
+        tty: true
+        command: >
+          sh -c "wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer && chmod a+x php-cs-fixer && tail -f /dev/null"
+
 networks:
   api_network:
     name: api_network

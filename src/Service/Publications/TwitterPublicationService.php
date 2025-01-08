@@ -12,8 +12,9 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
     public function __construct(
         private readonly TwitterPublicationRepository $publicationRepository,
         private readonly TwitterSocialNetworkRepository $socialNetworkRepository,
-        private readonly PublicationService $service
-    ){}
+        private readonly PublicationService $service,
+    ) {
+    }
 
     public function create(PostPublications $postPublications): void
     {

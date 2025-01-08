@@ -21,6 +21,7 @@ class TwitterSocialNetworkRepository extends AbstractRepository
         }
 
         $this->update($account, $updatePayload);
+
         return $account;
     }
 }

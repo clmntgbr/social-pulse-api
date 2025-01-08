@@ -18,7 +18,7 @@ class PostPublication
     #[Assert\Type('int')]
     public ?int $id;
 
-    #[Assert\Choice(choices: ['scheduled', 'draft'],)]
+    #[Assert\Choice(choices: ['scheduled', 'draft'], )]
     #[Assert\NotBlank()]
     #[Assert\Type('string')]
     public ?string $status;

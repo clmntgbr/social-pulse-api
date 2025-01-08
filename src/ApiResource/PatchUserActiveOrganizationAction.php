@@ -20,8 +20,9 @@ class PatchUserActiveOrganizationAction extends AbstractController
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly OrganizationRepository $organizationRepository,
-        private readonly SerializerInterface $serializer
-    ) {}
+        private readonly SerializerInterface $serializer,
+    ) {
+    }
 
     public function __invoke(PatchUserActiveOrganization $patchUserActiveOrganization, #[CurrentUser] ?User $user): JsonResponse
     {
@@ -38,7 +39,7 @@ class PatchUserActiveOrganizationAction extends AbstractController
         $organization = $this->organizationRepository->findOneByCriteria(['uuid' => $patchUserActiveOrganization->organizationUuid]);
 
         $this->userRepository->update($user, [
-            'activeOrganization' => $organization
+            'activeOrganization' => $organization,
         ]);
 
         return new JsonResponse(

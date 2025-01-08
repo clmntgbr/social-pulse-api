@@ -2,15 +2,10 @@
 
 namespace App\ApiResource;
 
-use App\Dto\Api\PostOrganizations;
 use App\Dto\Api\PostPublications;
 use App\Entity\User;
-use App\Repository\OrganizationRepository;
 use App\Repository\Publication\PublicationRepository;
-use App\Service\ImageService;
 use App\Service\Publications\PublicationServiceFactory;
-use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,8 +21,9 @@ class PostPublicationsAction extends AbstractController
     public function __construct(
         private readonly PublicationServiceFactory $publicationServiceFactory,
         private readonly PublicationRepository $publicationRepository,
-        private readonly SerializerInterface $serializer
-    ) {}
+        private readonly SerializerInterface $serializer,
+    ) {
+    }
 
     /**
      * @throws \Exception
