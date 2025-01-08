@@ -2,7 +2,6 @@
 
 namespace App\Repository\Publication;
 
-use App\Entity\Publication\Publication;
 use App\Enum\PublicationStatus;
 use App\Enum\PublicationThreadType;
 use App\Repository\AbstractRepository;

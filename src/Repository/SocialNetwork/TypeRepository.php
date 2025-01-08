@@ -5,7 +5,6 @@ namespace App\Repository\SocialNetwork;
 use App\Entity\SocialNetwork\Type;
 use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Type>

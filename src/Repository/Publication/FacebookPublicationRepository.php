@@ -4,7 +4,6 @@ namespace App\Repository\Publication;
 
 use App\Entity\Publication\FacebookPublication;
 use App\Repository\AbstractRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 class FacebookPublicationRepository extends AbstractRepository
 {

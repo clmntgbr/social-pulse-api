@@ -2,9 +2,7 @@
 
 namespace App\Repository\Publication;
 
-use App\Entity\Publication\InstagramPublication;
 use App\Repository\AbstractRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 class InstagramPublicationRepository extends AbstractRepository
 {

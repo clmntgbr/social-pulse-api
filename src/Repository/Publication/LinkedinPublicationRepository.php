@@ -4,7 +4,6 @@ namespace App\Repository\Publication;
 
 use App\Entity\Publication\LinkedinPublication;
 use App\Repository\AbstractRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 class LinkedinPublicationRepository extends AbstractRepository
 {

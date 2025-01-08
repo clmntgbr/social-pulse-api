@@ -155,7 +155,7 @@ class JwtAuthenticator extends AbstractAuthenticator
     private function base64UrlDecode(string $input): string
     {
         $remainder = strlen($input) % 4;
-        if ($remainder !== 0) {
+        if (0 !== $remainder) {
             $padding = 4 - $remainder;
             $input .= str_repeat('=', $padding);
         }

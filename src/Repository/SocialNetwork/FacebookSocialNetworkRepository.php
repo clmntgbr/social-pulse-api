@@ -4,7 +4,6 @@ namespace App\Repository\SocialNetwork;
 
 use App\Entity\SocialNetwork\FacebookSocialNetwork;
 use App\Repository\AbstractRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 class FacebookSocialNetworkRepository extends AbstractRepository
 {

@@ -56,10 +56,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
 ])]
 class SocialNetwork
 {
-    public $createdAt;
-    public $updatedAt;
     use UuidTrait;
     use TimestampableEntity;
+    public $createdAt;
+    public $updatedAt;
 
     #[ORM\Column(type: Types::STRING, unique: false)]
     private ?string $socialNetworkId = null;

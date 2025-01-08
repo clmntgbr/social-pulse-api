@@ -47,10 +47,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
 ])]
 class Publication
 {
-    public $createdAt;
-    public $updatedAt;
     use UuidTrait;
     use TimestampableEntity;
+    public $createdAt;
+    public $updatedAt;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['publication:get'])]

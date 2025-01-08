@@ -34,10 +34,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public $createdAt;
-    public $updatedAt;
     use TimestampableEntity;
     use UuidTrait;
+    public $createdAt;
+    public $updatedAt;
 
     #[ORM\Column(length: 180)]
     #[Groups(['user:get', 'organizations:get'])]
