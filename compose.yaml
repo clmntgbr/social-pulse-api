@@ -62,15 +62,20 @@ services:
             - "9002:5672"
             - "9003:15672"
 
-    php-cs-fixer:
-        container_name: ${PROJECT_NAME}-php-cs-fixer
+    php-qa:
+        container_name: ${PROJECT_NAME}-php-qa
         image: php:8.3-cli-alpine
         volumes:
-        - ./src:/app/src
+            - ./src:/app/src
+            - ./rector.php:/app/rector.php
         working_dir: /app
         tty: true
         command: >
-          sh -c "wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer && chmod a+x php-cs-fixer && tail -f /dev/null"
+            sh -c "apk add --no-cache wget composer &&
+            wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer &&
+            chmod a+x php-cs-fixer &&
+            composer require --dev phpstan/phpstan rector/rector &&
+            tail -f /dev/null"
 
 networks:
   api_network:
