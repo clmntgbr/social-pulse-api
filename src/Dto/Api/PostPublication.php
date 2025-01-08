@@ -49,7 +49,7 @@ class PostPublication
     #[Assert\Callback]
     public function validateContentOrPictures(\Symfony\Component\Validator\Context\ExecutionContextInterface $context): void
     {
-        if (empty($this->content) && empty($this->pictures)) {
+        if ((!isset($this->content) || ($this->content === null || $this->content === '' || $this->content === '0')) && $this->pictures === []) {
             $context->buildViolation('Either content or pictures must be provided, but not both missing.')
                 ->atPath('content')
                 ->addViolation();

@@ -47,6 +47,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
 ])]
 class Publication
 {
+    public $createdAt;
+    public $updatedAt;
     use UuidTrait;
     use TimestampableEntity;
 

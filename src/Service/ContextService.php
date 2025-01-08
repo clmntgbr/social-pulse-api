@@ -6,7 +6,7 @@ class ContextService
 {
     public function getGroups(string $groups): ?array
     {
-        if (empty($groups)) {
+        if ($groups === '' || $groups === '0') {
             return null;
         }
 

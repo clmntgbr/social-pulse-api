@@ -8,9 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class FacebookSocialNetworkRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct()
     {
-        parent::__construct($registry, FacebookSocialNetwork::class);
     }
 
     public function updateOrCreate(array $searchPayload, array $updatePayload): FacebookSocialNetwork

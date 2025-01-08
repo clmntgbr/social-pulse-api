@@ -72,7 +72,7 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
                 $twitterOAuthToken->oauthToken
             );
         } catch (\Exception $exception) {
-            throw new BadRequestHttpException($exception->getMessage());
+            throw new BadRequestHttpException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -89,25 +89,25 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
         $user = $this->userRepository->findOneByCriteria(['socialNetworksState' => $getSocialNetworksCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $accessToken = $this->twitterApi->getAccessToken($getSocialNetworksCallback->oauthToken, $getSocialNetworksCallback->oauthVerifier);
 
         if (!$accessToken instanceof TwitterAccessToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $bearerToken = $this->twitterApi->getBearerToken();
 
         if (!$bearerToken instanceof TwitterBearerToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $twitterAccount = $this->twitterApi->getAccounts($accessToken);
 
         if (!$twitterAccount instanceof TwitterAccount) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::TWITTER->toString()]);

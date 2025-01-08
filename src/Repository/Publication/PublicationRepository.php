@@ -12,11 +12,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class PublicationRepository extends AbstractRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-        private Security $security,
-    ) {
-        parent::__construct($registry, Publication::class);
+    public function __construct(ManagerRegistry $registry, private Security $security)
+    {
     }
 
     public function findAll(): array

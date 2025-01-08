@@ -63,7 +63,7 @@ class JwtAuthenticator extends AbstractAuthenticator
                 })
             );
         } catch (\Exception $e) {
-            throw new CustomUserMessageAuthenticationException('Invalid token: '.$e->getMessage());
+            throw new CustomUserMessageAuthenticationException('Invalid token: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -155,7 +155,7 @@ class JwtAuthenticator extends AbstractAuthenticator
     private function base64UrlDecode(string $input): string
     {
         $remainder = strlen($input) % 4;
-        if ($remainder) {
+        if ($remainder !== 0) {
             $padding = 4 - $remainder;
             $input .= str_repeat('=', $padding);
         }

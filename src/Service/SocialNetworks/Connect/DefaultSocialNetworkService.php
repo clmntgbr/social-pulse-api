@@ -21,6 +21,6 @@ readonly class DefaultSocialNetworkService implements SocialNetworkServiceInterf
 
     public function create(GetSocialNetworksCallback $getSocialNetworksCallback): RedirectResponse
     {
-        return new RedirectResponse(sprintf('%s', $this->frontUrl));
+        return new RedirectResponse($this->frontUrl);
     }
 }

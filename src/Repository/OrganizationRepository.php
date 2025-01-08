@@ -11,9 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OrganizationRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct()
     {
-        parent::__construct($registry, Organization::class);
     }
 
     public function create(array $data): Organization

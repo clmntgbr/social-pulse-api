@@ -109,11 +109,9 @@ class Organization
 
     public function removeSocialNetwork(SocialNetwork $socialNetwork): static
     {
-        if ($this->socialNetworks->removeElement($socialNetwork)) {
-            // set the owning side to null (unless already changed)
-            if ($socialNetwork->getOrganization() === $this) {
-                $socialNetwork->setOrganization(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->socialNetworks->removeElement($socialNetwork) && $socialNetwork->getOrganization() === $this) {
+            $socialNetwork->setOrganization(null);
         }
 
         return $this;

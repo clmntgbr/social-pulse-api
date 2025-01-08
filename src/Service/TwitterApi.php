@@ -21,7 +21,6 @@ readonly class TwitterApi implements InterfaceApi
     public function __construct(
         private string $twitterApiKey,
         private string $twitterApiSecret,
-        private string $callbackUrl,
         private string $twitterApiUrl,
         private HttpClientInterface $client,
         private SerializerInterface $serializer,

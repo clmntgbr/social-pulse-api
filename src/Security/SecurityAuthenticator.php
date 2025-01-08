@@ -51,10 +51,8 @@ class SecurityAuthenticator extends AbstractLoginFormAuthenticator
 
         $user = $token->getUser();
 
-        if ($user instanceof User) {
-            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                return new RedirectResponse($this->urlGenerator->generate('admin'));
-            }
+        if ($user instanceof User && $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return new RedirectResponse($this->urlGenerator->generate('admin'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));

@@ -28,10 +28,6 @@ class Type
     #[Groups(['social-networks-type:get'])]
     private ?string $color;
 
-    public function __construct()
-    {
-    }
-
     public function getName(): ?string
     {
         return $this->name;

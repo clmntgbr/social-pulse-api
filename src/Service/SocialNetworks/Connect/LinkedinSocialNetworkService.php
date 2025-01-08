@@ -61,19 +61,19 @@ readonly class LinkedinSocialNetworkService implements SocialNetworkServiceInter
         $user = $this->userRepository->findOneByCriteria(['socialNetworksState' => $getSocialNetworksCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $accessToken = $this->linkedinApi->getAccessToken($getSocialNetworksCallback->code);
 
         if (!$accessToken instanceof LinkedinAccessToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $linkedinAccount = $this->linkedinApi->getAccounts($accessToken);
 
         if (!$linkedinAccount instanceof LinkedinAccount) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::LINKEDIN->toString()]);

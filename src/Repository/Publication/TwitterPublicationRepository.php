@@ -8,9 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class TwitterPublicationRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct()
     {
-        parent::__construct($registry, TwitterPublication::class);
     }
 
     public function create(array $data): TwitterPublication

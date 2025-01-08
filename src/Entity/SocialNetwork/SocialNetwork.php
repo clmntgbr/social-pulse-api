@@ -56,6 +56,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
 ])]
 class SocialNetwork
 {
+    public $createdAt;
+    public $updatedAt;
     use UuidTrait;
     use TimestampableEntity;
 
@@ -360,10 +362,8 @@ class SocialNetwork
 
     public function removePublication(Publication $publication): static
     {
-        if ($this->publications->removeElement($publication)) {
-            if ($publication->getSocialNetwork() === $this) {
-                $publication->setSocialNetwork(null);
-            }
+        if ($this->publications->removeElement($publication) && $publication->getSocialNetwork() === $this) {
+            $publication->setSocialNetwork(null);
         }
 
         return $this;

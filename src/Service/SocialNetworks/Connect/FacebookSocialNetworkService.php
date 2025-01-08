@@ -64,19 +64,19 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
         $user = $this->userRepository->findOneByCriteria(['socialNetworksState' => $getSocialNetworksCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $accessToken = $this->facebookApi->getAccessToken($getSocialNetworksCallback->code);
 
         if (!$accessToken instanceof FacebookAccessToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $facebookAccounts = $this->facebookApi->getAccounts($accessToken);
 
         if (!$facebookAccounts instanceof FacebookAccount) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse($this->frontUrl);
         }
 
         $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::FACEBOOK->toString()]);
