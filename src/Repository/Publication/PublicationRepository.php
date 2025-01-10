@@ -74,6 +74,7 @@ class PublicationRepository extends AbstractRepository
             ->andWhere('p.status IN (:status)')
             ->setParameter('status', [
                 PublicationStatus::SCHEDULED->toString(),
+                PublicationStatus::RETRY->toString(),
                 PublicationStatus::POSTED->toString(),
                 PublicationStatus::FAILED->toString(),
                 PublicationStatus::DRAFT->toString(),

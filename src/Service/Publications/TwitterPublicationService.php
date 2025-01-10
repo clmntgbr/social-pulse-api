@@ -3,16 +3,20 @@
 namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
-use App\Dto\Twitter\TwitterTweet;
+use App\Entity\Publication\Publication;
 use App\Entity\Publication\TwitterPublication;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use App\Enum\PublicationStatus;
 use App\Enum\PublicationThreadType;
+use App\Message\PublishScheduledPublicationsMessage;
 use App\Repository\Publication\TwitterPublicationRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use App\Service\ImageService;
 use App\Service\TwitterApi;
-use Ramsey\Uuid\Uuid;
+use DateTime;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 readonly class TwitterPublicationService implements PublicationServiceInterface
 {
@@ -22,6 +26,7 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
         private readonly PublicationService $publicationService,
         private readonly TwitterApi $twitterApi,
         private readonly ImageService $imageService,
+        private readonly MessageBusInterface $messageBus,
         private readonly string $projectRoot
     ) {
     }
@@ -49,10 +54,17 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
             $mediaIds = [];
             foreach ($publication->getPictures() as $picture) {
                 $media = $this->imageService->downloadTmp($picture);
-                $twitterMedia = $this->twitterApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
+                
+                try {
+                    $twitterMedia = $this->twitterApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
+                } catch (\Exception $exception) {
+                    $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                    return;
+                }
 
                 if (!$twitterMedia) {
-                    continue;
+                    $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), 'UploadMedia error', PublicationStatus::RETRY->toString());
+                    return;
                 }
                 
                 $this->imageService->delete(sprintf('%s/public/%s', $this->projectRoot, $media));
@@ -60,7 +72,7 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
             }
 
             $payload = [
-                'text' => Uuid::uuid4()->toString(),
+                'text' => $publication->getContent(),
             ];
 
             if (!empty($mediaIds)) {
@@ -71,24 +83,43 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
                 $payload['reply']['in_reply_to_tweet_id'] = $primaryId;
             }
 
-            $response = $this->twitterApi->tweet($twitterSocialNetwork, $payload);
-
-            if (!$response instanceof TwitterTweet) {
-                $this->twitterPublicationRepository->update($publication, [
-                    'status' => PublicationStatus::RETRY->toString(),
-                    'statusMessage' => $response,
-                    'retry' => $publication->getRetry() + 1,
-                    'retryTime' => 3600,
-                ]);
-                continue;
+            try {
+                $response = $this->twitterApi->tweet($twitterSocialNetwork, $payload);
+            } catch (\Exception $exception) {
+                $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                return;
             }
-            
+
             if ($publication->getThreadType() === PublicationThreadType::PRIMARY) {
                 $primaryId = $response->id;
             }
 
             $this->twitterPublicationRepository->update($publication, [
+                'publicationId' => $response->id,
                 'status' => PublicationStatus::POSTED->toString(),
+                'statusMessage' => null,
+                'publishedAt' => new DateTime(),
+            ]);
+        }
+    }
+
+    /** @var Publication[] $publications */
+    private function throwError(array $publications, string $threadUuid, string $threadType, ?string $message, string $status)
+    {
+        /** @var Publication $publication */
+        foreach($publications as $publication) {
+            $this->twitterPublicationRepository->update($publication, [
+                'status' => $status,
+                'statusMessage' => $message,
+                'retry' => $publication->getRetry() + 1,
+                'retryTime' => 3600,
+            ]);
+        }
+
+        if ($status === PublicationStatus::RETRY->toString()) {
+            $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($threadUuid, $threadType), [
+                new AmqpStamp('high', 0, []),
+                new DelayStamp(3600000),
             ]);
         }
     }

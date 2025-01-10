@@ -98,7 +98,7 @@ readonly class TwitterApi implements InterfaceApi
      * @throws ServerExceptionInterface
      * @throws TwitterOAuthException
      */
-    public function getAccounts(TwitterAccessToken $twitterAccessToken): ?TwitterAccount
+    public function getAccounts(TwitterAccessToken $twitterAccessToken): TwitterAccount
     {
         try {
             $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $twitterAccessToken->oauthToken, $twitterAccessToken->oauthTokenSecret);
@@ -119,7 +119,7 @@ readonly class TwitterApi implements InterfaceApi
 
             return $twitterAccount;
         } catch (\Exception $exception) {
-            return null;
+            throw new BadRequestHttpException($exception->getMessage());
         }
     }
 
@@ -129,13 +129,9 @@ readonly class TwitterApi implements InterfaceApi
     }
 
     /**
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TwitterOAuthException
+     * @throws BadRequestHttpException
      */
-    public function uploadMedia(TwitterSocialNetwork $socialNetwork, string $media): ?TwitterUploadMedia
+    public function uploadMedia(TwitterSocialNetwork $socialNetwork, string $media): TwitterUploadMedia
     {
         try {
             $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
@@ -151,18 +147,14 @@ readonly class TwitterApi implements InterfaceApi
 
             return $twitterUploadMedia;
         } catch (\Exception $exception) {
-            return null;
+            throw new BadRequestHttpException($exception->getMessage());
         }
     }
 
     /**
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TwitterOAuthException
+     * @throws BadRequestHttpException
      */
-    public function tweet(TwitterSocialNetwork $socialNetwork, array $payload): string|TwitterTweet
+    public function tweet(TwitterSocialNetwork $socialNetwork, array $payload): TwitterTweet
     {
         try {
             $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
@@ -170,12 +162,13 @@ readonly class TwitterApi implements InterfaceApi
 
             $response = $twitterOAuth->post('tweets', $payload, ['jsonPayload' => true]);
 
-            if ($response->status ?? 404 !== 200) {
+
+            if (isset($response->status)) {
                 throw new BadRequestHttpException($response->title);
             }
             
             $response = $response->data ?? $response;
-            
+
             $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterTweet::class, 'json');
 
             $errors = $this->validator->validate($twitterTweet);
@@ -185,7 +178,7 @@ readonly class TwitterApi implements InterfaceApi
 
             return $twitterTweet;
         } catch (\Exception $exception) {
-            return $exception->getMessage();
+            throw new BadRequestHttpException($exception->getMessage());
         }
     }
 }

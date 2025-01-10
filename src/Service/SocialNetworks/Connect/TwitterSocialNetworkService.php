@@ -89,25 +89,25 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
         $user = $this->userRepository->findOneByCriteria(['socialNetworksState' => $getSocialNetworksCallback->state]);
 
         if (!$user) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse(sprintf('%s/en', $this->frontUrl));
         }
 
         $accessToken = $this->twitterApi->getAccessToken($getSocialNetworksCallback->oauthToken, $getSocialNetworksCallback->oauthVerifier);
 
         if (!$accessToken instanceof TwitterAccessToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
         }
 
         $bearerToken = $this->twitterApi->getBearerToken();
 
         if (!$bearerToken instanceof TwitterBearerToken) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+            return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
         }
 
-        $twitterAccount = $this->twitterApi->getAccounts($accessToken);
-
-        if (!$twitterAccount instanceof TwitterAccount) {
-            return new RedirectResponse(sprintf('%s', $this->frontUrl));
+        try {
+            $twitterAccount = $this->twitterApi->getAccounts($accessToken);
+        } catch(\Exception $exception) {
+            return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
         }
 
         $socialNetworkType = $this->typeRepository->findOneByCriteria(['name' => SocialNetworkType::TWITTER->toString()]);

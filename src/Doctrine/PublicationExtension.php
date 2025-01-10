@@ -49,7 +49,7 @@ final readonly class PublicationExtension implements QueryCollectionExtensionInt
         $queryBuilder->andWhere(sprintf('%s.threadType = :threadType', $rootAlias));
         $queryBuilder->setParameter('threadType', PublicationThreadType::PRIMARY);
         $queryBuilder->setParameter('organization', $user->getActiveOrganization());
-        $queryBuilder->setParameter('status', [PublicationStatus::SCHEDULED->toString(), PublicationStatus::POSTED->toString(), PublicationStatus::FAILED->toString(), PublicationStatus::DRAFT->toString()]);
+        $queryBuilder->setParameter('status', [PublicationStatus::SCHEDULED->toString(), PublicationStatus::RETRY->toString(), PublicationStatus::POSTED->toString(), PublicationStatus::FAILED->toString(), PublicationStatus::DRAFT->toString()]);
     }
 
     /**

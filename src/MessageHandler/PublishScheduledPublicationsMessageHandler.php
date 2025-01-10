@@ -20,14 +20,8 @@ final class PublishScheduledPublicationsMessageHandler
 
     public function __invoke(PublishScheduledPublicationsMessage $publishScheduledPublicationsMessage): void
     {
-        $publication = $this->publicationRepository->findOneBy(['uuid' => $publishScheduledPublicationsMessage->getUuid()]);
-
-        if (!$publication instanceof Publication) {
-            return;
-        }
-
-        $publications = $this->publicationRepository->findBy(
-            ['threadUuid' => $publication->getThreadUuid()],
+       $publications = $this->publicationRepository->findBy(
+            ['threadUuid' => $publishScheduledPublicationsMessage->getUuid()],
             ['id' => 'ASC']
         );
 
@@ -35,11 +29,7 @@ final class PublishScheduledPublicationsMessageHandler
             return;
         }
 
-        $publicationService = $this->publicationServiceFactory->getService($publication->getPublicationType());
+        $publicationService = $this->publicationServiceFactory->getService($publishScheduledPublicationsMessage->getSocialNetworkType());
         $publicationService->publish($publications);
-
-        $this->publicationRepository->update($publication, [
-            'status' => PublicationStatus::POSTED->toString(),
-        ]);
     }
 }

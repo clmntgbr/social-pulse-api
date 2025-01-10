@@ -11,6 +11,7 @@ use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use App\Service\ImageService;
 use App\Service\TwitterApi;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 readonly class PublicationServiceFactory
 {
@@ -24,6 +25,7 @@ readonly class PublicationServiceFactory
         private readonly PublicationService $publicationService,
         private readonly TwitterApi $twitterApi,
         private readonly ImageService $imageService,
+        private readonly MessageBusInterface $messageBus,
         private readonly string $projectRoot
     ) {
     }
@@ -47,6 +49,7 @@ readonly class PublicationServiceFactory
                 $this->publicationService,
                 $this->twitterApi,
                 $this->imageService,
+                $this->messageBus,
                 $this->projectRoot
             ),
             default => new DefaultPublicationService(),
