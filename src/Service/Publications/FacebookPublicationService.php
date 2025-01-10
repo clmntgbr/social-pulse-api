@@ -29,6 +29,10 @@ readonly class FacebookPublicationService implements PublicationServiceInterface
             throw new \Exception('This social network does not exist');
         }
 
-        $this->publicationService->publish($postPublications, $socialNetwork, $this->facebookPublicationRepository);
+        $this->publicationService->save($postPublications, $socialNetwork, $this->facebookPublicationRepository);
+    }
+
+    public function publish(array $publications)
+    {
     }
 }

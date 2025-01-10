@@ -78,6 +78,18 @@ class Publication
     #[Groups(['publications:get', 'publication:get'])]
     private string $status;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['publications:get', 'publication:get'])]
+    private int $retry = 0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['publications:get', 'publication:get'])]
+    private int $retryTime = 0;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(['publications:get', 'publication:get'])]
+    private ?string $statusMessage;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['publications:get', 'publication:get'])]
     private ?\DateTime $publishedAt = null;
@@ -211,6 +223,42 @@ class Publication
     public function setPictures(array $pictures): static
     {
         $this->pictures = $pictures;
+
+        return $this;
+    }
+
+    public function getStatusMessage(): ?string
+    {
+        return $this->statusMessage;
+    }
+
+    public function setStatusMessage(?string $statusMessage): static
+    {
+        $this->statusMessage = $statusMessage;
+
+        return $this;
+    }
+
+    public function getRetryTime(): ?int
+    {
+        return $this->retryTime;
+    }
+
+    public function setRetryTime(int $retryTime): static
+    {
+        $this->retryTime = $retryTime;
+
+        return $this;
+    }
+
+    public function getRetry(): ?int
+    {
+        return $this->retry;
+    }
+
+    public function setRetry(int $retry): static
+    {
+        $this->retry = $retry;
 
         return $this;
     }

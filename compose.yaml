@@ -62,8 +62,8 @@ services:
             - "9002:5672"
             - "9003:15672"
 
-    php-qa:
-        container_name: ${PROJECT_NAME}-php-qa
+    qa:
+        container_name: ${PROJECT_NAME}-qa
         image: php:8.3-cli-alpine
         volumes:
             - ./src:/app/src

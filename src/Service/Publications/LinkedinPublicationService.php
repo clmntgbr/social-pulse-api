@@ -29,6 +29,10 @@ readonly class LinkedinPublicationService implements PublicationServiceInterface
             throw new \Exception('This social network does not exist');
         }
 
-        $this->publicationService->publish($postPublications, $socialNetwork, $this->linkedinPublicationRepository);
+        $this->publicationService->save($postPublications, $socialNetwork, $this->linkedinPublicationRepository);
+    }
+
+    public function publish(array $publications)
+    {
     }
 }

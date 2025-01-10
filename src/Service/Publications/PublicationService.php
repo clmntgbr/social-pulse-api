@@ -28,7 +28,7 @@ readonly class PublicationService
     /**
      * @throws ExceptionInterface
      */
-    public function publish(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $repositoryRepository): void
+    public function save(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $repositoryRepository): void
     {
         $threadUuid = Uuid::uuid4()->toString();
 

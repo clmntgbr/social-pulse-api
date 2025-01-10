@@ -13,4 +13,8 @@ readonly class DefaultPublicationService implements PublicationServiceInterface
     public function create(PostPublications $postPublications): void
     {
     }
+
+    public function publish(array $publications)
+    {
+    }
 }

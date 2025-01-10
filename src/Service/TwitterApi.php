@@ -7,6 +7,10 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 use App\Dto\AccessToken\TwitterAccessToken;
 use App\Dto\AccessToken\TwitterBearerToken;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
+use App\Dto\Twitter\TwitterTweet;
+use App\Dto\Twitter\TwitterUploadMedia;
+use App\Entity\Publication\TwitterPublication;
+use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -122,5 +126,66 @@ readonly class TwitterApi implements InterfaceApi
     public function getScopes(): string
     {
         return 'created_at,description,entities,id,location,most_recent_tweet_id,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,verified_type,withheld';
+    }
+
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TwitterOAuthException
+     */
+    public function uploadMedia(TwitterSocialNetwork $socialNetwork, string $media): ?TwitterUploadMedia
+    {
+        try {
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
+            $twitterOAuth->setApiVersion(1.1);
+            
+            $response = $twitterOAuth->upload('media/upload', ['media' => $media], ['chunkedUpload' => true]);
+            $twitterUploadMedia = $this->serializer->deserialize(json_encode($response), TwitterUploadMedia::class, 'json');
+
+            $errors = $this->validator->validate($twitterUploadMedia);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $twitterUploadMedia;
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TwitterOAuthException
+     */
+    public function tweet(TwitterSocialNetwork $socialNetwork, array $payload): string|TwitterTweet
+    {
+        try {
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
+            $twitterOAuth->setApiVersion(2);
+
+            $response = $twitterOAuth->post('tweets', $payload, ['jsonPayload' => true]);
+
+            if ($response->status ?? 404 !== 200) {
+                throw new BadRequestHttpException($response->title);
+            }
+            
+            $response = $response->data ?? $response;
+            
+            $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterTweet::class, 'json');
+
+            $errors = $this->validator->validate($twitterTweet);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $twitterTweet;
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
+        }
     }
 }

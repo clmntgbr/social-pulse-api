@@ -2,16 +2,16 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Publication\Publication;
+use App\Entity\Organization;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class PublicationCrudController extends AbstractCrudController
+class OrganizationCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Publication::class;
+        return Organization::class;
     }
 }
