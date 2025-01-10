@@ -8,6 +8,7 @@ services:
             string $backUrl: '%env(resolve:BACK_URL)%'
             string $frontUrl: '%env(resolve:FRONT_URL)%'
             string $callbackUrl: '%env(resolve:CALLBACK_URL)%'
+            string $projectRoot: '%env(resolve:PROJECT_ROOT)%'
 
             string $facebookClientId: '%env(resolve:FACEBOOK_CLIENT_ID)%'
             string $facebookClientSecret: '%env(resolve:FACEBOOK_CLIENT_SECRET)%'
@@ -18,7 +19,7 @@ services:
             string $linkedinClientSecret: '%env(resolve:LINKEDIN_CLIENT_SECRET)%'
             string $linkedinApiUrl: '%env(resolve:LINKEDIN_API_URL)%'
             string $linkedinLoginUrl: '%env(resolve:LINKEDIN_LOGIN_URL)%'
-            #
+            
             string $twitterApiUrl: '%env(resolve:TWITTER_API_URL)%'
             string $twitterApiKey: '%env(resolve:TWITTER_API_KEY)%'
             string $twitterApiSecret: '%env(resolve:TWITTER_API_SECRET)%'

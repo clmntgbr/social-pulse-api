@@ -18,21 +18,21 @@ readonly class PostSocialNetworksValidateResolver implements ValueResolverInterf
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (PostSocialNetworksValidate::class !== $argument->getType()) {
+        if (PostSocialNetworksValidate::class !== $argumentMetadata->getType()) {
             return;
         }
 
-        $dto = new PostSocialNetworksValidate();
-        $dto->validate = $request->attributes->get('validate', null);
-        $dto->uuids = $request->toArray();
+        $postSocialNetworksValidate = new PostSocialNetworksValidate();
+        $postSocialNetworksValidate->validate = $request->attributes->get('validate', null);
+        $postSocialNetworksValidate->uuids = $request->toArray();
 
-        $errors = $this->validator->validate($dto);
+        $errors = $this->validator->validate($postSocialNetworksValidate);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $dto;
+        yield $postSocialNetworksValidate;
     }
 }

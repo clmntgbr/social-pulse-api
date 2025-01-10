@@ -25,7 +25,7 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
     public function __construct(
         private FacebookApi $facebookApi,
         private UserRepository $userRepository,
-        private FacebookSocialNetworkRepository $socialNetworkRepository,
+        private FacebookSocialNetworkRepository $facebookSocialNetworkRepository,
         private TypeRepository $typeRepository,
         private string $facebookLoginUrl,
         private string $facebookClientId,
@@ -90,7 +90,7 @@ readonly class FacebookSocialNetworkService implements SocialNetworkServiceInter
                 continue;
             }
 
-            $this->socialNetworkRepository->updateOrCreate([
+            $this->facebookSocialNetworkRepository->updateOrCreate([
                 'socialNetworkId' => $facebookAccount->id,
                 'organization' => $user->getActiveOrganization(),
             ], [

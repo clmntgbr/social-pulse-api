@@ -7,6 +7,10 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 use App\Dto\AccessToken\TwitterAccessToken;
 use App\Dto\AccessToken\TwitterBearerToken;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
+use App\Dto\Twitter\TwitterTweet;
+use App\Dto\Twitter\TwitterUploadMedia;
+use App\Entity\Publication\TwitterPublication;
+use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -23,7 +27,7 @@ readonly class TwitterApi implements InterfaceApi
         private string $twitterApiSecret,
         private string $callbackUrl,
         private string $twitterApiUrl,
-        private HttpClientInterface $client,
+        private HttpClientInterface $httpClient,
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         private ValidatorError $validatorError,
@@ -45,7 +49,7 @@ readonly class TwitterApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('POST', $url);
+            $response = $this->httpClient->request('POST', $url);
             parse_str($response->getContent(), $decoded);
 
             $twitterAccessToken = $this->serializer->deserialize(json_encode($decoded), TwitterAccessToken::class, 'json');
@@ -56,7 +60,7 @@ readonly class TwitterApi implements InterfaceApi
             }
 
             return $twitterAccessToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -68,7 +72,7 @@ readonly class TwitterApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('POST', $url, [
+            $response = $this->httpClient->request('POST', $url, [
                 'headers' => [
                     'Authorization' => sprintf('Basic %s', base64_encode(sprintf('%s:%s', $this->twitterApiKey, $this->twitterApiSecret))),
                 ],
@@ -82,7 +86,7 @@ readonly class TwitterApi implements InterfaceApi
             }
 
             return $twitterBearerToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -94,13 +98,13 @@ readonly class TwitterApi implements InterfaceApi
      * @throws ServerExceptionInterface
      * @throws TwitterOAuthException
      */
-    public function getAccounts(TwitterAccessToken $token): ?TwitterAccount
+    public function getAccounts(TwitterAccessToken $twitterAccessToken): TwitterAccount
     {
         try {
-            $client = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $token->oauthToken, $token->oauthTokenSecret);
-            $client->setApiVersion('2');
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $twitterAccessToken->oauthToken, $twitterAccessToken->oauthTokenSecret);
+            $twitterOAuth->setApiVersion('2');
 
-            $response = $client->get('users/me', [
+            $response = $twitterOAuth->get('users/me', [
                 'expansions' => ['pinned_tweet_id'],
                 'user.fields' => $this->getScopes(),
             ]);
@@ -115,12 +119,66 @@ readonly class TwitterApi implements InterfaceApi
 
             return $twitterAccount;
         } catch (\Exception $exception) {
-            return null;
+            throw new BadRequestHttpException($exception->getMessage());
         }
     }
 
     public function getScopes(): string
     {
         return 'created_at,description,entities,id,location,most_recent_tweet_id,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,verified_type,withheld';
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function uploadMedia(TwitterSocialNetwork $socialNetwork, string $media): TwitterUploadMedia
+    {
+        try {
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
+            $twitterOAuth->setApiVersion(1.1);
+            
+            $response = $twitterOAuth->upload('media/upload', ['media' => $media], ['chunkedUpload' => true]);
+            $twitterUploadMedia = $this->serializer->deserialize(json_encode($response), TwitterUploadMedia::class, 'json');
+
+            $errors = $this->validator->validate($twitterUploadMedia);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $twitterUploadMedia;
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function tweet(TwitterSocialNetwork $socialNetwork, array $payload): TwitterTweet
+    {
+        try {
+            $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
+            $twitterOAuth->setApiVersion(2);
+
+            $response = $twitterOAuth->post('tweets', $payload, ['jsonPayload' => true]);
+
+
+            if (isset($response->status)) {
+                throw new BadRequestHttpException($response->title);
+            }
+            
+            $response = $response->data ?? $response;
+
+            $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterTweet::class, 'json');
+
+            $errors = $this->validator->validate($twitterTweet);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $twitterTweet;
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
     }
 }

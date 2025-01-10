@@ -7,11 +7,11 @@ DOCKER_COMPOSE = docker compose -p $(PROJECT_NAME)
 
 CONTAINER_PHP := $(shell docker container ls -f "name=$(PROJECT_NAME)-php" -q)
 CONTAINER_DB := $(shell docker container ls -f "name=$(PROJECT_NAME)-database" -q)
-CONTAINER_FIXER := $(shell docker container ls -f "name=$(PROJECT_NAME)-php-cs-fixer" -q)
+CONTAINER_QA := $(shell docker container ls -f "name=$(PROJECT_NAME)-qa" -q)
 
 PHP := docker exec -ti $(CONTAINER_PHP)
 DATABASE := docker exec -ti $(CONTAINER_DB)
-FIXER := docker exec -ti $(CONTAINER_FIXER)
+QA := docker exec -ti $(CONTAINER_QA)
 
 ## Kill all containers
 kill:
@@ -72,8 +72,29 @@ db:
 	$(PHP) php bin/console doctrine:schema:update -f
 	$(PHP) php bin/console hautelook:fixtures:load -n
 
+schema:
+	$(PHP) php bin/console doctrine:schema:update -f
+
+regenerate:
+	$(PHP) php bin/console make:entity --regenerate App
+
+consume:
+	$(PHP) php bin/console messenger:consume high medium low
+
 fixtures:
 	$(PHP) php bin/console hautelook:fixtures:load -n
 
 php-cs-fixer:
-	$(FIXER) ./php-cs-fixer fix src --rules=@Symfony --verbose --diff
+	$(QA) ./php-cs-fixer fix src --rules=@Symfony --verbose --diff
+
+php-stan:
+	$(QA) ./vendor/bin/phpstan analyse src -l $(or $(level), 5)
+
+php-rector:
+	$(QA) ./vendor/bin/rector process src
+
+php-rector-dry:
+	$(QA) ./vendor/bin/rector process src --dry-run
+
+command:
+	$(PHP) php bin/console $(filter-out $@,$(MAKECMDGOALS))

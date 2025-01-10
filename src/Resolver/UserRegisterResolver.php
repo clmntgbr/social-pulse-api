@@ -20,9 +20,9 @@ readonly class UserRegisterResolver implements ValueResolverInterface
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (UserRegister::class !== $argument->getType()) {
+        if (UserRegister::class !== $argumentMetadata->getType()) {
             return;
         }
 

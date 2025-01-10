@@ -4,6 +4,7 @@ namespace App\Dto\Api;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class PostPublication
 {
@@ -47,10 +48,10 @@ class PostPublication
     }
 
     #[Assert\Callback]
-    public function validateContentOrPictures(\Symfony\Component\Validator\Context\ExecutionContextInterface $context): void
+    public function validateContentOrPictures(ExecutionContextInterface $executionContext): void
     {
         if (empty($this->content) && empty($this->pictures)) {
-            $context->buildViolation('Either content or pictures must be provided, but not both missing.')
+            $executionContext->buildViolation('Either content or pictures must be provided, but not both missing.')
                 ->atPath('content')
                 ->addViolation();
         }

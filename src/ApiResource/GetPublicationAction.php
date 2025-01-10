@@ -23,7 +23,7 @@ class GetPublicationAction extends AbstractController
     ) {
     }
 
-    public function __invoke(GetPublication $getPublication, Request $request, #[CurrentUser] ?User $user): JsonResponse
+    public function __invoke(GetPublication $getPublication): JsonResponse
     {
         $publications = $this->publicationRepository->findPublicationByThreadUuid($getPublication->uuid);
 

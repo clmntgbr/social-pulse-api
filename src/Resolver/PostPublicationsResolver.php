@@ -20,9 +20,9 @@ readonly class PostPublicationsResolver implements ValueResolverInterface
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (PostPublications::class !== $argument->getType()) {
+        if (PostPublications::class !== $argumentMetadata->getType()) {
             return;
         }
 
@@ -31,7 +31,7 @@ readonly class PostPublicationsResolver implements ValueResolverInterface
         /** @var PostPublication[] $postPublication */
         $postPublication = $this->serializer->deserialize($content, 'App\Dto\Api\PostPublication[]', 'json');
 
-        usort($postPublication, function ($a, $b) {
+        usort($postPublication, function ($a, $b): int|float {
             return $a->id - $b->id;
         });
 

@@ -9,7 +9,6 @@ use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsDoctrineListener(event: Events::prePersist, priority: 0, connection: 'default')]
@@ -23,10 +22,9 @@ readonly class UserEvent
     ) {
     }
 
-    #[NoReturn]
-    public function prePersist(PrePersistEventArgs $event): void
+    public function prePersist(PrePersistEventArgs $prePersistEventArgs): void
     {
-        $entity = $event->getObject();
+        $entity = $prePersistEventArgs->getObject();
         if (!$entity instanceof User) {
             return;
         }
@@ -34,10 +32,9 @@ readonly class UserEvent
         $this->hashPassword($entity);
     }
 
-    #[NoReturn]
-    public function postPersist(PostPersistEventArgs $event): void
+    public function postPersist(PostPersistEventArgs $postPersistEventArgs): void
     {
-        $entity = $event->getObject();
+        $entity = $postPersistEventArgs->getObject();
         if (!$entity instanceof User) {
             return;
         }
@@ -45,10 +42,9 @@ readonly class UserEvent
         $this->createOrganization($entity);
     }
 
-    #[NoReturn]
-    public function preUpdate(PreUpdateEventArgs $event): void
+    public function preUpdate(PreUpdateEventArgs $preUpdateEventArgs): void
     {
-        $entity = $event->getObject();
+        $entity = $preUpdateEventArgs->getObject();
         if (!$entity instanceof User) {
             return;
         }
@@ -67,13 +63,13 @@ readonly class UserEvent
 
     private function createOrganization(User $user): void
     {
-        $workspace = $this->organizationRepository->create([
+        $organization = $this->organizationRepository->create([
             'name' => sprintf("%s's Organization", $user->getName()),
             'logoUrl' => 'https://avatar.vercel.sh/personal.png',
             'admin' => $user,
         ]);
 
-        $user->setActiveOrganization($workspace);
-        $user->addOrganization($workspace);
+        $user->setActiveOrganization($organization);
+        $user->addOrganization($organization);
     }
 }

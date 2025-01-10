@@ -18,21 +18,21 @@ readonly class GetSocialNetworksConnectResolver implements ValueResolverInterfac
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (GetSocialNetworksConnect::class !== $argument->getType()) {
+        if (GetSocialNetworksConnect::class !== $argumentMetadata->getType()) {
             return;
         }
 
-        $dto = new GetSocialNetworksConnect();
-        $dto->socialNetworkType = $request->attributes->get('platform', null);
-        $dto->callbackPath = $request->query->get('path', '/');
+        $getSocialNetworksConnect = new GetSocialNetworksConnect();
+        $getSocialNetworksConnect->socialNetworkType = $request->attributes->get('platform', null);
+        $getSocialNetworksConnect->callbackPath = $request->query->get('path', '/');
 
-        $errors = $this->validator->validate($dto);
+        $errors = $this->validator->validate($getSocialNetworksConnect);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $dto;
+        yield $getSocialNetworksConnect;
     }
 }

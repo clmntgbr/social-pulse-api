@@ -8,15 +8,15 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class TwitterSocialNetworkRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, TwitterSocialNetwork::class);
+        parent::__construct($managerRegistry, TwitterSocialNetwork::class);
     }
 
     public function updateOrCreate(array $searchPayload, array $updatePayload): TwitterSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if (!$account) {
+        if ($account === null) {
             $account = new TwitterSocialNetwork();
         }
 

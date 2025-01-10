@@ -8,15 +8,15 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class FacebookSocialNetworkRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, FacebookSocialNetwork::class);
+        parent::__construct($managerRegistry, FacebookSocialNetwork::class);
     }
 
     public function updateOrCreate(array $searchPayload, array $updatePayload): FacebookSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if (!$account) {
+        if ($account === null) {
             $account = new FacebookSocialNetwork();
         }
 

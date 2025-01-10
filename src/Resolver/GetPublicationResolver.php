@@ -18,20 +18,20 @@ readonly class GetPublicationResolver implements ValueResolverInterface
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (GetPublication::class !== $argument->getType()) {
+        if (GetPublication::class !== $argumentMetadata->getType()) {
             return;
         }
 
-        $dto = new GetPublication();
-        $dto->uuid = $request->attributes->get('uuid', null);
+        $getPublication = new GetPublication();
+        $getPublication->uuid = $request->attributes->get('uuid', null);
 
-        $errors = $this->validator->validate($dto);
+        $errors = $this->validator->validate($getPublication);
         if (count($errors) > 0) {
             throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
         }
 
-        yield $dto;
+        yield $getPublication;
     }
 }

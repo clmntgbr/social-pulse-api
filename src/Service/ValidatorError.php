@@ -6,20 +6,20 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ValidatorError
 {
-    public function getMessage(ConstraintViolationListInterface $violationList): array
+    public function getMessage(ConstraintViolationListInterface $constraintViolationList): array
     {
-        return $this->hydrate($violationList);
+        return $this->hydrate($constraintViolationList);
     }
 
-    public function getMessageToString(ConstraintViolationListInterface $violationList): string
+    public function getMessageToString(ConstraintViolationListInterface $constraintViolationList): string
     {
-        return implode(', ', $this->hydrate($violationList));
+        return implode(', ', $this->hydrate($constraintViolationList));
     }
 
-    private function hydrate(ConstraintViolationListInterface $violationList): array
+    private function hydrate(ConstraintViolationListInterface $constraintViolationList): array
     {
         $errorMessages = [];
-        foreach ($violationList as $error) {
+        foreach ($constraintViolationList as $error) {
             $errorMessages[] = ucfirst($error->getPropertyPath()).': '.$error->getMessage();
         }
 

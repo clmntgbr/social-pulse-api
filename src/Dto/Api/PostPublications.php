@@ -19,7 +19,7 @@ class PostPublications
     /** @var PostPublication[] */
     public array $publications = [];
 
-    public function __construct($publications)
+    public function __construct(array $publications)
     {
         $this->publications = $publications;
     }

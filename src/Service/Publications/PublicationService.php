@@ -16,6 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 readonly class PublicationService
 {
@@ -28,7 +29,7 @@ readonly class PublicationService
     /**
      * @throws ExceptionInterface
      */
-    public function publish(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $publicationRepository): void
+    public function save(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $repositoryRepository): void
     {
         $threadUuid = Uuid::uuid4()->toString();
 
@@ -41,7 +42,7 @@ readonly class PublicationService
             }
 
             /* @var FacebookPublicationRepository | LinkedinPublicationRepository | TwitterPublicationRepository | InstagramPublicationRepository | YoutubePublicationRepository $publicationRepository */
-            $publicationRepository->create([
+            $repositoryRepository->create([
                 'content' => $publication->content,
                 'uuid' => $uuid,
                 'threadUuid' => $threadUuid,
@@ -51,12 +52,12 @@ readonly class PublicationService
                 'status' => $publication->status,
                 'publishedAt' => $publication->publishedAt,
             ]);
+        }
 
-            if ($publication->publishedAt <= new \DateTime()) {
-                $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($uuid), [
-                    new AmqpStamp('high', 0, []),
-                ]);
-            }
+        if ($publication->publishedAt <= new \DateTime()) {
+            $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($threadUuid, $socialNetwork->getSocialNetworkType()->getName()), [
+                new AmqpStamp('high', 0, []),
+            ]);
         }
     }
 }

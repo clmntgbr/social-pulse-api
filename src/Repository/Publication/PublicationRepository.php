@@ -3,6 +3,7 @@
 namespace App\Repository\Publication;
 
 use App\Entity\Publication\Publication;
+use App\Entity\User;
 use App\Enum\PublicationStatus;
 use App\Enum\PublicationThreadType;
 use App\Repository\AbstractRepository;
@@ -13,10 +14,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 class PublicationRepository extends AbstractRepository
 {
     public function __construct(
-        ManagerRegistry $registry,
+        ManagerRegistry $managerRegistry,
         private Security $security,
     ) {
-        parent::__construct($registry, Publication::class);
+        parent::__construct($managerRegistry, Publication::class);
     }
 
     public function findAll(): array
@@ -46,36 +47,39 @@ class PublicationRepository extends AbstractRepository
         return $qb->getQuery()->getResult();
     }
 
-    private function filters(QueryBuilder $builder): QueryBuilder
+    private function filters(QueryBuilder $queryBuilder): QueryBuilder
     {
-        $builder
+        /** @var User $user */
+        $user = $this->security->getUser();
+        $queryBuilder
             ->join('p.socialNetwork', 's')
             ->andWhere('s.organization = :organization')
-            ->setParameter('organization', $this->security->getUser()->getActiveOrganization());
+            ->setParameter('organization', $user->getActiveOrganization());
 
-        return $builder;
+        return $queryBuilder;
     }
 
-    private function filterThreadType(QueryBuilder $builder): QueryBuilder
+    private function filterThreadType(QueryBuilder $queryBuilder): QueryBuilder
     {
-        $builder
+        $queryBuilder
             ->andWhere('p.threadType = :threadType')
             ->setParameter('threadType', PublicationThreadType::PRIMARY);
 
-        return $builder;
+        return $queryBuilder;
     }
 
-    private function filterStatus(QueryBuilder $builder): QueryBuilder
+    private function filterStatus(QueryBuilder $queryBuilder): QueryBuilder
     {
-        $builder
+        $queryBuilder
             ->andWhere('p.status IN (:status)')
             ->setParameter('status', [
                 PublicationStatus::SCHEDULED->toString(),
+                PublicationStatus::RETRY->toString(),
                 PublicationStatus::POSTED->toString(),
                 PublicationStatus::FAILED->toString(),
                 PublicationStatus::DRAFT->toString(),
             ]);
 
-        return $builder;
+        return $queryBuilder;
     }
 }

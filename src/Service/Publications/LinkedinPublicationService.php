@@ -11,9 +11,9 @@ use Symfony\Component\Messenger\Exception\ExceptionInterface;
 readonly class LinkedinPublicationService implements PublicationServiceInterface
 {
     public function __construct(
-        private readonly LinkedinPublicationRepository $publicationRepository,
-        private readonly LinkedinSocialNetworkRepository $socialNetworkRepository,
-        private readonly PublicationService $service,
+        private readonly LinkedinPublicationRepository $linkedinPublicationRepository,
+        private readonly LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
+        private readonly PublicationService $publicationService,
     ) {
     }
 
@@ -23,12 +23,16 @@ readonly class LinkedinPublicationService implements PublicationServiceInterface
      */
     public function create(PostPublications $postPublications): void
     {
-        $socialNetwork = $this->socialNetworkRepository->findOneByCriteria(['uuid' => $postPublications->socialNetworkUuid]);
+        $socialNetwork = $this->linkedinSocialNetworkRepository->findOneByCriteria(['uuid' => $postPublications->socialNetworkUuid]);
 
         if (!$socialNetwork instanceof LinkedinSocialNetwork) {
             throw new \Exception('This social network does not exist');
         }
 
-        $this->service->publish($postPublications, $socialNetwork, $this->publicationRepository);
+        $this->publicationService->save($postPublications, $socialNetwork, $this->linkedinPublicationRepository);
+    }
+
+    public function publish(array $publications)
+    {
     }
 }

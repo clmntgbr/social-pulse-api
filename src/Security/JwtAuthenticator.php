@@ -58,12 +58,12 @@ class JwtAuthenticator extends AbstractAuthenticator
             $user = $this->getUser($payload);
 
             return new SelfValidatingPassport(
-                new UserBadge($payload['user_primary_email_address'], function () use ($user) {
+                new UserBadge($payload['user_primary_email_address'], function () use ($user): \App\Entity\User {
                     return $user;
                 })
             );
-        } catch (\Exception $e) {
-            throw new CustomUserMessageAuthenticationException('Invalid token: '.$e->getMessage());
+        } catch (\Exception $exception) {
+            throw new CustomUserMessageAuthenticationException('Invalid token: '.$exception->getMessage());
         }
     }
 
@@ -115,10 +115,10 @@ class JwtAuthenticator extends AbstractAuthenticator
         }
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $authenticationException): ?Response
     {
         $data = [
-            'message' => $exception->getMessage(),
+            'message' => $authenticationException->getMessage(),
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);

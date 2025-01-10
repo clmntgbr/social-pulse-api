@@ -21,7 +21,7 @@ readonly class FacebookApi implements InterfaceApi
         private string $facebookClientSecret,
         private string $callbackUrl,
         private string $facebookApiUrl,
-        private HttpClientInterface $client,
+        private HttpClientInterface $httpClient,
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         private ValidatorError $validatorError,
@@ -45,7 +45,7 @@ readonly class FacebookApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('GET', $url);
+            $response = $this->httpClient->request('GET', $url);
 
             $facebookAccessToken = $this->serializer->deserialize($response->getContent(), FacebookAccessToken::class, 'json');
 
@@ -55,7 +55,7 @@ readonly class FacebookApi implements InterfaceApi
             }
 
             return $facebookAccessToken;
-        } catch (ClientExceptionInterface $exception) {
+        } catch (ClientExceptionInterface $clientException) {
             return null;
         }
     }
@@ -77,7 +77,7 @@ readonly class FacebookApi implements InterfaceApi
         );
 
         try {
-            $response = $this->client->request('GET', $url);
+            $response = $this->httpClient->request('GET', $url);
 
             $facebookAccessToken = $this->serializer->deserialize($response->getContent(), FacebookAccessToken::class, 'json');
 
@@ -98,15 +98,15 @@ readonly class FacebookApi implements InterfaceApi
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface|DecodingExceptionInterface
      */
-    public function getAccounts(FacebookAccessToken $token): ?FacebookAccount
+    public function getAccounts(FacebookAccessToken $facebookAccessToken): ?FacebookAccount
     {
         $url = sprintf('%s/me?fields=accounts{name,access_token,followers_count,fan_count,bio,emails,id,link,page_token,picture{url},website},email&access_token=%s',
             $this->facebookApiUrl,
-            $token->accessToken
+            $facebookAccessToken->accessToken
         );
 
         try {
-            $response = $this->client->request('GET', $url);
+            $response = $this->httpClient->request('GET', $url);
 
             $facebookAccounts = $this->serializer->deserialize($response->getContent(), FacebookAccount::class, 'json');
 

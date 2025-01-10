@@ -6,6 +6,7 @@ use App\Entity\Publication\Publication;
 use App\Enum\PublicationStatus;
 use App\Message\PublishScheduledPublicationsMessage;
 use App\Repository\Publication\PublicationRepository;
+use App\Service\Publications\PublicationServiceFactory;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -13,19 +14,22 @@ final class PublishScheduledPublicationsMessageHandler
 {
     public function __construct(
         private readonly PublicationRepository $publicationRepository,
+        private readonly PublicationServiceFactory $publicationServiceFactory
     ) {
     }
 
-    public function __invoke(PublishScheduledPublicationsMessage $message): void
+    public function __invoke(PublishScheduledPublicationsMessage $publishScheduledPublicationsMessage): void
     {
-        $publication = $this->publicationRepository->findOneBy(['uuid' => $message->getUuid()]);
+       $publications = $this->publicationRepository->findBy(
+            ['threadUuid' => $publishScheduledPublicationsMessage->getUuid()],
+            ['id' => 'ASC']
+        );
 
-        if (!$publication instanceof Publication) {
+        if (empty($publications)) {
             return;
         }
 
-        $this->publicationRepository->update($publication, [
-            'status' => PublicationStatus::POSTED->toString(),
-        ]);
+        $publicationService = $this->publicationServiceFactory->getService($publishScheduledPublicationsMessage->getSocialNetworkType());
+        $publicationService->publish($publications);
     }
 }

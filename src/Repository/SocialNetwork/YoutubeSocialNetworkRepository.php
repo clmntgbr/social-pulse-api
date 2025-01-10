@@ -8,8 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class YoutubeSocialNetworkRepository extends AbstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, YoutubeSocialNetwork::class);
+        parent::__construct($managerRegistry, YoutubeSocialNetwork::class);
     }
 }

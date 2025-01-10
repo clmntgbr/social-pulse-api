@@ -20,9 +20,9 @@ readonly class PostOrganizationsResolver implements ValueResolverInterface
     ) {
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
+    public function resolve(Request $request, ArgumentMetadata $argumentMetadata): iterable
     {
-        if (PostOrganizations::class !== $argument->getType()) {
+        if (PostOrganizations::class !== $argumentMetadata->getType()) {
             return;
         }
 
