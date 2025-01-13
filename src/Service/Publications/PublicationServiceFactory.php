@@ -26,7 +26,7 @@ readonly class PublicationServiceFactory
         private readonly TwitterApi $twitterApi,
         private readonly ImageService $imageService,
         private readonly MessageBusInterface $messageBus,
-        private readonly string $projectRoot
+        private readonly string $projectRoot,
     ) {
     }
 

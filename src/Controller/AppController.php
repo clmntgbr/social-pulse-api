@@ -12,10 +12,10 @@ class AppController extends AbstractController
 {
     public function __construct(
         private readonly PublicationRepository $publicationRepository,
-        private readonly PublicationServiceFactory $publicationServiceFactory
+        private readonly PublicationServiceFactory $publicationServiceFactory,
     ) {
     }
-    
+
     #[Route('/api/status', name: 'status', methods: ['GET'])]
     public function index(): JsonResponse
     {

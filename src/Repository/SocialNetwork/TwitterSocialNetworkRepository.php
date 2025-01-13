@@ -16,7 +16,7 @@ class TwitterSocialNetworkRepository extends AbstractRepository
     public function updateOrCreate(array $searchPayload, array $updatePayload): TwitterSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if ($account === null) {
+        if (null === $account) {
             $account = new TwitterSocialNetwork();
         }
 

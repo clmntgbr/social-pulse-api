@@ -58,7 +58,7 @@ class JwtAuthenticator extends AbstractAuthenticator
             $user = $this->getUser($payload);
 
             return new SelfValidatingPassport(
-                new UserBadge($payload['user_primary_email_address'], function () use ($user): \App\Entity\User {
+                new UserBadge($payload['user_primary_email_address'], function () use ($user): User {
                     return $user;
                 })
             );

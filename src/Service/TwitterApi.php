@@ -9,7 +9,6 @@ use App\Dto\AccessToken\TwitterBearerToken;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
 use App\Dto\Twitter\TwitterTweet;
 use App\Dto\Twitter\TwitterUploadMedia;
-use App\Entity\Publication\TwitterPublication;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -136,7 +135,7 @@ readonly class TwitterApi implements InterfaceApi
         try {
             $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
             $twitterOAuth->setApiVersion(1.1);
-            
+
             $response = $twitterOAuth->upload('media/upload', ['media' => $media], ['chunkedUpload' => true]);
             $twitterUploadMedia = $this->serializer->deserialize(json_encode($response), TwitterUploadMedia::class, 'json');
 
@@ -165,7 +164,7 @@ readonly class TwitterApi implements InterfaceApi
             if (isset($response->status)) {
                 throw new BadRequestHttpException($response->detail);
             }
-            
+
             $response = $response->data ?? $response;
 
             $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterTweet::class, 'json');

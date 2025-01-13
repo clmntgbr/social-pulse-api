@@ -34,7 +34,7 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
     public function updateOrCreate(array $searchPayload, array $updatePayload): User
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if ($account === null) {
+        if (null === $account) {
             $account = new User();
         }
 

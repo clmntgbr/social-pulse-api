@@ -16,7 +16,7 @@ class LinkedinSocialNetworkRepository extends AbstractRepository
     public function updateOrCreate(array $searchPayload, array $updatePayload): LinkedinSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if ($account === null) {
+        if (null === $account) {
             $account = new LinkedinSocialNetwork();
         }
 

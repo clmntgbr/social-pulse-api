@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\MakerBundle\Str;
 
 readonly class ImageService
 {
@@ -41,7 +40,7 @@ readonly class ImageService
         return sprintf('tmp/%s', $path);
     }
 
-    public function delete(string $filePath): bool 
+    public function delete(string $filePath): bool
     {
         if (!file_exists($filePath)) {
             return false;
@@ -91,11 +90,12 @@ readonly class ImageService
     {
         $imageData = file_get_contents($path);
 
-        if ($imageData === false) {
+        if (false === $imageData) {
             return null;
         }
-        
+
         $base64 = base64_encode($imageData);
+
         return "data:image/png;base64,{$base64}";
     }
 

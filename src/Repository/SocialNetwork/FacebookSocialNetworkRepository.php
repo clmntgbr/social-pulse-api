@@ -16,7 +16,7 @@ class FacebookSocialNetworkRepository extends AbstractRepository
     public function updateOrCreate(array $searchPayload, array $updatePayload): FacebookSocialNetwork
     {
         $account = $this->findOneByCriteria($searchPayload);
-        if ($account === null) {
+        if (null === $account) {
             $account = new FacebookSocialNetwork();
         }
 

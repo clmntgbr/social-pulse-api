@@ -3,20 +3,15 @@
 namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
-use App\Entity\Publication\Publication;
 use App\Entity\Publication\TwitterPublication;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use App\Enum\PublicationStatus;
 use App\Enum\PublicationThreadType;
-use App\Message\PublishScheduledPublicationsMessage;
 use App\Repository\Publication\TwitterPublicationRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use App\Service\ImageService;
 use App\Service\TwitterApi;
-use DateTime;
-use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class TwitterPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
@@ -27,7 +22,7 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
         private readonly TwitterApi $twitterApi,
         private readonly ImageService $imageService,
         private readonly MessageBusInterface $messageBus,
-        private readonly string $projectRoot
+        private readonly string $projectRoot,
     ) {
         parent::__construct($this->twitterPublicationRepository, $this->messageBus);
     }
@@ -43,31 +38,33 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
         $this->publicationService->save($postPublications, $socialNetwork, $this->twitterPublicationRepository);
     }
 
-    /** @var TwitterPublication[] $publications */
+    /** @var TwitterPublication[] */
     public function publish(array $publications)
     {
         $twitterSocialNetwork = null;
         $primaryId = null;
-        
+
         /** @var TwitterPublication $publication */
         foreach ($publications as $publication) {
             $twitterSocialNetwork = $publication->getSocialNetwork();
             $mediaIds = [];
             foreach ($publication->getPictures() as $picture) {
                 $media = $this->imageService->downloadTmp($picture);
-                
+
                 try {
                     $twitterMedia = $this->twitterApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
                 } catch (\Exception $exception) {
                     $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+
                     return;
                 }
 
                 if (!$twitterMedia) {
                     $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), 'UploadMedia error', PublicationStatus::RETRY->toString());
+
                     return;
                 }
-                
+
                 $this->imageService->delete(sprintf('%s/public/%s', $this->projectRoot, $media));
                 $mediaIds[] = $twitterMedia->mediaId;
             }
@@ -88,10 +85,11 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
                 $response = $this->twitterApi->tweet($twitterSocialNetwork, $payload);
             } catch (\Exception $exception) {
                 $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+
                 return;
             }
 
-            if ($publication->getThreadType() === PublicationThreadType::PRIMARY) {
+            if (PublicationThreadType::PRIMARY === $publication->getThreadType()) {
                 $primaryId = $response->id;
             }
 
@@ -99,7 +97,7 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
                 'publicationId' => $response->id,
                 'status' => PublicationStatus::POSTED->toString(),
                 'statusMessage' => null,
-                'publishedAt' => new DateTime(),
+                'publishedAt' => new \DateTime(),
             ]);
         }
     }

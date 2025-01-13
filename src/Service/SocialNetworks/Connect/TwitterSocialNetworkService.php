@@ -5,9 +5,7 @@ namespace App\Service\SocialNetworks\Connect;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use App\Dto\AccessToken\TwitterAccessToken;
-use App\Dto\AccessToken\TwitterBearerToken;
 use App\Dto\Api\GetSocialNetworksCallback;
-use App\Dto\SocialNetworksAccount\TwitterAccount;
 use App\Dto\TwitterOAuthToken;
 use App\Entity\User;
 use App\Enum\SocialNetworkType;
@@ -100,7 +98,7 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
 
         try {
             $twitterAccount = $this->twitterApi->getAccounts($accessToken);
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
         }
 
