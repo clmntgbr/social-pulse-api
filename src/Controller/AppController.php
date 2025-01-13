@@ -26,7 +26,7 @@ class AppController extends AbstractController
     public function debug(): void
     {
         $publications = $this->publicationRepository->findBy(
-            ['threadUuid' => 'e2d3fec6-2d25-4ab9-a587-e41bb55ab17e'],
+            ['threadUuid' => '1d1abc89-0aa0-4bc4-88dd-9b1dc66010ac'],
             ['id' => 'ASC']
         );
 

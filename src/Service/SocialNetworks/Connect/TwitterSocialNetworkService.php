@@ -98,12 +98,6 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
         }
 
-        $bearerToken = $this->twitterApi->getBearerToken();
-
-        if (!$bearerToken instanceof TwitterBearerToken) {
-            return new RedirectResponse(sprintf('%s/%s', $this->frontUrl, $user->getSocialNetworksCallbackPath()));
-        }
-
         try {
             $twitterAccount = $this->twitterApi->getAccounts($accessToken);
         } catch(\Exception $exception) {
@@ -125,7 +119,6 @@ class TwitterSocialNetworkService implements SocialNetworkServiceInterface
             'token' => $accessToken->oauthToken,
             'tokenSecret' => $accessToken->oauthTokenSecret,
             'isVerified' => $twitterAccount->verified,
-            'bearerToken' => $bearerToken->accessToken,
             'followers' => $twitterAccount->publicMetrics->followersCount,
             'followings' => $twitterAccount->publicMetrics->followingsCount,
             'likes' => $twitterAccount->publicMetrics->likesCount,

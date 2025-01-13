@@ -79,7 +79,7 @@ regenerate:
 	$(PHP) php bin/console make:entity --regenerate App
 
 consume:
-	$(PHP) php bin/console messenger:consume high medium low
+	$(PHP) php bin/console messenger:consume high medium low -vv
 
 fixtures:
 	$(PHP) php bin/console hautelook:fixtures:load -n

@@ -4,7 +4,7 @@ namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
 
-readonly class DefaultPublicationService implements PublicationServiceInterface
+class DefaultPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
     public function __construct()
     {

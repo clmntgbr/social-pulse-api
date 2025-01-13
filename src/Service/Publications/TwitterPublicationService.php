@@ -18,7 +18,7 @@ use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 
-readonly class TwitterPublicationService implements PublicationServiceInterface
+class TwitterPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
     public function __construct(
         private readonly TwitterPublicationRepository $twitterPublicationRepository,
@@ -29,6 +29,7 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
         private readonly MessageBusInterface $messageBus,
         private readonly string $projectRoot
     ) {
+        parent::__construct($this->twitterPublicationRepository, $this->messageBus);
     }
 
     public function create(PostPublications $postPublications): void
@@ -58,12 +59,12 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
                 try {
                     $twitterMedia = $this->twitterApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
                 } catch (\Exception $exception) {
-                    $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                    $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
                     return;
                 }
 
                 if (!$twitterMedia) {
-                    $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), 'UploadMedia error', PublicationStatus::RETRY->toString());
+                    $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), 'UploadMedia error', PublicationStatus::RETRY->toString());
                     return;
                 }
                 
@@ -86,7 +87,7 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
             try {
                 $response = $this->twitterApi->tweet($twitterSocialNetwork, $payload);
             } catch (\Exception $exception) {
-                $this->throwError($publications, $publication->getThreadUuid(), $publication->getThreadType(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
                 return;
             }
 
@@ -99,27 +100,6 @@ readonly class TwitterPublicationService implements PublicationServiceInterface
                 'status' => PublicationStatus::POSTED->toString(),
                 'statusMessage' => null,
                 'publishedAt' => new DateTime(),
-            ]);
-        }
-    }
-
-    /** @var Publication[] $publications */
-    private function throwError(array $publications, string $threadUuid, string $threadType, ?string $message, string $status)
-    {
-        /** @var Publication $publication */
-        foreach($publications as $publication) {
-            $this->twitterPublicationRepository->update($publication, [
-                'status' => $status,
-                'statusMessage' => $message,
-                'retry' => $publication->getRetry() + 1,
-                'retryTime' => 3600,
-            ]);
-        }
-
-        if ($status === PublicationStatus::RETRY->toString()) {
-            $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($threadUuid, $threadType), [
-                new AmqpStamp('high', 0, []),
-                new DelayStamp(3600000),
             ]);
         }
     }

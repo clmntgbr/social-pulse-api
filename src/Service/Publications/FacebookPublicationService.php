@@ -8,7 +8,7 @@ use App\Repository\Publication\FacebookPublicationRepository;
 use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 
-readonly class FacebookPublicationService implements PublicationServiceInterface
+class FacebookPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
     public function __construct(
         private readonly FacebookPublicationRepository $facebookPublicationRepository,

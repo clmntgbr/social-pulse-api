@@ -162,9 +162,8 @@ readonly class TwitterApi implements InterfaceApi
 
             $response = $twitterOAuth->post('tweets', $payload, ['jsonPayload' => true]);
 
-
             if (isset($response->status)) {
-                throw new BadRequestHttpException($response->title);
+                throw new BadRequestHttpException($response->detail);
             }
             
             $response = $response->data ?? $response;

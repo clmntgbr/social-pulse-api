@@ -8,7 +8,7 @@ use App\Repository\Publication\LinkedinPublicationRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 
-readonly class LinkedinPublicationService implements PublicationServiceInterface
+class LinkedinPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
     public function __construct(
         private readonly LinkedinPublicationRepository $linkedinPublicationRepository,
