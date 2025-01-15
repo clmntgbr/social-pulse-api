@@ -101,4 +101,8 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
             ]);
         }
     }
+
+    public function delete(array $publications)
+    {
+    }
 }

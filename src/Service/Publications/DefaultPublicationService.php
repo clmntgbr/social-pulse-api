@@ -17,4 +17,8 @@ class DefaultPublicationService extends AbstractPublicationService implements Pu
     public function publish(array $publications)
     {
     }
+
+    public function delete(array $publications)
+    {
+    }
 }

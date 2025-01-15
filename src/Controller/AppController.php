@@ -26,12 +26,12 @@ class AppController extends AbstractController
     public function debug(): void
     {
         $publications = $this->publicationRepository->findBy(
-            ['threadUuid' => '686bf2ee-a389-47b6-909c-92b86bbf6fff'],
+            ['threadUuid' => 'a3bd65b5-f3f4-4bfd-9037-387473e943c3'],
             ['id' => 'ASC']
         );
 
         $publicationService = $this->publicationServiceFactory->getService('linkedin');
-        $publicationService->publish($publications);
+        $publicationService->delete($publications);
 
         dd($publications);
     }

@@ -3,9 +3,11 @@
 namespace App\Entity\Publication;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\DeletePublicationAction;
 use App\ApiResource\GetPublicationAction;
 use App\ApiResource\PostPublicationsAction;
 use App\Entity\SocialNetwork\SocialNetwork;
@@ -28,6 +30,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(
             uriTemplate: '/publications/{uuid}',
             controller: GetPublicationAction::class,
+        ),
+        new Delete(
+            uriTemplate: '/publications/{uuid}',
+            controller: DeletePublicationAction::class,
         ),
         new Post(
             uriTemplate: '/publications',

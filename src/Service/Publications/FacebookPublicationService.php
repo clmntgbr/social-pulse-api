@@ -35,4 +35,8 @@ class FacebookPublicationService extends AbstractPublicationService implements P
     public function publish(array $publications)
     {
     }
+
+    public function delete(array $publications)
+    {
+    }
 }

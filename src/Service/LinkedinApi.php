@@ -6,6 +6,8 @@ use App\Dto\AccessToken\LinkedinAccessToken;
 use App\Dto\Linkedin\LinkedinPost;
 use App\Dto\Post;
 use App\Dto\SocialNetworksAccount\LinkedinAccount;
+use App\Entity\Publication\LinkedinPublication;
+use App\Entity\Publication\Publication;
 use App\Entity\SocialNetwork\LinkedinSocialNetwork;
 use App\Entity\SocialNetwork\SocialNetwork;
 use Ramsey\Uuid\Uuid;
@@ -143,6 +145,27 @@ readonly class LinkedinApi implements InterfaceApi
             }
 
             return $linkedinPost;
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     * @param LinkedinPublication $publication
+     */
+    public function delete(Publication $publication): void
+    {
+        try {
+            $response = $this->httpClient->request('DELETE', sprintf('%s/rest/posts/%s', $this->linkedinApiUrl, urlencode(sprintf('urn:li:share:%s', $publication->getPublicationId()))), [
+                'headers' => [
+                  'authorization' => sprintf('Bearer %s', $publication->getSocialNetwork()->getToken()),
+                  'content-type' => 'application/json',
+                  'linkedin-version' => '202411',
+                  'x-restli-protocol-version' => '2.0.0',
+                  'x-restLi-method' => 'DELETE'
+                ],
+            ]);
         } catch (\Exception $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }

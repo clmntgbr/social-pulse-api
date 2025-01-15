@@ -7,9 +7,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    public function delete(SocialNetwork $socialNetwork): void
+    public function delete(object $entity): void
     {
-        $this->getEntityManager()->remove($socialNetwork);
+        $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
     }
 

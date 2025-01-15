@@ -10,6 +10,7 @@ use App\Enum\PublicationStatus;
 use App\Repository\Publication\LinkedinPublicationRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use App\Service\LinkedinApi;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 
 class LinkedinPublicationService extends AbstractPublicationService implements PublicationServiceInterface
@@ -57,6 +58,19 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
                 'statusMessage' => null,
                 'publishedAt' => new \DateTime(),
             ]);
+        }
+    }
+
+    public function delete(array $publications)
+    {
+        /** @var LinkedinPublication $publication */
+        foreach ($publications as $publication) {
+            try {
+                $this->linkedinApi->delete($publication);
+                $this->linkedinPublicationRepository->delete($publication);
+            } catch (\Exception $exception) {
+                throw new BadRequestHttpException($exception->getMessage());
+            }
         }
     }
 }
