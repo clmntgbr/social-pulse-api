@@ -3,7 +3,10 @@
 namespace App\Service;
 
 use App\Dto\AccessToken\FacebookAccessToken;
+use App\Dto\Post;
 use App\Dto\SocialNetworksAccount\FacebookAccount;
+use App\Entity\SocialNetwork\FacebookSocialNetwork;
+use App\Entity\SocialNetwork\SocialNetwork;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -118,6 +121,48 @@ readonly class FacebookApi implements InterfaceApi
             return $facebookAccounts;
         } catch (\Exception $exception) {
             return null;
+        }
+    }
+
+
+
+    /**
+     * @throws BadRequestHttpException
+     * @param FacebookSocialNetwork $socialNetwork
+     */
+    public function post(SocialNetwork $socialNetwork, array $payload): Post
+    {
+        $url = sprintf('%s/rest/posts',
+            $this->facebookApiUrl
+        );
+
+        try {
+            $response = $this->httpClient->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => sprintf('Bearer %s', $socialNetwork->getToken()),
+                    'Connection' => 'Keep-Alive',
+                    'ContentType' => 'application / json',
+                ],
+                'body' =>  [
+                    "author" => sprintf("urn:li:organization:%s", $socialNetwork->getSocialNetworkId()), 
+                    "commentary" => "Sample text Post", 
+                    "visibility" => "PUBLIC", 
+                    "distribution" => [
+                          "feedDistribution" => "MAIN_FEED", 
+                          "targetEntities" => [
+                          ], 
+                          "thirdPartyDistributionChannels" => [
+                             ] 
+                       ], 
+                    "lifecycleState" => "PUBLISHED", 
+                    "isReshareDisabledByAuthor" => false 
+                    ],
+            ]);
+
+            dd($response);
+        } catch (\Exception $exception) {
+            dd($exception);
+            throw new BadRequestHttpException($exception->getMessage());
         }
     }
 }

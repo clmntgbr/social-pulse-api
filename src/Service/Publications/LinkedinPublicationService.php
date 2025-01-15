@@ -3,9 +3,13 @@
 namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
+use App\Dto\Linkedin\LinkedinPost;
+use App\Entity\Publication\LinkedinPublication;
 use App\Entity\SocialNetwork\LinkedinSocialNetwork;
+use App\Enum\PublicationStatus;
 use App\Repository\Publication\LinkedinPublicationRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
+use App\Service\LinkedinApi;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 
 class LinkedinPublicationService extends AbstractPublicationService implements PublicationServiceInterface
@@ -14,6 +18,7 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
         private readonly LinkedinPublicationRepository $linkedinPublicationRepository,
         private readonly LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
         private readonly PublicationService $publicationService,
+        private readonly LinkedinApi $linkedinApi
     ) {
     }
 
@@ -34,5 +39,24 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
 
     public function publish(array $publications)
     {
+        /** @var LinkedinPublication $publication */
+        foreach ($publications as $publication) {
+            try {
+                /** @var LinkedinPost $response */
+                $response = $this->linkedinApi->post($publication->getSocialNetwork(), [
+                    'content' => $publication->getContent(),
+                ]);
+            } catch (\Exception $exception) {
+                $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                return;
+            }
+
+            $this->linkedinPublicationRepository->update($publication, [
+                'publicationId' => $response->id,
+                'status' => PublicationStatus::POSTED->toString(),
+                'statusMessage' => null,
+                'publishedAt' => new \DateTime(),
+            ]);
+        }
     }
 }

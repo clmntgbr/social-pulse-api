@@ -10,6 +10,7 @@ use App\Repository\SocialNetwork\FacebookSocialNetworkRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use App\Service\ImageService;
+use App\Service\LinkedinApi;
 use App\Service\TwitterApi;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -24,6 +25,7 @@ readonly class PublicationServiceFactory
         private readonly TwitterSocialNetworkRepository $twitterSocialNetworkRepository,
         private readonly PublicationService $publicationService,
         private readonly TwitterApi $twitterApi,
+        private readonly LinkedinApi $linkedinApi,
         private readonly ImageService $imageService,
         private readonly MessageBusInterface $messageBus,
         private readonly string $projectRoot,
@@ -36,7 +38,8 @@ readonly class PublicationServiceFactory
             SocialNetworkType::LINKEDIN->toString() => new LinkedinPublicationService(
                 $this->linkedinPublicationRepository,
                 $this->linkedinSocialNetworkRepository,
-                $this->publicationService
+                $this->publicationService,
+                $this->linkedinApi
             ),
             SocialNetworkType::FACEBOOK->toString() => new FacebookPublicationService(
                 $this->facebookPublicationRepository,

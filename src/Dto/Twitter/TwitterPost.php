@@ -2,9 +2,10 @@
 
 namespace App\Dto\Twitter;
 
+use App\Dto\Post;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class TwitterTweet
+class TwitterPost extends Post
 {
     #[Assert\Type('string')]
     #[Assert\NotBlank()]

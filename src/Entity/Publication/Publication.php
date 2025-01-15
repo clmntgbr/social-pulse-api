@@ -51,7 +51,7 @@ class Publication
     use TimestampableEntity;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['publication:get'])]
+    #[Groups(['publications:get', 'publication:get'])]
     private ?string $publicationId = null;
 
     #[ORM\Column(type: Types::STRING)]

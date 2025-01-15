@@ -4,6 +4,8 @@ namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
 use App\Entity\SocialNetwork\SocialNetwork;
+use App\Enum\PublicationThreadType;
+use App\Enum\SocialNetworkType;
 use App\Message\PublishScheduledPublicationsMessage;
 use App\Repository\AbstractRepository;
 use App\Repository\Publication\FacebookPublicationRepository;
@@ -31,9 +33,16 @@ readonly class PublicationService
     public function save(PostPublications $postPublications, SocialNetwork $socialNetwork, AbstractRepository $repositoryRepository): void
     {
         $threadUuid = Uuid::uuid4()->toString();
+        $threadUuids = [];
 
         foreach ($postPublications->publications as $publication) {
             $uuid = Uuid::uuid4()->toString();
+            $threadType = $publication->threadType;
+
+            if ($socialNetwork->getSocialNetworkType()->getName() !== SocialNetworkType::TWITTER) {
+                $threadUuid = Uuid::uuid4()->toString();
+                $threadType = PublicationThreadType::PRIMARY->toString();
+            }
 
             $pictures = [];
             foreach ($publication->pictures as $picture) {
@@ -45,18 +54,22 @@ readonly class PublicationService
                 'content' => $publication->content,
                 'uuid' => $uuid,
                 'threadUuid' => $threadUuid,
-                'threadType' => $publication->threadType,
+                'threadType' => $threadType,
                 'pictures' => $pictures,
                 'socialNetwork' => $socialNetwork,
                 'status' => $publication->status,
                 'publishedAt' => $publication->publishedAt,
             ]);
+
+            $threadUuids[] = ['uuid' => $threadUuid, 'publishedAt' => $publication->publishedAt];
         }
 
-        if ($publication->publishedAt <= new \DateTime()) {
-            $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($threadUuid, $socialNetwork->getSocialNetworkType()->getName()), [
-                new AmqpStamp('high', 0, []),
-            ]);
+        foreach ($threadUuids as $item) {
+            if ($item['publishedAt'] <=  new \DateTime()) {
+                $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($item['uuid'], $socialNetwork->getSocialNetworkType()->getName()), [
+                    new AmqpStamp('high', 0, []),
+                ]);
+            }
         }
     }
 }

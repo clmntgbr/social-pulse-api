@@ -3,6 +3,7 @@
 namespace App\Service\Publications;
 
 use App\Dto\Api\PostPublications;
+use App\Dto\Twitter\TwitterPost;
 use App\Entity\Publication\TwitterPublication;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use App\Enum\PublicationStatus;
@@ -41,7 +42,6 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
     /** @var TwitterPublication[] */
     public function publish(array $publications)
     {
-        $twitterSocialNetwork = null;
         $primaryId = null;
 
         /** @var TwitterPublication $publication */
@@ -82,10 +82,10 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
             }
 
             try {
-                $response = $this->twitterApi->tweet($twitterSocialNetwork, $payload);
+                /** @var TwitterPost $response */
+                $response = $this->twitterApi->post($twitterSocialNetwork, $payload);
             } catch (\Exception $exception) {
                 $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
-
                 return;
             }
 

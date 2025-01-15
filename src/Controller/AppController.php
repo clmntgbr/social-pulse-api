@@ -26,11 +26,11 @@ class AppController extends AbstractController
     public function debug(): void
     {
         $publications = $this->publicationRepository->findBy(
-            ['threadUuid' => '1d1abc89-0aa0-4bc4-88dd-9b1dc66010ac'],
+            ['threadUuid' => '686bf2ee-a389-47b6-909c-92b86bbf6fff'],
             ['id' => 'ASC']
         );
 
-        $publicationService = $this->publicationServiceFactory->getService('twitter');
+        $publicationService = $this->publicationServiceFactory->getService('linkedin');
         $publicationService->publish($publications);
 
         dd($publications);

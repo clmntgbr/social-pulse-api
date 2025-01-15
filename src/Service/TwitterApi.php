@@ -6,9 +6,12 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use App\Dto\AccessToken\TwitterAccessToken;
 use App\Dto\AccessToken\TwitterBearerToken;
+use App\Dto\Post;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
+use App\Dto\Twitter\TwitterPost;
 use App\Dto\Twitter\TwitterTweet;
 use App\Dto\Twitter\TwitterUploadMedia;
+use App\Entity\SocialNetwork\SocialNetwork;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -152,8 +155,9 @@ readonly class TwitterApi implements InterfaceApi
 
     /**
      * @throws BadRequestHttpException
+     * @param TwitterSocialNetwork $socialNetwork
      */
-    public function tweet(TwitterSocialNetwork $socialNetwork, array $payload): TwitterTweet
+    public function post(SocialNetwork $socialNetwork, array $payload): Post
     {
         try {
             $twitterOAuth = new TwitterOAuth($this->twitterApiKey, $this->twitterApiSecret, $socialNetwork->getToken(), $socialNetwork->getTokenSecret());
@@ -167,7 +171,7 @@ readonly class TwitterApi implements InterfaceApi
 
             $response = $response->data ?? $response;
 
-            $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterTweet::class, 'json');
+            $twitterTweet = $this->serializer->deserialize(json_encode($response), TwitterPost::class, 'json');
 
             $errors = $this->validator->validate($twitterTweet);
             if (count($errors) > 0) {
