@@ -24,16 +24,18 @@ class DeletePublicationAction extends AbstractController
 
     public function __invoke(GetPublication $getPublication): JsonResponse
     {
-        $publications = $this->publicationRepository->findPublicationByThreadUuid($getPublication->uuid);
+        $publication = $this->publicationRepository->findOneByCriteria([
+            'uuid' => $getPublication->uuid
+        ]);
 
-        if (count($publications) <= 0) {
+        if (!$publication) {
             return new JsonResponse([
                 'message' => 'You dont have access to this publication.'],
                 Response::HTTP_FORBIDDEN
             );
         }
 
-        $this->linkedinPublicationService->delete($publications);
+        $this->linkedinPublicationService->delete([$publication]);
         
         return new JsonResponse(
             data: [],
