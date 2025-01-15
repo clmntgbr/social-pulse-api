@@ -2,6 +2,7 @@
 
 namespace App\Resolver;
 
+use App\Dto\Api\PostPublication;
 use App\Dto\Api\PostPublications;
 use App\Service\ValidatorError;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ readonly class PostPublicationsResolver implements ValueResolverInterface
         $content = $request->getContent();
 
         /** @var PostPublication[] $postPublication */
-        $postPublication = $this->serializer->deserialize($content, 'App\Dto\Api\PostPublication[]', 'json');
+        $postPublication = $this->serializer->deserialize($content, PostPublication::class.'[]', 'json');
 
         usort($postPublication, function ($a, $b): int|float {
             return $a->id - $b->id;
