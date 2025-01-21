@@ -60,8 +60,7 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
                     $this->imageService->delete($media);
                     $mediaIds[] = ['id' => $linkedinMedia->image, 'altText' => Uuid::uuid4()->toString()];
                 } catch (\Exception $exception) {
-                    dd($exception->getMessage());
-                    $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                    $this->processError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
                     return;
                 }
             }
@@ -72,7 +71,7 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
                     'media' => $mediaIds,
                 ]);
             } catch (\Exception $exception) {
-                $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+                $this->processError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
                 return;
             }
 
@@ -98,7 +97,7 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
         }
     }
 
-    public function processPublicationError(array $publications, string $threadUuid, string $threadType, ?string $message, string $status): void
+    public function processError(array $publications, string $threadUuid, string $threadType, ?string $message, string $status): void
     {
         /** @var Publication $publication */
         foreach ($publications as $publication) {
