@@ -39,7 +39,9 @@ readonly class PublicationServiceFactory
                 $this->linkedinPublicationRepository,
                 $this->linkedinSocialNetworkRepository,
                 $this->publicationService,
-                $this->linkedinApi
+                $this->linkedinApi,
+                $this->imageService,
+                $this->projectRoot
             ),
             SocialNetworkType::FACEBOOK->toString() => new FacebookPublicationService(
                 $this->facebookPublicationRepository,

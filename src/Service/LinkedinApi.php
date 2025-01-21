@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Dto\AccessToken\LinkedinAccessToken;
+use App\Dto\Linkedin\LinkedinInitializeUploadMedia;
 use App\Dto\Linkedin\LinkedinPost;
 use App\Dto\Post;
 use App\Dto\SocialNetworksAccount\LinkedinAccount;
@@ -10,8 +11,6 @@ use App\Entity\Publication\LinkedinPublication;
 use App\Entity\Publication\Publication;
 use App\Entity\SocialNetwork\LinkedinSocialNetwork;
 use App\Entity\SocialNetwork\SocialNetwork;
-use Ramsey\Uuid\Uuid;
-use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -105,33 +104,84 @@ readonly class LinkedinApi implements InterfaceApi
 
     /**
      * @throws BadRequestHttpException
+     */
+    public function uploadMedia(LinkedinSocialNetwork $socialNetwork, string $media)
+    {
+        try {
+            $response = $this->initializeUploadMedia($socialNetwork, $media);
+            dd($response);
+        } catch (\Exception $exception) {
+            dd($exception);
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    private function initializeUploadMedia(LinkedinSocialNetwork $socialNetwork, string $media): LinkedinInitializeUploadMedia
+    {
+        $body = [
+            'initializeUploadRequest' => [
+                'owner' => sprintf('urn:li:person:%s', $socialNetwork->getSocialNetworkId()),
+            ],
+        ];
+
+        try {
+            $response = $this->httpClient->request('POST', sprintf('%s/rest/images?action=initializeUpload', $this->linkedinApiUrl), [
+                'body' => json_encode($body),
+                'headers' => [
+                    'authorization' => sprintf('Bearer %s', $socialNetwork->getToken()),
+                    'content-type' => 'application/json',
+                    'linkedin-version' => '202411',
+                    'x-restli-protocol-version' => '2.0.0',
+                ],
+            ]);
+
+            $linkedinInitializeUploadMedia = $this->serializer->deserialize($response->getContent(), LinkedinInitializeUploadMedia::class, 'json');
+
+            $errors = $this->validator->validate($linkedinInitializeUploadMedia);
+            if (count($errors) > 0) {
+                throw new BadRequestHttpException($this->validatorError->getMessageToString($errors));
+            }
+
+            return $linkedinInitializeUploadMedia;
+        } catch (\Exception $exception) {
+            dd($exception);
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+    }
+
+    /**
      * @param LinkedinSocialNetwork $socialNetwork
+     *
+     * @throws BadRequestHttpException
      */
     public function post(SocialNetwork $socialNetwork, array $payload): Post
     {
         $body = [
-            "author" => sprintf("urn:li:person:%s", $socialNetwork->getSocialNetworkId()), 
-            "commentary" => $payload['content'], 
-            "visibility" => "PUBLIC", 
-            "distribution" => [
-                  "feedDistribution" => "MAIN_FEED", 
-                  "targetEntities" => [
-                  ], 
-                  "thirdPartyDistributionChannels" => [
-                     ] 
-               ], 
-            "lifecycleState" => "PUBLISHED", 
-            "isReshareDisabledByAuthor" => false 
+            'author' => sprintf('urn:li:person:%s', $socialNetwork->getSocialNetworkId()),
+            'commentary' => $payload['content'],
+            'visibility' => 'PUBLIC',
+            'distribution' => [
+                'feedDistribution' => 'MAIN_FEED',
+                'targetEntities' => [
+                ],
+                'thirdPartyDistributionChannels' => [
+                ],
+            ],
+            'lifecycleState' => 'PUBLISHED',
+            'isReshareDisabledByAuthor' => false,
         ];
 
         try {
             $response = $this->httpClient->request('POST', sprintf('%s/rest/posts', $this->linkedinApiUrl), [
                 'body' => json_encode($body),
                 'headers' => [
-                  'authorization' => sprintf('Bearer %s', $socialNetwork->getToken()),
-                  'content-type' => 'application/json',
-                  'linkedin-version' => '202411',
-                  'x-restli-protocol-version' => '2.0.0',
+                    'authorization' => sprintf('Bearer %s', $socialNetwork->getToken()),
+                    'content-type' => 'application/json',
+                    'linkedin-version' => '202411',
+                    'x-restli-protocol-version' => '2.0.0',
                 ],
             ]);
 
@@ -151,19 +201,20 @@ readonly class LinkedinApi implements InterfaceApi
     }
 
     /**
-     * @throws BadRequestHttpException
      * @param LinkedinPublication $publication
+     *
+     * @throws BadRequestHttpException
      */
     public function delete(Publication $publication): void
     {
         try {
             $response = $this->httpClient->request('DELETE', sprintf('%s/rest/posts/%s', $this->linkedinApiUrl, urlencode(sprintf('urn:li:share:%s', $publication->getPublicationId()))), [
                 'headers' => [
-                  'authorization' => sprintf('Bearer %s', $publication->getSocialNetwork()->getToken()),
-                  'content-type' => 'application/json',
-                  'linkedin-version' => '202411',
-                  'x-restli-protocol-version' => '2.0.0',
-                  'x-restLi-method' => 'DELETE'
+                    'authorization' => sprintf('Bearer %s', $publication->getSocialNetwork()->getToken()),
+                    'content-type' => 'application/json',
+                    'linkedin-version' => '202411',
+                    'x-restli-protocol-version' => '2.0.0',
+                    'x-restLi-method' => 'DELETE',
                 ],
             ]);
         } catch (\Exception $exception) {

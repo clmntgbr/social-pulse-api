@@ -124,11 +124,10 @@ readonly class FacebookApi implements InterfaceApi
         }
     }
 
-
-
     /**
-     * @throws BadRequestHttpException
      * @param FacebookSocialNetwork $socialNetwork
+     *
+     * @throws BadRequestHttpException
      */
     public function post(SocialNetwork $socialNetwork, array $payload): Post
     {
@@ -143,20 +142,20 @@ readonly class FacebookApi implements InterfaceApi
                     'Connection' => 'Keep-Alive',
                     'ContentType' => 'application / json',
                 ],
-                'body' =>  [
-                    "author" => sprintf("urn:li:organization:%s", $socialNetwork->getSocialNetworkId()), 
-                    "commentary" => "Sample text Post", 
-                    "visibility" => "PUBLIC", 
-                    "distribution" => [
-                          "feedDistribution" => "MAIN_FEED", 
-                          "targetEntities" => [
-                          ], 
-                          "thirdPartyDistributionChannels" => [
-                             ] 
-                       ], 
-                    "lifecycleState" => "PUBLISHED", 
-                    "isReshareDisabledByAuthor" => false 
+                'body' => [
+                    'author' => sprintf('urn:li:organization:%s', $socialNetwork->getSocialNetworkId()),
+                    'commentary' => 'Sample text Post',
+                    'visibility' => 'PUBLIC',
+                    'distribution' => [
+                        'feedDistribution' => 'MAIN_FEED',
+                        'targetEntities' => [
+                        ],
+                        'thirdPartyDistributionChannels' => [
+                        ],
                     ],
+                    'lifecycleState' => 'PUBLISHED',
+                    'isReshareDisabledByAuthor' => false,
+                ],
             ]);
 
             dd($response);

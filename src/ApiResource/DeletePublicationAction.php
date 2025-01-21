@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsController]
@@ -18,14 +17,14 @@ class DeletePublicationAction extends AbstractController
     public function __construct(
         private readonly PublicationRepository $publicationRepository,
         private readonly SerializerInterface $serializer,
-        private readonly LinkedinPublicationService $linkedinPublicationService
+        private readonly LinkedinPublicationService $linkedinPublicationService,
     ) {
     }
 
     public function __invoke(GetPublication $getPublication): JsonResponse
     {
         $publication = $this->publicationRepository->findOneByCriteria([
-            'uuid' => $getPublication->uuid
+            'uuid' => $getPublication->uuid,
         ]);
 
         if (!$publication) {
@@ -36,7 +35,7 @@ class DeletePublicationAction extends AbstractController
         }
 
         $this->linkedinPublicationService->delete([$publication]);
-        
+
         return new JsonResponse(
             data: [],
             status: Response::HTTP_OK

@@ -86,6 +86,7 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
                 $response = $this->twitterApi->post($twitterSocialNetwork, $payload);
             } catch (\Exception $exception) {
                 $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+
                 return;
             }
 

@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\SocialNetwork\SocialNetwork;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractRepository extends ServiceEntityRepository

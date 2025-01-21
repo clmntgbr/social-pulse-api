@@ -9,6 +9,7 @@ use App\Entity\SocialNetwork\LinkedinSocialNetwork;
 use App\Enum\PublicationStatus;
 use App\Repository\Publication\LinkedinPublicationRepository;
 use App\Repository\SocialNetwork\LinkedinSocialNetworkRepository;
+use App\Service\ImageService;
 use App\Service\LinkedinApi;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
@@ -19,7 +20,9 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
         private readonly LinkedinPublicationRepository $linkedinPublicationRepository,
         private readonly LinkedinSocialNetworkRepository $linkedinSocialNetworkRepository,
         private readonly PublicationService $publicationService,
-        private readonly LinkedinApi $linkedinApi
+        private readonly LinkedinApi $linkedinApi,
+        private readonly ImageService $imageService,
+        private readonly string $projectRoot,
     ) {
     }
 
@@ -42,6 +45,10 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
     {
         /** @var LinkedinPublication $publication */
         foreach ($publications as $publication) {
+            foreach ($publication->getPictures() as $picture) {
+                $media = $this->imageService->downloadTmp($picture);
+                $twitterMedia = $this->linkedinApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
+            }
             try {
                 /** @var LinkedinPost $response */
                 $response = $this->linkedinApi->post($publication->getSocialNetwork(), [
@@ -49,6 +56,7 @@ class LinkedinPublicationService extends AbstractPublicationService implements P
                 ]);
             } catch (\Exception $exception) {
                 $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
+
                 return;
             }
 

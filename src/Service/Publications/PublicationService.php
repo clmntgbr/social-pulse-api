@@ -39,7 +39,7 @@ readonly class PublicationService
             $uuid = Uuid::uuid4()->toString();
             $threadType = $publication->threadType;
 
-            if ($socialNetwork->getSocialNetworkType()->getName() !== SocialNetworkType::TWITTER) {
+            if (SocialNetworkType::TWITTER !== $socialNetwork->getSocialNetworkType()->getName()) {
                 $threadUuid = Uuid::uuid4()->toString();
                 $threadType = PublicationThreadType::PRIMARY->toString();
             }
@@ -65,7 +65,7 @@ readonly class PublicationService
         }
 
         foreach ($threadUuids as $item) {
-            if ($item['publishedAt'] <=  new \DateTime()) {
+            if ($item['publishedAt'] <= new \DateTime()) {
                 $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($item['uuid'], $socialNetwork->getSocialNetworkType()->getName()), [
                     new AmqpStamp('high', 0, []),
                 ]);

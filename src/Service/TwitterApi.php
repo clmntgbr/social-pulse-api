@@ -9,7 +9,6 @@ use App\Dto\AccessToken\TwitterBearerToken;
 use App\Dto\Post;
 use App\Dto\SocialNetworksAccount\TwitterAccount;
 use App\Dto\Twitter\TwitterPost;
-use App\Dto\Twitter\TwitterTweet;
 use App\Dto\Twitter\TwitterUploadMedia;
 use App\Entity\SocialNetwork\SocialNetwork;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
@@ -154,8 +153,9 @@ readonly class TwitterApi implements InterfaceApi
     }
 
     /**
-     * @throws BadRequestHttpException
      * @param TwitterSocialNetwork $socialNetwork
+     *
+     * @throws BadRequestHttpException
      */
     public function post(SocialNetwork $socialNetwork, array $payload): Post
     {
