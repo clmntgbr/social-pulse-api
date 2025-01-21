@@ -11,6 +11,7 @@ use App\Entity\Publication\LinkedinPublication;
 use App\Entity\Publication\Publication;
 use App\Entity\SocialNetwork\LinkedinSocialNetwork;
 use App\Entity\SocialNetwork\SocialNetwork;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -105,13 +106,21 @@ readonly class LinkedinApi implements InterfaceApi
     /**
      * @throws BadRequestHttpException
      */
-    public function uploadMedia(LinkedinSocialNetwork $socialNetwork, string $media)
+    public function uploadMedia(LinkedinSocialNetwork $socialNetwork, string $media): LinkedinInitializeUploadMedia
     {
         try {
-            $response = $this->initializeUploadMedia($socialNetwork, $media);
-            dd($response);
+            $response = $this->initializeUploadMedia($socialNetwork);
+            $this->httpClient->request('PUT', $response->uploadUrl, [
+                'headers' => [
+                    'authorization' => sprintf('Bearer %s', $socialNetwork->getToken()),
+                    'linkedin-version' => '202411',
+                    'x-restli-protocol-version' => '2.0.0',
+                    'content-type' => "application/octet-stream",
+                ],
+                'body' => fopen($media, 'r'),
+            ]);
+            return $response;
         } catch (\Exception $exception) {
-            dd($exception);
             throw new BadRequestHttpException($exception->getMessage());
         }
     }
@@ -119,7 +128,7 @@ readonly class LinkedinApi implements InterfaceApi
     /**
      * @throws BadRequestHttpException
      */
-    private function initializeUploadMedia(LinkedinSocialNetwork $socialNetwork, string $media): LinkedinInitializeUploadMedia
+    private function initializeUploadMedia(LinkedinSocialNetwork $socialNetwork): LinkedinInitializeUploadMedia
     {
         $body = [
             'initializeUploadRequest' => [
@@ -147,7 +156,6 @@ readonly class LinkedinApi implements InterfaceApi
 
             return $linkedinInitializeUploadMedia;
         } catch (\Exception $exception) {
-            dd($exception);
             throw new BadRequestHttpException($exception->getMessage());
         }
     }
@@ -173,6 +181,10 @@ readonly class LinkedinApi implements InterfaceApi
             'lifecycleState' => 'PUBLISHED',
             'isReshareDisabledByAuthor' => false,
         ];
+
+        if ($payload['media'] && count($payload['media']) > 0) {
+            $body['content']['multiImage']['images'] = $payload['media'];
+        }
 
         try {
             $response = $this->httpClient->request('POST', sprintf('%s/rest/posts', $this->linkedinApiUrl), [

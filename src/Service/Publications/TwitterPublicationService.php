@@ -8,11 +8,14 @@ use App\Entity\Publication\TwitterPublication;
 use App\Entity\SocialNetwork\TwitterSocialNetwork;
 use App\Enum\PublicationStatus;
 use App\Enum\PublicationThreadType;
+use App\Message\PublishScheduledPublicationsMessage;
 use App\Repository\Publication\TwitterPublicationRepository;
 use App\Repository\SocialNetwork\TwitterSocialNetworkRepository;
 use App\Service\ImageService;
 use App\Service\TwitterApi;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class TwitterPublicationService extends AbstractPublicationService implements PublicationServiceInterface
 {
@@ -55,13 +58,11 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
                     $twitterMedia = $this->twitterApi->uploadMedia($publication->getSocialNetwork(), sprintf('%s/public/%s', $this->projectRoot, $media));
                 } catch (\Exception $exception) {
                     $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
-
                     return;
                 }
 
                 if (!$twitterMedia) {
                     $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), 'UploadMedia error', PublicationStatus::RETRY->toString());
-
                     return;
                 }
 
@@ -86,7 +87,6 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
                 $response = $this->twitterApi->post($twitterSocialNetwork, $payload);
             } catch (\Exception $exception) {
                 $this->processPublicationError($publications, $publication->getThreadUuid(), $publication->getSocialNetwork()->getSocialNetworkType()->getName(), $exception->getMessage(), PublicationStatus::RETRY->toString());
-
                 return;
             }
 
@@ -105,5 +105,25 @@ class TwitterPublicationService extends AbstractPublicationService implements Pu
 
     public function delete(array $publications)
     {
+    }
+
+    public function processPublicationError(array $publications, string $threadUuid, string $threadType, ?string $message, string $status): void
+    {
+        /** @var Publication $publication */
+        foreach ($publications as $publication) {
+            $this->twitterPublicationRepository->update($publication, [
+                'status' => $status,
+                'statusMessage' => $message,
+                'retry' => $publication->getRetry() + 1,
+                'retryTime' => 3600,
+            ]);
+        }
+
+        if ($status === PublicationStatus::RETRY->toString()) {
+            $this->messageBus->dispatch(new PublishScheduledPublicationsMessage($threadUuid, $threadType), [
+                new AmqpStamp('high', 0, []),
+                new DelayStamp(3600000),
+            ]);
+        }
     }
 }

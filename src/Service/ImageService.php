@@ -7,14 +7,17 @@ use Ramsey\Uuid\Uuid;
 readonly class ImageService
 {
     public function __construct(
-        private string $backUrl = '',
+        private string $backUrl,
+        private string $projectRoot,
     ) {
     }
 
     public function downloadTmp(string $url): ?string
     {
-        if (!is_dir(sprintf('tmp'))) {
-            mkdir(sprintf('tmp'), 0755, true);
+        $path = sprintf('%s/tmp', $this->projectRoot);
+
+        if (!is_dir($path)) {
+            mkdir(sprintf($path), 0755, true);
         }
 
         // Set a timeout to prevent hanging
@@ -31,13 +34,13 @@ readonly class ImageService
             return null;
         }
 
-        $path = sprintf('%s.png', Uuid::uuid4()->toString());
+        $filename = sprintf('%s.png', Uuid::uuid4()->toString());
 
-        if (false === file_put_contents(sprintf('tmp/%s', $path), $imageContent)) {
+        if (false === file_put_contents(sprintf('%s/%s', $path, $filename), $imageContent)) {
             return null;
         }
 
-        return sprintf('tmp/%s', $path);
+        return sprintf('%s/%s', $path, $filename);
     }
 
     public function delete(string $filePath): bool
